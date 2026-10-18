@@ -375,7 +375,7 @@ const TX = {
     hi: 'Hi, {name}! 👋', haveStars: 'You have {n} ⭐',
     gardenCount: '{n} / {total} items · {season}', weakNone: 'Nothing yet. Great! ✨',
     retry: '🔁 Let\'s review', streakBadge: '🔥 {n} in a row',
-    tapHint: 'Tap what goes away', tapLeft: '{n} left. Now type the answer!',
+    tapHint: 'Tap what goes away', tapCount: 'Taken away: {n}', tapLeft: '{n} left. Now type the answer!',
     backupTitle: 'Progress backup', backupShow: 'Show backup', backupCopyHint: 'Copy this code and keep it. It holds your stars and garden.', backupCopyBtn: 'Copy',
     backupRestoreHint: 'To restore, paste the code here.', backupRestoreBtn: 'Restore', backupDone: 'Restored ✓', backupBad: 'This code does not fit.', backupCopied: 'Copied ✓',
     great: 'Great! 🎉', correctSecond: 'Correct, nice! ⭐', tryAgain: 'Try again! 💪',
@@ -411,7 +411,7 @@ const TX = {
     hi: 'Ahoj, {name}! 👋', haveStars: 'Máš {n} ⭐',
     gardenCount: '{n} / {total} kúskov · {season}', weakNone: 'Zatiaľ nič. Super! ✨',
     retry: '🔁 Zopakujeme', streakBadge: '🔥 {n} v rade',
-    tapHint: 'Ťukni na to, čo odíde', tapLeft: 'Zostalo {n}. Teraz napíš odpoveď!',
+    tapHint: 'Ťukni na to, čo odíde', tapCount: 'Odobrali sme: {n}', tapLeft: 'Zostalo {n}. Teraz napíš odpoveď!',
     backupTitle: 'Záloha postupu', backupShow: 'Zobraziť zálohu', backupCopyHint: 'Skopíruj tento kód a ulož si ho. Obsahuje tvoje hviezdičky a záhradu.', backupCopyBtn: 'Skopírovať',
     backupRestoreHint: 'Na obnovenie vlož kód sem.', backupRestoreBtn: 'Obnoviť', backupDone: 'Obnovené ✓', backupBad: 'Tento kód nepasuje.', backupCopied: 'Skopírované ✓',
     great: 'Výborne! 🎉', correctSecond: 'Správne, super! ⭐', tryAgain: 'Skús to ešte raz! 💪',
@@ -1511,12 +1511,13 @@ $('#hint').addEventListener('click', e => {
   if (!c || c.classList.contains('gone')) return;
   c.classList.add('gone');
   const gone = document.querySelectorAll('#hint .gone').length;
+  const done = !document.querySelector('#hint .tap:not(.gone)');
+  const left = Number(document.querySelector('#hint .hintbox').dataset.left);
+  // jedno hlásenie na ťuknutie: vždy počet odobratých (pri poslednej guličke "päť", nie zvyšok "jeden")
   playSeq([gone], String(gone));
-  if (!document.querySelector('#hint .tap:not(.gone)')) {
-    const left = Number(document.querySelector('#hint .hintbox').dataset.left);
-    fb(T('tapLeft', { n: left }), true);
-    playSeq([left], T('tapLeft', { n: left }));
-  }
+  const msg = document.querySelector('#hint .tapmsg');
+  if (msg) msg.textContent = done ? T('tapLeft', { n: left }) : T('tapCount', { n: gone });
+  if (done) fb(T('tapLeft', { n: left }), true);
 });
 $('#langBtn').onclick = () => { location.href = LANG === 'en' ? 'sk/' : '../'; };
 $('#pad').addEventListener('click', e => {
