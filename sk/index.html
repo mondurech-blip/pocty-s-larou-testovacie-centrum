@@ -426,7 +426,7 @@ const TX = {
     stepFillPlusFront: 'Koľko treba pridať k {k}, aby to bolo {c}?', stepFillPlusBack: 'Začni na {k} a počítaj ďalej, kým nebudeš na {c}.',
     stepFillMinus: 'Od {a} uberaj, kým nebudeš na {c}.',
     storyPlus: 'Víla mala {a} {kvet} a dostala ešte {b}. Koľko kvetov má teraz?',
-    storyMinus: 'V záhrade bolo {a} {kvet}. Princezná {b} z nich natrhala. Koľko ich zostalo?',
+    storyMinus: 'V záhrade {bolo} {a} {kvet}. Princezná {b} z nich natrhala. Koľko ich zostalo?',
     speakPlus: 'Koľko je {a} plus {b}?', speakMinus: 'Koľko je {a} mínus {b}?',
     speakFillPlusFront: 'Koľko plus {k} je {c}?', speakFillPlusBack: '{k} plus koľko je {c}?', speakFillMinus: '{a} mínus koľko je {c}?',
     speakCmp: 'Porovnaj {a} a {b}. Je väčšie, menšie, alebo rovnaké?',
@@ -1026,14 +1026,13 @@ function trimClip(buf) {
       if (r > peakR) peakR = r;
     }
     if (!peakR) return buf;
-    const th = peakR * 0.1;
+    const th = peakR * 0.03;   // nízka hranica, aby sa neorezali slabé spoluhlásky (s, ť)
     const first = rms.findIndex(r => r > th);
     if (first < 0) return buf;
     let last = rms.length - 1;
     while (last > first && rms[last] <= th) last--;
-    const pad = Math.floor(buf.sampleRate * 0.05);
-    const s = Math.max(0, first * win - pad);
-    const e = Math.min(ch.length - 1, (last + 1) * win + pad);
+    const s = Math.max(0, first * win - Math.floor(buf.sampleRate * 0.08));
+    const e = Math.min(ch.length - 1, (last + 1) * win + Math.floor(buf.sampleRate * 0.2));   // dlhší dych po slove
     const out = ctx.createBuffer(buf.numberOfChannels, e - s + 1, buf.sampleRate);
     for (let c = 0; c < buf.numberOfChannels; c++) out.copyToChannel(buf.getChannelData(c).subarray(s, e + 1), c);
     return out;
@@ -1203,8 +1202,8 @@ function genTask(mode, max) {
       html: `${a} − ${b} = <span class="q">?</span>`,
       speak: T('speakMinus', { a, b }),
       step: T('stepMinus', { a, b }),
-      story: story ? T('storyMinus', { a, b, kvet: kvet(a) }) : null,
-      snd: story ? SND(['gardenhad', a, 'flowerspicked', b, 'storyq2'], ['vzahrade', a, kvetKey(a), 'princezna', b, 'znichnatrhala'])
+      story: story ? T('storyMinus', { a, b, kvet: kvet(a), bolo: a <= 4 ? 'boli' : 'bolo' }) : null,
+      snd: story ? SND(['gardenhad', a, 'flowerspicked', b, 'storyq2'], [a <= 4 ? 'vzahradeboli' : 'vzahrade', a, kvetKey(a), 'princezna', b, 'znichnatrhala'])
                  : SND(['whatis', a, 'minus', b], ['kolkoje', a, 'minus', b]),
     };
   }
