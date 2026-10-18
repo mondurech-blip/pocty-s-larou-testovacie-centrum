@@ -1007,14 +1007,34 @@ function b64ToBuf(b64) {
   for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
   return u.buffer;
 }
+/* Odstráni dlhé ticho na začiatku a na konci nahrávky, aby medzi číslami nebola pauza.
+   Hranica je 5 % najhlasnejšieho miesta, takže sa nerezú slabé konce slov. */
+function trimClip(buf) {
+  try {
+    const ctx = getCtx();
+    if (!ctx) return buf;
+    const ch = buf.getChannelData(0);
+    let peak = 0;
+    for (let i = 0; i < ch.length; i++) { const a = Math.abs(ch[i]); if (a > peak) peak = a; }
+    if (!peak) return buf;
+    const th = peak * 0.05, pad = Math.floor(buf.sampleRate * 0.04);
+    let s = 0, e = ch.length - 1;
+    while (s < ch.length && Math.abs(ch[s]) < th) s++;
+    while (e > s && Math.abs(ch[e]) < th) e--;
+    s = Math.max(0, s - pad); e = Math.min(ch.length - 1, e + pad);
+    const out = ctx.createBuffer(buf.numberOfChannels, e - s + 1, buf.sampleRate);
+    for (let c = 0; c < buf.numberOfChannels; c++) out.copyToChannel(buf.getChannelData(c).subarray(s, e + 1), c);
+    return out;
+  } catch (e) { return buf; }
+}
 function loadClip(key) {
   if (!clipCache[key]) {
     clipCache[key] = CLIPS_READY.then(() => {
       const b64 = window.LARA_CLIPS && window.LARA_CLIPS[LANG] && window.LARA_CLIPS[LANG][key];
-      if (b64) return getCtx().decodeAudioData(b64ToBuf(b64));
+      if (b64) return getCtx().decodeAudioData(b64ToBuf(b64)).then(trimClip);
       return fetch(AUDIO_BASE + key + '.mp3')
         .then(r => { if (!r.ok) throw new Error('missing'); return r.arrayBuffer(); })
-        .then(b => getCtx().decodeAudioData(b));
+        .then(b => getCtx().decodeAudioData(b)).then(trimClip);
     }).catch(() => null);
   }
   return clipCache[key];
