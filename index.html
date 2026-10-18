@@ -360,6 +360,7 @@ const LEVELS = [10, 20, 50, 100];
 
 /* ====== JAZYK: / = angličtina (primárna), /sk/ = slovenčina ====== */
 const LANG = (/\/sk(\/|\/index\.html)?$/.test(location.pathname) || /[?&]lang=sk/.test(location.search)) ? 'sk' : 'en';
+const ROOT = /\/sk(\/|\/index\.html)?$/.test(location.pathname) ? '../' : '';   // cesta ku koreňu (sk/ je podpriečinok)
 const TX = {
   en: {
     title: 'Math with Lara', otherLang: 'SK',
@@ -985,7 +986,7 @@ function say(text) {
 }
 /* ====== NAHRÁVKY (hlas Bella warm) ======
    Nahrávky sú v priečinku audio/en a audio/sk. Ak sa nejaká nenačíta, appka použije hlas zariadenia. */
-const AUDIO_BASE = LANG === 'sk' ? '../audio/sk/' : 'audio/en/';   // relatívne cesty: funguje aj v podpriečinku (GitHub)
+const AUDIO_BASE = ROOT + (LANG === 'sk' ? 'audio/sk/' : 'audio/en/');
 const clipCache = {};
 let actx = null, srcs = [], seqId = 0;
 function getCtx() {
@@ -994,12 +995,27 @@ function getCtx() {
   }
   return actx;
 }
+/* Nahrávky sú aj v súbore clips.js (funguje to zo súboru na disku aj na webe, bez sťahovania). */
+const CLIPS_READY = new Promise(res => {
+  const s = document.createElement('script');
+  s.src = ROOT + 'clips.js';
+  s.onload = s.onerror = res;
+  document.head.appendChild(s);
+});
+function b64ToBuf(b64) {
+  const bin = atob(b64), u = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+  return u.buffer;
+}
 function loadClip(key) {
   if (!clipCache[key]) {
-    clipCache[key] = fetch(AUDIO_BASE + key + '.mp3')
-      .then(r => { if (!r.ok) throw new Error('missing'); return r.arrayBuffer(); })
-      .then(b => getCtx().decodeAudioData(b))
-      .catch(() => null);
+    clipCache[key] = CLIPS_READY.then(() => {
+      const b64 = window.LARA_CLIPS && window.LARA_CLIPS[LANG] && window.LARA_CLIPS[LANG][key];
+      if (b64) return getCtx().decodeAudioData(b64ToBuf(b64));
+      return fetch(AUDIO_BASE + key + '.mp3')
+        .then(r => { if (!r.ok) throw new Error('missing'); return r.arrayBuffer(); })
+        .then(b => getCtx().decodeAudioData(b));
+    }).catch(() => null);
   }
   return clipCache[key];
 }
@@ -1621,9 +1637,13 @@ applyStatic();
 buildDeco();
 renderHome();
 show('home');
-// offline režim: služba sa spustí len na https (Netlify) alebo localhost
+// ikona a názov na ploche iPadu, manifest a offline služba: správne aj keď je appka v /sk/
+document.querySelector('link[rel=manifest]').href = ROOT + 'manifest.webmanifest';
+document.querySelector('link[rel=apple-touch-icon]').href = ROOT + 'icon-180.png';
+document.querySelector('meta[name=apple-mobile-web-app-title]').content = LANG === 'sk' ? 'Počty' : 'Lara Math';
+// offline režim: služba sa spustí len na https (Netlify, GitHub) alebo localhost
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) {
-  navigator.serviceWorker.register('sw.js').catch(() => {});
+  navigator.serviceWorker.register(ROOT + 'sw.js').catch(() => {});
 }
 </script>
 </body>
