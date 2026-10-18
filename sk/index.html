@@ -1014,14 +1014,26 @@ function trimClip(buf) {
     const ctx = getCtx();
     if (!ctx) return buf;
     const ch = buf.getChannelData(0);
-    let peak = 0;
-    for (let i = 0; i < ch.length; i++) { const a = Math.abs(ch[i]); if (a > peak) peak = a; }
-    if (!peak) return buf;
-    const th = peak * 0.05, pad = Math.floor(buf.sampleRate * 0.04);
-    let s = 0, e = ch.length - 1;
-    while (s < ch.length && Math.abs(ch[s]) < th) s++;
-    while (e > s && Math.abs(ch[e]) < th) e--;
-    s = Math.max(0, s - pad); e = Math.min(ch.length - 1, e + pad);
+    // hlasitosť po 20 ms oknách (RMS), aby jednotlivé šumy na konci nepredĺžili nahrávku
+    const win = Math.max(1, Math.floor(buf.sampleRate * 0.02));
+    const rms = [];
+    let peakR = 0;
+    for (let i = 0; i < ch.length; i += win) {
+      let sum = 0, n = 0;
+      for (let j = i; j < Math.min(ch.length, i + win); j++) { sum += ch[j] * ch[j]; n++; }
+      const r = Math.sqrt(sum / n);
+      rms.push(r);
+      if (r > peakR) peakR = r;
+    }
+    if (!peakR) return buf;
+    const th = peakR * 0.1;
+    const first = rms.findIndex(r => r > th);
+    if (first < 0) return buf;
+    let last = rms.length - 1;
+    while (last > first && rms[last] <= th) last--;
+    const pad = Math.floor(buf.sampleRate * 0.05);
+    const s = Math.max(0, first * win - pad);
+    const e = Math.min(ch.length - 1, (last + 1) * win + pad);
     const out = ctx.createBuffer(buf.numberOfChannels, e - s + 1, buf.sampleRate);
     for (let c = 0; c < buf.numberOfChannels; c++) out.copyToChannel(buf.getChannelData(c).subarray(s, e + 1), c);
     return out;
