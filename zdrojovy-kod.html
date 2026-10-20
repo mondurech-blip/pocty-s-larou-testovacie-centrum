@@ -519,12 +519,9 @@ const CHARS = {
 const LIMB_COLOR = { bunny: '#ffffff', puppy: '#f4cb92', bear: '#c9a27e', fox: '#ff9d5c', capybara: '#b98a5e', dragon: '#9ee6a8', unicorn: '#ffffff', cat: '#ffc98a' };
 function limbsSVG(id) {
   const c = LIMB_COLOR[id] || '#ffffff', e = 'stroke="#d8c6ea" stroke-width="1.5"';
-  return `<rect x="22" y="80" width="12" height="30" rx="6" fill="${c}" ${e} transform="rotate(20 28 80)"/>
-    <rect x="86" y="80" width="12" height="30" rx="6" fill="${c}" ${e} transform="rotate(-20 92 80)"/>
-    <circle cx="22" cy="106" r="7" fill="${c}" ${e}/><circle cx="98" cy="106" r="7" fill="${c}" ${e}/>
-    <rect x="40" y="96" width="14" height="24" rx="7" fill="${c}" ${e}/>
-    <rect x="66" y="96" width="14" height="24" rx="7" fill="${c}" ${e}/>
-    <ellipse cx="47" cy="122" rx="11" ry="6" fill="${c}" ${e}/><ellipse cx="73" cy="122" rx="11" ry="6" fill="${c}" ${e}/>`;
+  // zvieracie labky: krátke predné šľapky a zaoblené zadné nohy, bez ľudských rúk a nôh
+  return `<ellipse cx="32" cy="94" rx="8" ry="7" fill="${c}" ${e}/><ellipse cx="88" cy="94" rx="8" ry="7" fill="${c}" ${e}/>
+    <ellipse cx="46" cy="110" rx="11" ry="7" fill="${c}" ${e}/><ellipse cx="74" cy="110" rx="11" ry="7" fill="${c}" ${e}/>`;
 }
 function mascotSVG(id, size = 120, cls = '') {
   const art = CHARS[id] || CHARS.bunny;
