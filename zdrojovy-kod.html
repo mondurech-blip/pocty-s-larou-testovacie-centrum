@@ -1378,7 +1378,10 @@ function startTask() {
   st.classList.toggle('hidden', !R.t.story);
   $('#task').innerHTML = R.t.html;
   $('#fb').textContent = '';
-  $('#hint').innerHTML = '';
+  R.cntOpen = false; R.cnt = null;
+  // dvojciferné úlohy: tlačidlo „Pomôž si“ je k dispozícii hneď, ostatné nápovedy až po chybe
+  const twoDigit = (R.t.op === '+' || R.t.op === '−') && R.t.mi === 0 && R.t.total > 20;
+  $('#hint').innerHTML = twoDigit ? `<button class="chip help-btn" type="button" id="helpBtn">${T('helpBtn')}</button>` : '';
   $('#pad').classList.remove('off');
   $('#cmpBtns').classList.remove('off');
   const isCmp = R.t.op === 'cmp';
