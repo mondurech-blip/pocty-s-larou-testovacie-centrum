@@ -145,72 +145,66 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 .rider{position:absolute;bottom:22px;left:0;transform:translateX(-50%);transition:left .5s ease;pointer-events:none}
 .rider svg{width:48px;height:48px;display:block}
 .mascotP svg{width:64px;height:64px}
-/* záhrada – scéna */
-.gscene{position:relative;border-radius:22px;overflow:hidden;--s1:#b9e6ff;--s2:#eefcff;--g1:#8fd490;--g2:#68bd6e;--hill:#86cf86;--sun:#ffd36e;background:linear-gradient(180deg,var(--g1) 0,var(--g2) 100%);box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+/* záhrada – zámocký park: pevný pôdorys 1000 × 700, všetko sa škáluje spolu */
+.gscene{position:relative;width:100%;aspect-ratio:1000/700;border-radius:22px;overflow:hidden;--s1:#b9e6ff;--s2:#eefcff;--g1:#8fd490;--g2:#68bd6e;--hill:#86cf86;--sun:#ffd36e;background:linear-gradient(180deg,var(--g1) 0,var(--g2) 100%);box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
 .gscene.spring{--s1:#c4eeff;--s2:#f3fff0;--g1:#a7e89a;--g2:#72c86f;--hill:#9ad994;--sun:#ffe07a}
 .gscene.summer{--s1:#8fdcff;--s2:#fff7d6;--g1:#9be07a;--g2:#5fb24e;--hill:#7cc766;--sun:#ffc93c}
 .gscene.autumn{--s1:#ffd3a0;--s2:#fff1dc;--g1:#e2b66a;--g2:#b9864a;--hill:#d9a25a;--sun:#ffb347}
 .gscene.winter{--s1:#d6e6f7;--s2:#f5fbff;--g1:#f7fcff;--g2:#dbe9f6;--hill:#eef7ff;--sun:#fff3c4}
-.gtop{position:relative}
-#land svg{display:block;width:100%;height:auto}
-#decor{position:absolute;inset:0;pointer-events:none}
-.sun{position:absolute;top:14px;right:18px;width:44px;height:44px;border-radius:50%;background:var(--sun);box-shadow:0 0 0 8px rgba(255,211,110,.28),0 0 26px rgba(255,211,110,.85)}
-.gscene.summer .sun{width:60px;height:60px;top:8px;right:14px;box-shadow:0 0 0 10px rgba(255,201,60,.25),0 0 30px rgba(255,201,60,.85)}
-.cloud{position:absolute;height:22px;width:74px;border-radius:20px;background:#fff;opacity:.95;animation:drift 22s ease-in-out infinite alternate}
-.cloud::before{content:'';position:absolute;width:30px;height:30px;border-radius:50%;background:#fff;left:12px;top:-14px}
-.cloud::after{content:'';position:absolute;width:24px;height:24px;border-radius:50%;background:#fff;left:38px;top:-10px}
-.cloud.c1{top:20px;left:12px}
-.cloud.c2{top:50px;left:150px;width:56px;animation-duration:30s}
-@keyframes drift{to{transform:translateX(18px)}}
-.hills{position:absolute;left:0;right:0;bottom:0;height:64px;background:radial-gradient(ellipse 150px 60px at 22% 100%,var(--hill) 97%,transparent 100%),radial-gradient(ellipse 170px 70px at 82% 100%,var(--hill) 97%,transparent 100%)}
-.fence{position:absolute;left:0;right:0;bottom:18px;height:34px;background:repeating-linear-gradient(90deg,#fff 0 12px,transparent 12px 26px)}
-.fence::before{content:'';position:absolute;left:0;right:0;top:9px;height:6px;background:#f2dcc4;box-shadow:0 12px 0 #f2dcc4}
-.house{position:absolute;right:12px;top:30px;width:132px;z-index:2}
-.lamp{position:absolute;left:43%;bottom:-6px;width:28px;z-index:2}
-.house svg,.lamp svg{display:block;width:100%;height:auto}
-.gbot{position:relative;min-height:150px;padding:8px 12px 18px}
-.path{position:absolute;left:50%;top:0;bottom:0;width:70px;margin-left:-35px;background:#f0d9a8;opacity:.55;clip-path:polygon(30% 0,70% 0,100% 100%,0 100%)}
-.plots{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.plot{position:relative;height:80px}
-.plot::before{content:'';position:absolute;left:6%;right:6%;bottom:0;height:24px;border-radius:50%;background:#c98f5a;box-shadow:inset 0 -5px 0 #a8703f}
-.plot.empty::before{background:#b98252;opacity:.5;box-shadow:none}
-.plant{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;animation:sway 3.4s ease-in-out infinite;transform-origin:50% 100%}
-.plant svg{width:64px;height:64px}
-.sprout{position:absolute;left:0;right:0;bottom:16px;text-align:center;font-size:22px;opacity:.75}
-@keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
-.pond-cell{grid-column:span 2;position:relative;height:84px}
-.water{position:absolute;left:2%;right:2%;top:6px;bottom:4px;border-radius:50%;background:radial-gradient(ellipse at 35% 35%,#d4f5ff 0%,#8fd8f7 50%,#5fb8e6 100%);box-shadow:0 0 0 6px #d9c3a0,0 0 0 8px #b8956a,0 8px 10px rgba(60,40,20,.2)}
-.water .lily{position:absolute;width:26px;height:12px;border-radius:50%;background:#6cc98c;box-shadow:inset 0 -2px 0 #4fa878}
-.water .l1{left:16%;top:46%}
-.water .l2{right:18%;top:28%;width:20px;height:10px;transform:rotate(15deg)}
-.water .ripple{position:absolute;left:30%;right:30%;top:36%;height:40%;border:2px solid rgba(255,255,255,.75);border-radius:50%;animation:ripple 3s ease-out infinite}
-@keyframes ripple{0%{transform:scale(.4);opacity:.9}100%{transform:scale(1.4);opacity:0}}
-#walkers{position:absolute;inset:0;pointer-events:none;z-index:2}
-.walker{position:absolute;left:-16%;animation:walk linear infinite}
-.walker svg{width:54px;height:54px;display:block;animation:bob .6s ease-in-out infinite alternate}
-/* spoločník zalieva kvet po správnej odpovedi */
-.waterer{position:absolute;z-index:4;pointer-events:none;transition:left 1.2s ease-in-out}
-.waterer svg{display:block;width:46px;height:50px}
-.waterer .can{position:absolute;right:-8px;top:-6px;font-size:20px;animation:pour 1.4s ease-in-out 1.3s 1 both}
-@keyframes pour{0%,100%{transform:rotate(0)}50%{transform:rotate(-40deg)}}
-.plot.grow svg{animation:growPop .9s ease-out}
-.spark{position:absolute;z-index:5;pointer-events:none;font-size:18px;animation:sparkUp 1.6s ease-out forwards}
-@keyframes sparkUp{0%{opacity:0;transform:translateY(8px) scale(.6)}40%{opacity:1}100%{opacity:0;transform:translateY(-20px) scale(1.1)}}
-/* krajina: stavby a doplnky na svojich miestach, nebo a dúha */
+#land svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+#decor{position:absolute;inset:0;z-index:1;pointer-events:none}
 #decor .bld{position:absolute}
-#decor .bld svg{width:100%!important;height:auto!important;display:block}
+#decor .bld svg,#decor .sky svg{display:block;width:100%!important;height:auto!important;overflow:visible}
 #decor .sky{position:absolute;animation:bob 3.4s ease-in-out infinite alternate}
-#decor .sky svg{width:100%!important;height:auto!important;display:block}
-#decor .rainbow{position:absolute;left:14%;top:0;width:34%;height:auto;opacity:.92}
-.pondb .pa{position:absolute;width:18%;animation:swim 6s ease-in-out infinite alternate}
-.pondb .pa svg{width:100%!important;height:auto!important;display:block}
-@keyframes swim{0%{transform:translateX(-8px)}100%{transform:translateX(8px)}}
-/* rastliny rastú: 0 semiačko, 1 malá, 2 stredná, 3 celá */
-.plant svg{transition:transform .9s ease;transform-origin:50% 100%}
+#album{position:absolute;inset:0;z-index:2;pointer-events:none}
+/* záhon: 112 × 82 jednotiek (celá záhrada je 1000 × 700) */
+.plot{position:absolute;width:11.2%;height:11.7%}
+.plant{position:absolute;left:0;right:0;bottom:6%;display:flex;justify-content:center;animation:sway 3.4s ease-in-out infinite;transform-origin:50% 100%}
+.plant svg{display:block;width:100%;height:auto;transition:transform .9s ease;transform-origin:50% 100%}
 .plant.g0 svg{transform:scale(.4)}
 .plant.g1 svg{transform:scale(.62)}
 .plant.g2 svg{transform:scale(.82)}
 .plant.g3 svg{transform:scale(1)}
+@keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+#walkers{position:absolute;inset:0;z-index:3;pointer-events:none}
+.walker{position:absolute;left:-16%;width:9%;animation:walk linear infinite}
+.walker svg{display:block;width:100%;height:auto;animation:bob .6s ease-in-out infinite alternate}
+/* animácie v krajine: oblaky, slnko, vlajka, fontána, vlnky, lampáš, hojdačka, sova */
+.cl{animation:cdrift 26s ease-in-out infinite alternate}
+.cl.c2{animation-duration:34s;animation-delay:-8s}
+@keyframes cdrift{from{transform:translateX(-26px)}to{transform:translateX(26px)}}
+.rays{transform-origin:500px 40px;animation:sunspin 50s linear infinite}
+@keyframes sunspin{to{transform:rotate(360deg)}}
+.flag{transform-box:fill-box;transform-origin:0 50%;animation:flag 2.4s ease-in-out infinite alternate}
+@keyframes flag{from{transform:skewY(-5deg)}to{transform:skewY(6deg)}}
+.jet{transform-box:fill-box;transform-origin:50% 100%;animation:jet 2.2s ease-in-out infinite alternate}
+.jet.j2{animation-delay:-.7s}
+.jet.j3{animation-delay:-1.4s}
+@keyframes jet{from{transform:scaleY(.7)}to{transform:scaleY(1.12)}}
+.rip{transform-box:fill-box;transform-origin:50% 50%;animation:ripple 3.2s ease-out infinite}
+.rip.r2{animation-delay:-1.6s}
+@keyframes ripple{0%{transform:scale(.4);opacity:.9}100%{transform:scale(1.5);opacity:0}}
+.glow{transform-box:fill-box;transform-origin:50% 50%;animation:glow 2.6s ease-in-out infinite alternate}
+@keyframes glow{from{opacity:.25}to{opacity:.7}}
+.swingseat{transform-origin:60px 26px;animation:rock 3.2s ease-in-out infinite alternate}
+@keyframes rock{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}
+.eyes{transform-box:fill-box;transform-origin:50% 50%;animation:blink 5s infinite}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.glint{animation:glint 4s ease-in-out infinite}
+.glint.b{animation-delay:-2s}
+@keyframes glint{0%,100%{opacity:.15}50%{opacity:.85}}
+/* spoločník zalieva kvet po správnej odpovedi */
+.waterer{position:absolute;z-index:5;pointer-events:none;transition:left 1.2s ease-in-out}
+.waterer svg{display:block;width:46px;height:50px}
+.waterer .can{position:absolute;right:-8px;top:-6px;font-size:20px;animation:pour 1.4s ease-in-out 1.3s 1 both}
+@keyframes pour{0%,100%{transform:rotate(0)}50%{transform:rotate(-40deg)}}
+.plot.grow svg{animation:growPop .9s ease-out}
+.spark{position:absolute;z-index:6;pointer-events:none;font-size:18px;animation:sparkUp 1.6s ease-out forwards}
+@keyframes sparkUp{0%{opacity:0;transform:translateY(8px) scale(.6)}40%{opacity:1}100%{opacity:0;transform:translateY(-20px) scale(1.1)}}
+/* jazierko v strede: rybka, žabka, korytnačka a labuť plávajú v ňom */
+.pondb .pa{position:absolute;animation:swim 6s ease-in-out infinite alternate}
+.pondb .pa svg{display:block;width:100%!important;height:auto!important}
+@keyframes swim{0%{transform:translateX(-8px)}100%{transform:translateX(8px)}}
 /* počítadlo: kytice (10 kvetov) a kvety (1) */
 .ct{display:flex;flex-direction:column;align-items:center;gap:8px;margin:4px 0}
 .ct-task{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px;min-height:40px;font-size:30px;font-weight:800;color:var(--ink)}
@@ -229,7 +223,7 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 @keyframes growPop{0%{transform:scale(.7)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
 @keyframes walk{from{left:-16%}to{left:104%}}
 @keyframes bob{to{transform:translateY(-4px)}}
-.fxl{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:3}
+.fxl{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:4}
 .p{position:absolute;top:-16px;width:10px;height:10px;animation:fallp linear infinite}
 .p.autumn{background:#e8873a;border-radius:0 60% 0 60%}
 .p.winter{background:#fff;border-radius:50%;box-shadow:0 0 4px #bfe6ff}
@@ -270,15 +264,10 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
       </div>
       <div class="label" data-t="myGarden"></div>
       <div class="gscene" id="scene">
-        <div class="gtop">
-          <div id="land"></div>
-          <div id="decor"></div>
-        </div>
-        <div class="gbot">
-          <div class="path"></div>
-          <div class="plots" id="album"></div>
-          <div id="walkers"></div>
-        </div>
+        <div id="land"></div>
+        <div id="decor"></div>
+        <div id="album"></div>
+        <div id="walkers"></div>
         <div class="fxl" id="fxl"></div>
       </div>
       <div class="tip" id="gardenCount"></div>
@@ -603,75 +592,146 @@ const ITEM_ART = {
   watermelon: `<path d="M14 56 Q60 118 106 56 Z" fill="#ff6b7e"/>
     <path d="M14 56 Q60 118 106 56" stroke="#4fae52" stroke-width="7" fill="none" stroke-linejoin="round"/>
     <circle cx="44" cy="78" r="2.2" fill="#2a1d1d"/><circle cx="60" cy="88" r="2.2" fill="#2a1d1d"/><circle cx="76" cy="78" r="2.2" fill="#2a1d1d"/><circle cx="52" cy="70" r="2" fill="#2a1d1d"/><circle cx="68" cy="70" r="2" fill="#2a1d1d"/>`,
-  // stavby a dekorácie v záhrade (kreslia sa v rovnakom priestore 120 × 120, zem je pri y = 116)
-  bench: `<ellipse cx="60" cy="116" rx="46" ry="4" fill="#000" opacity=".08"/>
-    <rect x="22" y="80" width="6" height="34" fill="#8a5a33"/><rect x="92" y="80" width="6" height="34" fill="#8a5a33"/>
-    <rect x="22" y="58" width="6" height="10" fill="#8a5a33"/><rect x="92" y="58" width="6" height="10" fill="#8a5a33"/>
-    <rect x="14" y="62" width="92" height="7" rx="3" fill="#d69a62"/><rect x="14" y="72" width="92" height="9" rx="3" fill="#c48d57"/>`,
-  lamp: `<ellipse cx="60" cy="116" rx="14" ry="3" fill="#000" opacity=".08"/>
-    <rect x="56" y="36" width="8" height="78" rx="3" fill="#8a6a5a"/>
-    <path d="M44 40 Q60 14 76 40 Z" fill="#ffe08a" stroke="#e8b84a" stroke-width="2"/>
-    <rect x="48" y="38" width="24" height="6" fill="#8a6a5a"/><rect x="46" y="110" width="28" height="6" rx="2" fill="#8a6a5a"/>
-    <circle cx="60" cy="26" r="4" fill="#ffd23c"/>`,
-  statue: `<ellipse cx="60" cy="116" rx="28" ry="4" fill="#000" opacity=".08"/>
-    <rect x="38" y="92" width="44" height="22" rx="3" fill="#d9d4c7" stroke="#bdb6a6" stroke-width="2"/>
-    <rect x="32" y="86" width="56" height="8" rx="3" fill="#e8e1d4" stroke="#bdb6a6" stroke-width="2"/>
-    <path d="M46 86 Q44 62 52 52 L68 52 Q76 62 74 86Z" fill="#f2efe8" stroke="#bdb6a6" stroke-width="2"/>
-    <circle cx="60" cy="40" r="10" fill="#f2efe8" stroke="#bdb6a6" stroke-width="2"/>
-    <path d="M46 60 Q36 50 40 40 M74 60 Q84 54 80 46" stroke="#f2efe8" stroke-width="6" fill="none" stroke-linecap="round"/>`,
-  fountain: `<ellipse cx="60" cy="112" rx="50" ry="8" fill="#cfe9f5" stroke="#9fb9c4" stroke-width="2"/>
-    <ellipse cx="60" cy="110" rx="42" ry="5" fill="#8fd3f5"/>
-    <rect x="54" y="66" width="12" height="44" fill="#d9d4c7" stroke="#bdb6a6" stroke-width="1.5"/>
-    <ellipse cx="60" cy="66" rx="20" ry="5" fill="#d9d4c7" stroke="#bdb6a6" stroke-width="1.5"/>
-    <path d="M60 56 Q50 40 40 50 M60 56 Q70 40 80 50 M60 56 L60 36" stroke="#8fd3f5" stroke-width="3" fill="none" stroke-linecap="round"/>`,
-  well: `<ellipse cx="60" cy="116" rx="30" ry="4" fill="#000" opacity=".08"/>
-    <rect x="30" y="82" width="60" height="32" rx="6" fill="#b7b1a4" stroke="#8f897c" stroke-width="2"/>
-    <ellipse cx="60" cy="82" rx="30" ry="7" fill="#9c978a" stroke="#8f897c" stroke-width="2"/>
-    <ellipse cx="60" cy="82" rx="20" ry="4" fill="#4a5a6a"/>
-    <rect x="26" y="38" width="5" height="46" fill="#8a5a33"/><rect x="89" y="38" width="5" height="46" fill="#8a5a33"/>
-    <path d="M16 42 L60 18 L104 42 Z" fill="#c0643c" stroke="#a04f2c" stroke-width="2" stroke-linejoin="round"/>
-    <line x1="60" y1="30" x2="60" y2="62" stroke="#8a5a33" stroke-width="3"/><rect x="54" y="60" width="12" height="9" rx="2" fill="#8a5a33"/>`,
-  gazebo: `<ellipse cx="60" cy="116" rx="46" ry="4" fill="#000" opacity=".08"/>
-    <rect x="18" y="104" width="84" height="8" rx="2" fill="#c8925a"/>
-    <rect x="24" y="60" width="6" height="46" fill="#a86a33"/><rect x="90" y="60" width="6" height="46" fill="#a86a33"/>
-    <rect x="24" y="90" width="72" height="4" fill="#d69a62"/>
-    <polygon points="60,10 100,40 92,50 28,50 20,40" fill="#d9783f" stroke="#b85f2c" stroke-width="2" stroke-linejoin="round"/>
-    <polygon points="60,4 66,14 54,14" fill="#ffd23c"/><rect x="22" y="48" width="76" height="6" fill="#b85f2c"/>`,
-  swing: `<ellipse cx="60" cy="116" rx="46" ry="4" fill="#000" opacity=".08"/>
-    <line x1="24" y1="112" x2="52" y2="30" stroke="#9c6b3e" stroke-width="5" stroke-linecap="round"/>
-    <line x1="96" y1="112" x2="68" y2="30" stroke="#9c6b3e" stroke-width="5" stroke-linecap="round"/>
-    <line x1="20" y1="30" x2="100" y2="30" stroke="#9c6b3e" stroke-width="6" stroke-linecap="round"/>
-    <line x1="50" y1="30" x2="48" y2="72" stroke="#6b4a2b" stroke-width="1.8"/><line x1="70" y1="30" x2="72" y2="72" stroke="#6b4a2b" stroke-width="1.8"/>
-    <rect x="44" y="72" width="32" height="6" rx="3" fill="#e0a85a"/>`,
-  birdhouse: `<ellipse cx="60" cy="116" rx="18" ry="3" fill="#000" opacity=".08"/>
-    <rect x="57" y="56" width="6" height="60" fill="#8a5a33"/>
-    <polygon points="60,18 88,40 32,40" fill="#c96a4a" stroke="#a04f2c" stroke-width="2" stroke-linejoin="round"/>
-    <rect x="36" y="40" width="48" height="34" rx="3" fill="#f2d7a8" stroke="#d9b888" stroke-width="2"/>
-    <circle cx="60" cy="56" r="6" fill="#5a3a22"/>`,
-  greenhouse: `<ellipse cx="60" cy="116" rx="52" ry="4" fill="#000" opacity=".08"/>
-    <rect x="8" y="66" width="104" height="48" rx="2" fill="#e6f8ff" stroke="#9fd0ee" stroke-width="2"/>
-    <polygon points="4,68 60,30 116,68" fill="#e6f8ff" stroke="#9fd0ee" stroke-width="2" stroke-linejoin="round"/>
-    <line x1="34" y1="66" x2="34" y2="114" stroke="#9fd0ee" stroke-width="2"/><line x1="60" y1="66" x2="60" y2="114" stroke="#9fd0ee" stroke-width="2"/><line x1="86" y1="66" x2="86" y2="114" stroke="#9fd0ee" stroke-width="2"/>
-    <line x1="8" y1="90" x2="112" y2="90" stroke="#9fd0ee" stroke-width="2"/>
-    <rect x="52" y="92" width="16" height="22" rx="2" fill="#9fd0ee" opacity=".8"/>`,
-  windmill: `<ellipse cx="60" cy="116" rx="24" ry="4" fill="#000" opacity=".08"/>
-    <polygon points="46,116 74,116 68,46 52,46" fill="#f2d7a8" stroke="#d9b888" stroke-width="2" stroke-linejoin="round"/>
-    <polygon points="48,46 72,46 60,26" fill="#c96a4a" stroke="#a04f2c" stroke-width="2" stroke-linejoin="round"/>
-    <g transform="translate(60 40)">
-      <rect x="-5" y="-36" width="10" height="36" rx="2" fill="#f7f1e6" stroke="#d9b888" stroke-width="1.5"/>
-      <rect x="-5" y="0" width="10" height="36" rx="2" fill="#f7f1e6" stroke="#d9b888" stroke-width="1.5"/>
-      <rect x="-36" y="-5" width="36" height="10" rx="2" fill="#f7f1e6" stroke="#d9b888" stroke-width="1.5"/>
-      <rect x="0" y="-5" width="36" height="10" rx="2" fill="#f7f1e6" stroke="#d9b888" stroke-width="1.5"/>
-    </g><circle cx="60" cy="40" r="5" fill="#8a5a33"/>`,
-  table: `<ellipse cx="60" cy="116" rx="46" ry="4" fill="#000" opacity=".08"/>
-    <rect x="56" y="62" width="8" height="50" fill="#8a5a33"/>
-    <ellipse cx="60" cy="60" rx="38" ry="8" fill="#d9a86a" stroke="#b5844a" stroke-width="2"/>
-    <ellipse cx="60" cy="112" rx="16" ry="4" fill="#8a5a33"/>
-    <rect x="8" y="78" width="28" height="5" rx="2" fill="#d9a86a"/><rect x="12" y="83" width="4" height="30" fill="#8a5a33"/><rect x="28" y="83" width="4" height="30" fill="#8a5a33"/>
-    <rect x="84" y="78" width="28" height="5" rx="2" fill="#d9a86a"/><rect x="88" y="83" width="4" height="30" fill="#8a5a33"/><rect x="104" y="83" width="4" height="30" fill="#8a5a33"/>`,
-  pond: `<ellipse cx="60" cy="72" rx="56" ry="36" fill="#c9b08a" stroke="#a8906a" stroke-width="3"/>
-    <ellipse cx="60" cy="72" rx="48" ry="29" fill="#8fd3f5" stroke="#5fb8e6" stroke-width="2"/>
-    <ellipse cx="40" cy="78" rx="9" ry="4" fill="#6cc98c"/><ellipse cx="82" cy="66" rx="7" ry="3" fill="#6cc98c"/>`,
+  // stavby a dekorácie v záhrade: nakreslené v rámci 120 × 120, zem je pri y = 116
+  bench: `<ellipse cx="60" cy="116" rx="46" ry="4" fill="#000" opacity=".1"/>
+    <path d="M24 116 V96 M96 116 V96" stroke="#3b4a52" stroke-width="5" stroke-linecap="round"/>
+    <path d="M24 88 V66 M96 88 V66" stroke="#3b4a52" stroke-width="5" stroke-linecap="round"/>
+    <rect x="16" y="86" width="88" height="7" rx="3" fill="#d69a62" stroke="#a8703f" stroke-width="1.5"/>
+    <rect x="16" y="95" width="88" height="6" rx="3" fill="#c98a4b" stroke="#a8703f" stroke-width="1.5"/>
+    <rect x="16" y="60" width="88" height="7" rx="3" fill="#d69a62" stroke="#a8703f" stroke-width="1.5"/>
+    <rect x="16" y="70" width="88" height="6" rx="3" fill="#c98a4b" stroke="#a8703f" stroke-width="1.5"/>`,
+  lamp: `<ellipse cx="60" cy="116" rx="16" ry="3" fill="#000" opacity=".1"/>
+    <path d="M48 116 Q50 104 56 100 H64 Q70 104 72 116Z" fill="#5a6a72"/>
+    <rect x="57" y="38" width="6" height="64" fill="#3b4a52"/>
+    <circle class="glow" cx="60" cy="28" r="22" fill="#ffe89a"/>
+    <rect x="48" y="26" width="24" height="22" rx="3" fill="#fff6d6" stroke="#3b4a52" stroke-width="2"/>
+    <path d="M42 27 L60 10 L78 27 Z" fill="#3b4a52"/>
+    <circle cx="60" cy="9" r="3" fill="#ffd23c"/>
+    <rect x="46" y="46" width="28" height="4" rx="2" fill="#3b4a52"/>`,
+  statue: `<ellipse cx="60" cy="116" rx="28" ry="4" fill="#000" opacity=".1"/>
+    <rect x="34" y="106" width="52" height="10" rx="2" fill="#e9e3d6" stroke="#b9b1a0" stroke-width="1.5"/>
+    <rect x="40" y="95" width="40" height="12" fill="#f1ece1" stroke="#b9b1a0" stroke-width="1.5"/>
+    <path d="M50 95 Q44 80 50 64 Q52 58 60 57 Q68 58 70 64 Q76 80 70 95Z" fill="#fbf8f2" stroke="#b9b1a0" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M56 61 Q60 67 64 61" fill="none" stroke="#b9b1a0" stroke-width="1.2"/>
+    <path d="M51 70 Q44 78 46 86" stroke="#fbf8f2" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path d="M69 70 Q78 74 80 84" stroke="#fbf8f2" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <ellipse cx="82" cy="90" rx="8" ry="6" fill="#d9d2c2" stroke="#b9b1a0" stroke-width="1.5"/>
+    <circle cx="60" cy="48" r="9" fill="#fbf8f2" stroke="#b9b1a0" stroke-width="1.5"/>
+    <path d="M50 46 Q50 36 60 36 Q70 36 70 46 Q66 42 60 42 Q54 42 50 46Z" fill="#d9d2c2"/>`,
+  fountain: `<ellipse cx="60" cy="114" rx="54" ry="8" fill="#d9cfb8" stroke="#a89d86" stroke-width="2"/>
+    <ellipse cx="60" cy="112" rx="46" ry="6" fill="#7fd0f2" stroke="#4fa6d6" stroke-width="1.5"/>
+    <rect x="55" y="72" width="10" height="40" fill="#f1ece1" stroke="#b9b1a0" stroke-width="1.5"/>
+    <ellipse cx="60" cy="72" rx="20" ry="5" fill="#f1ece1" stroke="#b9b1a0" stroke-width="1.5"/>
+    <ellipse cx="60" cy="70" rx="15" ry="3.5" fill="#7fd0f2"/>
+    <path class="jet" d="M60 68 Q60 52 60 40" stroke="#9fe0f7" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <path class="jet j2" d="M60 68 Q50 60 40 62" stroke="#9fe0f7" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path class="jet j3" d="M60 68 Q70 60 80 62" stroke="#9fe0f7" stroke-width="3" fill="none" stroke-linecap="round"/>`,
+  well: `<ellipse cx="60" cy="116" rx="34" ry="4" fill="#000" opacity=".1"/>
+    <rect x="30" y="74" width="60" height="42" rx="5" fill="#c9c3b5" stroke="#9c968a" stroke-width="2"/>
+    <path d="M36 84 H50 M56 84 H70 M74 84 H84 M36 98 H48 M54 98 H70 M76 98 H84 M40 108 H56 M62 108 H80" stroke="#9c968a" stroke-width="1.5" stroke-linecap="round"/>
+    <ellipse cx="60" cy="74" rx="30" ry="7" fill="#b9b1a0" stroke="#8f897c" stroke-width="2"/>
+    <ellipse cx="60" cy="74" rx="22" ry="4.5" fill="#3f6a86"/>
+    <rect x="25" y="40" width="6" height="36" fill="#8a5a33"/><rect x="89" y="40" width="6" height="36" fill="#8a5a33"/>
+    <path d="M14 46 L60 18 L106 46 Z" fill="#c0643c" stroke="#a04f2c" stroke-width="2" stroke-linejoin="round"/>
+    <line x1="60" y1="30" x2="60" y2="60" stroke="#8a5a33" stroke-width="3"/>
+    <path d="M52 60 H68 L65 70 H55 Z" fill="#8fb8e8" stroke="#5f8fc8" stroke-width="1.5"/>`,
+  gazebo: `<ellipse cx="60" cy="116" rx="50" ry="4" fill="#000" opacity=".1"/>
+    <rect x="14" y="104" width="92" height="9" rx="3" fill="#e4d2b0" stroke="#c9b69a" stroke-width="1.5"/>
+    <rect x="20" y="54" width="6" height="50" fill="#fbf8f2" stroke="#c9b69a" stroke-width="1.2"/>
+    <rect x="46" y="54" width="5" height="50" fill="#fbf8f2" stroke="#c9b69a" stroke-width="1.2"/>
+    <rect x="69" y="54" width="5" height="50" fill="#fbf8f2" stroke="#c9b69a" stroke-width="1.2"/>
+    <rect x="94" y="54" width="6" height="50" fill="#fbf8f2" stroke="#c9b69a" stroke-width="1.2"/>
+    <path d="M26 92 H42 M51 92 H64 M74 92 H88" stroke="#fbf8f2" stroke-width="6" stroke-linecap="round"/>
+    <polygon points="60,10 100,36 96,46 24,46 20,36" fill="#7fb8c8" stroke="#5a96a8" stroke-width="2" stroke-linejoin="round"/>
+    <rect x="16" y="44" width="88" height="6" rx="2" fill="#5a96a8"/>
+    <polygon points="60,2 65,10 55,10" fill="#ffd23c"/>`,
+  swing: `<ellipse cx="60" cy="116" rx="48" ry="4" fill="#000" opacity=".1"/>
+    <line x1="18" y1="114" x2="54" y2="26" stroke="#9c6b3e" stroke-width="5" stroke-linecap="round"/>
+    <line x1="102" y1="114" x2="66" y2="26" stroke="#9c6b3e" stroke-width="5" stroke-linecap="round"/>
+    <line x1="14" y1="26" x2="106" y2="26" stroke="#b47a4a" stroke-width="6" stroke-linecap="round"/>
+    <g class="swingseat">
+      <line x1="46" y1="27" x2="44" y2="72" stroke="#6b4a2b" stroke-width="1.8"/>
+      <line x1="74" y1="27" x2="76" y2="72" stroke="#6b4a2b" stroke-width="1.8"/>
+      <rect x="36" y="72" width="48" height="8" rx="4" fill="#e0a85a" stroke="#b8803a" stroke-width="1.5"/>
+    </g>`,
+  birdhouse: `<ellipse cx="60" cy="116" rx="18" ry="3" fill="#000" opacity=".1"/>
+    <rect x="56" y="58" width="8" height="58" fill="#8a5a33"/>
+    <rect x="48" y="112" width="24" height="5" rx="2" fill="#8a5a33"/>
+    <path d="M60 14 L94 40 L26 40 Z" fill="#c96a4a" stroke="#a04f2c" stroke-width="2" stroke-linejoin="round"/>
+    <rect x="34" y="38" width="52" height="38" rx="4" fill="#f5deb0" stroke="#d9b888" stroke-width="2"/>
+    <rect x="30" y="34" width="60" height="6" rx="3" fill="#a04f2c"/>
+    <circle cx="60" cy="56" r="7" fill="#5a3a22"/>
+    <path d="M52 74 H68" stroke="#8a5a33" stroke-width="3" stroke-linecap="round"/>`,
+  greenhouse: `<ellipse cx="80" cy="107" rx="76" ry="3.5" fill="#000" opacity=".1"/>
+    <rect x="10" y="58" width="140" height="48" rx="2" fill="#e8fbff" stroke="#8fc8e6" stroke-width="2"/>
+    <path d="M10 60 L80 16 L150 60 Z" fill="#dff6ff" stroke="#8fc8e6" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M30 58 V106 M50 58 V106 M70 58 V106 M90 58 V106 M110 58 V106 M130 58 V106 M10 82 H150" stroke="#9fd0ee" stroke-width="2"/>
+    <path d="M80 16 V60 M80 16 L40 60 M80 16 L120 60" stroke="#9fd0ee" stroke-width="2"/>
+    <circle cx="20" cy="96" r="6" fill="#7bd389" opacity=".8"/><circle cx="140" cy="96" r="6" fill="#7bd389" opacity=".8"/>
+    <rect x="74" y="84" width="12" height="22" rx="2" fill="#9fd0ee" opacity=".9"/>
+    <path class="glint" d="M22 62 L32 62 L24 102 L16 102Z" fill="#ffffff" opacity=".6"/>
+    <path class="glint b" d="M118 62 L128 62 L120 102 L112 102Z" fill="#ffffff" opacity=".6"/>`,
+  windmill: `<ellipse cx="60" cy="146" rx="26" ry="4" fill="#000" opacity=".1"/>
+    <path d="M42 146 L50 64 L70 64 L78 146Z" fill="#f4e6c8" stroke="#c9ad7a" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M47 118 H73 M48 100 H72 M49 84 H71" stroke="#c9ad7a" stroke-width="1.5"/>
+    <path d="M54 146 V134 Q60 127 66 134 V146Z" fill="#8a5a33"/>
+    <rect x="56" y="98" width="8" height="10" rx="1" fill="#9fd0ee"/>
+    <path d="M38 66 Q60 22 82 66 Z" fill="#c96a4a" stroke="#a04f2c" stroke-width="2" stroke-linejoin="round"/>
+    <g transform="translate(60 54)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="9s" repeatCount="indefinite"/>
+        ${[0, 90, 180, 270].map(r => `<g transform="rotate(${r})"><rect x="-6" y="-42" width="12" height="38" rx="2" fill="#fbf6ea" stroke="#c9ad7a" stroke-width="1.2"/><path d="M-6 -34 H6 M-6 -26 H6 M-6 -18 H6" stroke="#d9b888"/></g>`).join('')}
+      </g>
+      <circle r="5" fill="#8a5a33"/>
+    </g>`,
+  table: `<ellipse cx="60" cy="116" rx="50" ry="4" fill="#000" opacity=".1"/>
+    <rect x="8" y="64" width="6" height="34" rx="3" fill="#c98a4b"/><rect x="8" y="90" width="26" height="6" rx="3" fill="#d69a62"/>
+    <rect x="10" y="96" width="4" height="20" fill="#8a5a33"/><rect x="28" y="96" width="4" height="20" fill="#8a5a33"/>
+    <rect x="106" y="64" width="6" height="34" rx="3" fill="#c98a4b"/><rect x="86" y="90" width="26" height="6" rx="3" fill="#d69a62"/>
+    <rect x="88" y="96" width="4" height="20" fill="#8a5a33"/><rect x="106" y="96" width="4" height="20" fill="#8a5a33"/>
+    <rect x="57" y="86" width="6" height="28" fill="#8a5a33"/>
+    <ellipse cx="60" cy="84" rx="34" ry="8" fill="#d9a86a" stroke="#b5844a" stroke-width="2"/>
+    <ellipse cx="60" cy="114" rx="14" ry="3.5" fill="#8a5a33"/>
+    <path d="M54 80 Q54 72 60 72 Q66 72 66 80 Z" fill="#9fd0ee" stroke="#6fb0d8" stroke-width="1"/>
+    <circle cx="56" cy="68" r="4" fill="#ff8fbf"/><circle cx="64" cy="66" r="4" fill="#ffd23c"/><circle cx="60" cy="61" r="3.5" fill="#ffffff"/>`,
+  pond: `<defs><radialGradient id="gPondW" cx=".4" cy=".35" r=".75"><stop offset="0" stop-color="#eaffff"/><stop offset=".55" stop-color="#8fd8f7"/><stop offset="1" stop-color="#4fb0e0"/></radialGradient></defs>
+    <ellipse cx="80" cy="52" rx="78" ry="42" fill="#d9c7a0" stroke="#b8a27a" stroke-width="3"/>
+    <ellipse cx="80" cy="52" rx="66" ry="34" fill="url(#gPondW)" stroke="#4fa6d6" stroke-width="2"/>
+    ${[[20, 50], [36, 80], [126, 64], [140, 40], [100, 84], [22, 30]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="3.5" fill="#b8a27a"/>`).join('')}
+    <ellipse class="rip" cx="80" cy="52" rx="34" ry="14" fill="none" stroke="#ffffff" stroke-width="2" opacity=".7"/>
+    <ellipse class="rip r2" cx="80" cy="52" rx="34" ry="14" fill="none" stroke="#ffffff" stroke-width="2" opacity=".7"/>
+    <ellipse cx="50" cy="62" rx="9" ry="4" fill="#6cc98c"/><ellipse cx="112" cy="46" rx="8" ry="3.5" fill="#6cc98c"/>`,
+  // nové zvieratká v záhrade: chodia po chodníkoch a nelietajú
+  krtko: `<ellipse cx="60" cy="112" rx="40" ry="5" fill="#000" opacity=".1"/>
+    <ellipse cx="60" cy="80" rx="38" ry="30" fill="#8c6f62" stroke="#6e5448" stroke-width="2"/>
+    <ellipse cx="60" cy="50" rx="26" ry="23" fill="#9c7e70" stroke="#6e5448" stroke-width="2"/>
+    <g class="eyes"><circle cx="49" cy="46" r="2.6" fill="#3b2a5a"/><circle cx="71" cy="46" r="2.6" fill="#3b2a5a"/></g>
+    <ellipse cx="60" cy="63" rx="11" ry="8" fill="#ffb3c7" stroke="#e58aa5" stroke-width="1.5"/>
+    <circle cx="56" cy="63" r="1.6" fill="#e58aa5"/><circle cx="64" cy="63" r="1.6" fill="#e58aa5"/>
+    <ellipse cx="30" cy="102" rx="13" ry="9" fill="#ffb3c7" stroke="#e58aa5" stroke-width="1.5"/>
+    <ellipse cx="90" cy="102" rx="13" ry="9" fill="#ffb3c7" stroke="#e58aa5" stroke-width="1.5"/>`,
+  slimak: `<ellipse cx="60" cy="110" rx="52" ry="5" fill="#000" opacity=".1"/>
+    <path d="M30 98 Q26 84 44 82 L94 82 Q106 84 106 98 Z" fill="#f2e3b5" stroke="#d6bf8a" stroke-width="2" stroke-linejoin="round"/>
+    <line x1="92" y1="84" x2="98" y2="60" stroke="#d6bf8a" stroke-width="3" stroke-linecap="round"/>
+    <line x1="100" y1="84" x2="108" y2="62" stroke="#d6bf8a" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="98" cy="58" r="5" fill="#fff" stroke="#d6bf8a" stroke-width="1.5"/>
+    <circle cx="108" cy="60" r="5" fill="#fff" stroke="#d6bf8a" stroke-width="1.5"/>
+    <circle cx="99" cy="59" r="2.2" fill="#3b2a5a"/><circle cx="109" cy="61" r="2.2" fill="#3b2a5a"/>
+    <path d="M98 92 Q104 96 110 92" stroke="#3b2a5a" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="48" cy="66" r="26" fill="#d9a066" stroke="#a8703f" stroke-width="2.5"/>
+    <circle cx="48" cy="66" r="17" fill="none" stroke="#b97f4b" stroke-width="2.5"/>
+    <circle cx="48" cy="66" r="9" fill="none" stroke="#b97f4b" stroke-width="2.5"/>
+    <circle cx="48" cy="66" r="3" fill="#a8703f"/>`,
+  ovecka: `<ellipse cx="60" cy="116" rx="46" ry="4" fill="#000" opacity=".1"/>
+    <rect x="34" y="92" width="6" height="22" rx="3" fill="#6b5a6e"/><rect x="48" y="94" width="6" height="20" rx="3" fill="#6b5a6e"/>
+    <rect x="66" y="94" width="6" height="20" rx="3" fill="#6b5a6e"/><rect x="80" y="92" width="6" height="22" rx="3" fill="#6b5a6e"/>
+    <g fill="#ffffff" stroke="#e2dbe8" stroke-width="1.5">
+      <circle cx="38" cy="72" r="15"/><circle cx="58" cy="62" r="18"/><circle cx="78" cy="72" r="15"/>
+      <circle cx="56" cy="82" r="16"/><circle cx="34" cy="84" r="10"/><circle cx="74" cy="84" r="10"/>
+    </g>
+    <ellipse cx="96" cy="62" rx="14" ry="13" fill="#6b5a6e"/>
+    <ellipse cx="84" cy="54" rx="6" ry="3.5" fill="#6b5a6e" transform="rotate(-20 84 54)"/>
+    <g transform="translate(36 0)">${face(60, 6)}</g>`,
   // nebo (na oblohe)
   kite: `<path d="M60 14 L84 42 L60 70 L36 42 Z" fill="#ff6b9d" stroke="#e0507a" stroke-width="2" stroke-linejoin="round"/>
     <path d="M60 14 L60 70 M36 42 L84 42" stroke="#fff" stroke-width="3"/>
@@ -765,9 +825,9 @@ const ITEM_ART = {
   owl: `<polygon points="36,40 40,18 52,36" fill="#b98a5e"/><polygon points="84,40 80,18 68,36" fill="#b98a5e"/>
     <ellipse cx="60" cy="70" rx="34" ry="38" fill="#b98a5e" stroke="#9a6e46" stroke-width="2"/>
     <ellipse cx="60" cy="84" rx="22" ry="22" fill="#f2dcc4"/>
-    <circle cx="46" cy="56" r="13" fill="#fff" stroke="#9a6e46" stroke-width="2"/><circle cx="74" cy="56" r="13" fill="#fff" stroke="#9a6e46" stroke-width="2"/>
+    <g class="eyes"><circle cx="46" cy="56" r="13" fill="#fff" stroke="#9a6e46" stroke-width="2"/><circle cx="74" cy="56" r="13" fill="#fff" stroke="#9a6e46" stroke-width="2"/>
     <circle cx="48" cy="57" r="6" fill="#3b2a5a"/><circle cx="72" cy="57" r="6" fill="#3b2a5a"/>
-    <circle cx="50" cy="55" r="2" fill="#fff"/><circle cx="74" cy="55" r="2" fill="#fff"/>
+    <circle cx="50" cy="55" r="2" fill="#fff"/><circle cx="74" cy="55" r="2" fill="#fff"/></g>
     <polygon points="56,66 64,66 60,74" fill="#ffb347"/>`,
   penguin: `<ellipse cx="60" cy="72" rx="34" ry="38" fill="#3b3f5c"/>
     <ellipse cx="60" cy="80" rx="22" ry="26" fill="#fff"/>
@@ -782,18 +842,6 @@ const ITEM_ART = {
     <circle cx="70" cy="38" r="12" fill="#ffb8d9" stroke="#f08fbb" stroke-width="2"/>
     <path d="M80 40 L100 46 L80 48Z" fill="#ff7a9c"/>
     <circle cx="74" cy="36" r="2.5" fill="#3b2a5a"/>`,
-  bee: `<ellipse cx="46" cy="36" rx="14" ry="10" fill="#e6f7ff" stroke="#bfe0f5" stroke-width="1.5"/>
-    <ellipse cx="74" cy="36" rx="14" ry="10" fill="#e6f7ff" stroke="#bfe0f5" stroke-width="1.5"/>
-    <ellipse cx="60" cy="72" rx="34" ry="26" fill="#ffd23c" stroke="#e8b400" stroke-width="2"/>
-    <path d="M44 54 L44 90 M60 50 L60 94 M76 54 L76 90" stroke="#3b2a5a" stroke-width="6" opacity=".7"/>
-    ${face(66, 12)}`,
-  ladybug: `<circle cx="60" cy="74" r="32" fill="#ff6b6b" stroke="#d94a4a" stroke-width="2"/>
-    <path d="M60 42 L60 106" stroke="#3b2a5a" stroke-width="3"/>
-    <circle cx="48" cy="64" r="6" fill="#3b2a5a"/><circle cx="74" cy="64" r="6" fill="#3b2a5a"/>
-    <circle cx="46" cy="88" r="5" fill="#3b2a5a"/><circle cx="76" cy="90" r="5" fill="#3b2a5a"/>
-    <circle cx="60" cy="40" r="14" fill="#3b2a5a"/>
-    <circle cx="55" cy="38" r="3" fill="#fff"/><circle cx="65" cy="38" r="3" fill="#fff"/>
-    <path d="M52 46 Q60 50 68 46" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>`,
   fish: `<polygon points="88,64 112,44 112,84" fill="#ff9e8f" stroke="#e87a6a" stroke-width="2"/>
     <ellipse cx="56" cy="64" rx="36" ry="26" fill="#ff9e8f" stroke="#e87a6a" stroke-width="2"/>
     <polygon points="50,40 58,26 66,42" fill="#ff9e8f" stroke="#e87a6a" stroke-width="2"/>
@@ -973,13 +1021,6 @@ const ITEM_ART = {
     <polygon points="44,64 30,84 44,84" fill="#ff6b9a"/><polygon points="76,64 90,84 76,84" fill="#ff6b9a"/>
     <path d="M50 84 Q60 112 70 84Z" fill="#ffb347"/>
     <path d="M55 84 Q60 102 65 84Z" fill="#ffd23c"/>`,
-  butterfly: `<ellipse cx="36" cy="46" rx="26" ry="22" fill="#ff8fbf" stroke="#e86a98" stroke-width="2"/>
-    <ellipse cx="84" cy="46" rx="26" ry="22" fill="#ff8fbf" stroke="#e86a98" stroke-width="2"/>
-    <ellipse cx="40" cy="82" rx="18" ry="14" fill="#b38cff" stroke="#8a5ad8" stroke-width="2"/>
-    <ellipse cx="80" cy="82" rx="18" ry="14" fill="#b38cff" stroke="#8a5ad8" stroke-width="2"/>
-    <ellipse cx="60" cy="66" rx="6" ry="30" fill="#3b2a5a"/>
-    <circle cx="36" cy="46" r="6" fill="#fff6c9"/><circle cx="84" cy="46" r="6" fill="#fff6c9"/>
-    <path d="M56 36 Q52 24 46 22 M64 36 Q68 24 74 22" stroke="#3b2a5a" stroke-width="2.5" fill="none" stroke-linecap="round"/>`,
   star: `<polygon points="60,8 72,42 108,44 80,64 90,100 60,80 30,100 40,64 12,44 48,42" fill="#ffd23c" stroke="#e8b400" stroke-width="3" stroke-linejoin="round"/>${face(58, 9)}`,
   rose: `<path d="M60 116 L60 76" stroke="#4fa878" stroke-width="5" stroke-linecap="round"/>
     <ellipse cx="46" cy="98" rx="11" ry="5" fill="#6cc98c" transform="rotate(-25 46 98)"/>
@@ -1001,9 +1042,13 @@ const ITEM_ART = {
     <circle cx="60" cy="16" r="3" fill="#ff6b9a"/>
     ${face(46, 10)}`,
 };
+// obrázky, ktoré nie sú štvorcové (šírka × výška v jednotkách viewBox)
+const ITEM_VB = { windmill: '0 0 120 150', greenhouse: '0 0 160 110', pond: '0 0 160 96' };
 function itemSVG(id, size = 56) {
   if (LIMB_COLOR[id]) return mascotSVG(id, size);   // zvieratká chodiace po záhrade majú tiež ruky a nohy
-  return `<svg viewBox="0 0 120 120" width="${size}" height="${size}" aria-hidden="true">${ITEM_ART[id] || ''}</svg>`;
+  const vb = ITEM_VB[id] || '0 0 120 120';
+  const [, , vw, vh] = vb.split(' ').map(Number);
+  return `<svg viewBox="${vb}" width="${size}" height="${Math.round(size * vh / vw)}" aria-hidden="true">${ITEM_ART[id] || ''}</svg>`;
 }
 
 /* zvieratká – meno v oboch jazykoch */
@@ -1041,10 +1086,10 @@ const STICKERS = [
   { id: 'pumpkin',    e: '🎃', name: 'Tekvica',         tier: 1 },
   { id: 'corn',       e: '🌽', name: 'Kukurica',        tier: 1 },
   { id: 'watermelon', e: '🍉', name: 'Melón',           tier: 1 },
-  // 2 zvieratká (pomocníci; žabka, korytnačka, rybka a labuť žijú v jazierku)
-  { id: 'bee',        e: '🐝', name: 'Včielka',         tier: 2 },
-  { id: 'butterfly',  e: '🦋', name: 'Motýľ',           tier: 2 },
-  { id: 'ladybug',    e: '🐞', name: 'Lienka',          tier: 2 },
+  // 2 zvieratká (pomocníci v záhrade; žabka, korytnačka, rybka a labuť žijú v jazierku)
+  { id: 'krtko',      e: '🐾', name: 'Krtko',           tier: 2 },
+  { id: 'slimak',     e: '🐌', name: 'Slimák',          tier: 2 },
+  { id: 'ovecka',     e: '🐑', name: 'Ovečka',          tier: 2 },
   { id: 'hedgehog',   e: '🦔', name: 'Ježko',           tier: 2 },
   { id: 'squirrel',   e: '🐿️', name: 'Veverička',       tier: 2 },
   { id: 'owl',        e: '🦉', name: 'Sova',            tier: 2 },
@@ -1080,7 +1125,7 @@ STICKERS.forEach((s, i) => { s.price = TIER_PRICE[s.tier] + (i % 3) * 5; });
 const EN_NAME = {
   tulip: 'Tulip', sunflower: 'Sunflower', rose: 'Rose', daisy: 'Daisy', poppy: 'Poppy', lavender: 'Lavender',
   strawberry: 'Strawberry', carrot: 'Carrot', tomato: 'Tomato', pumpkin: 'Pumpkin', corn: 'Corn', watermelon: 'Watermelon',
-  bee: 'Bee', butterfly: 'Butterfly', ladybug: 'Ladybug', hedgehog: 'Hedgehog', squirrel: 'Squirrel', owl: 'Owl', cat: 'Cat',
+  krtko: 'Mole', slimak: 'Snail', ovecka: 'Sheep', hedgehog: 'Hedgehog', squirrel: 'Squirrel', owl: 'Owl', cat: 'Cat',
   frog: 'Frog', turtle: 'Turtle', fish: 'Fish', swan: 'Swan',
   bench: 'Bench', lamp: 'Lamp', statue: 'Statue', fountain: 'Fountain', well: 'Well', gazebo: 'Gazebo', swing: 'Swing',
   birdhouse: 'Birdhouse', greenhouse: 'Greenhouse', windmill: 'Windmill', table: 'Table and chairs', pond: 'Pond',
@@ -1100,10 +1145,11 @@ function defaults() {
 }
 // staré zvieratká v záhrade, ktoré sa nahradili novými (aby sa nikomu nestratili kúpené odmeny)
 const OLD_STICKER = {
-  puppy: 'hedgehog', bunny: 'frog', fox: 'squirrel', unicorn: 'bee', saturn: 'jupiter', rainbow: 'fountain', castle: 'fountain',
+  puppy: 'hedgehog', bunny: 'frog', fox: 'squirrel', unicorn: 'ovecka', saturn: 'jupiter', rainbow: 'fountain', castle: 'fountain',
+  bee: 'ovecka', butterfly: 'slimak', ladybug: 'krtko',   // odstránené včielka, motýľ a lienka: dostanú nových pomocníkov
   flower: 'daisy', clover: 'lavender', cactus: 'corn', mushroom: 'carrot', tree: 'tomato', icecream: 'watermelon', cake: 'pumpkin',
   cupcake: 'strawberry', balloon: 'hotair', gift: 'bench', palette: 'table', guitar: 'swing', bike: 'birdhouse', cup: 'well',
-  medal: 'statue', star: 'galaxy', parrot: 'bee', panda: 'hedgehog', koala: 'owl', penguin: 'frog', dolphin: 'fish', whale: 'pond',
+  medal: 'statue', star: 'galaxy', parrot: 'krtko', panda: 'hedgehog', koala: 'owl', penguin: 'frog', dolphin: 'fish', whale: 'pond',
   trex: 'bench', elephant: 'statue', giraffe: 'swing', lion: 'statue', tiger: 'lamp', flamingo: 'swan', sun: 'moon',
   helicopter: 'kite', circus: 'gazebo', island: 'pond', ufo: 'comet', crown: 'hotair', fairy: 'kite', princess: 'galaxy',
   diamond: 'comet', ring: 'moon', dress: 'kite', shoes: 'hotair', crystal: 'galaxy', mermaid: 'jupiter', rocket: 'kite',
@@ -1756,54 +1802,110 @@ function endRound() {
 
 /* ====== ZÁHRADA – SCÉNA ====== */
 const SEASON_KEYS = ['spring', 'summer', 'autumn', 'winter'];
-/* krajina za plotom: obloha, kopce, les, plot, dom a zem; objekty sa kladú na svoje miesta (SLOT) */
+/* zámocká záhrada: pevný pôdorys 1000 × 700 – x = stred, b = zem (dole), y = stred na oblohe, w = šírka */
+const GW = 1000, GH = 700;
 const POND_ANIMALS = ['frog', 'turtle', 'fish', 'swan'];
-const POND_POS = { fish: 'left:30%;top:50%', swan: 'left:56%;top:30%;width:30%', frog: 'left:14%;top:26%;width:14%', turtle: 'left:70%;top:58%;width:16%' };
-// miesta v krajine (súradnice 640 × 200): x = ľavý okraj, w = šírka, b = zem (dole), t = vrch (nebo)
-const SLOT = {
-  windmill: { x: 300, b: 150, w: 60 }, gazebo: { x: 110, b: 162, w: 130 }, greenhouse: { x: 320, b: 178, w: 110 },
-  birdhouse: { x: 236, b: 178, w: 36 }, well: { x: 356, b: 200, w: 50 }, statue: { x: 306, b: 204, w: 46 },
-  fountain: { x: 222, b: 208, w: 80 }, swing: { x: 4, b: 200, w: 90 }, pond: { x: 98, b: 214, w: 120 },
-  bench: { x: 412, b: 208, w: 58 }, table: { x: 480, b: 212, w: 60 }, lamp: { x: 580, b: 214, w: 26 },
-  moon: { x: 12, t: 10, w: 56 }, kite: { x: 110, t: 40, w: 48 }, hotair: { x: 190, t: 6, w: 56 },
-  comet: { x: 280, t: 22, w: 80 }, jupiter: { x: 380, t: 6, w: 56 }, galaxy: { x: 460, t: 30, w: 70 },
+const POND_POS = { fish: 'left:22%;top:44%;width:20%', swan: 'left:56%;top:12%;width:26%', frog: 'left:12%;top:24%;width:15%', turtle: 'left:66%;top:48%;width:18%' };
+// 12 záhonov (stred x, stred y): vľavo zelenina a ovocie, vpravo kvety; každá rastlina má svoje miesto
+const BEDS = {
+  carrot: [226, 441], tomato: [350, 441], pumpkin: [226, 535], corn: [350, 535], watermelon: [226, 629], strawberry: [350, 629],
+  tulip: [650, 441], sunflower: [774, 441], rose: [650, 535], daisy: [774, 535], poppy: [650, 629], lavender: [774, 629],
 };
+// stavby na pevných miestach (c = stred, b = zem, w = šírka); oblohu: c = stred, y = stred, w = šírka
+const SLOT = {
+  windmill: { c: 56, b: 300, w: 100 }, greenhouse: { c: 884, b: 318, w: 180 },
+  gazebo: { c: 84, b: 470, w: 150 }, birdhouse: { c: 84, b: 600, w: 90 }, bench: { c: 84, b: 690, w: 110 },
+  swing: { c: 905, b: 470, w: 130 }, well: { c: 880, b: 600, w: 90 }, table: { c: 920, b: 690, w: 110 },
+  statue: { c: 300, b: 352, w: 110 }, lamp: { c: 700, b: 352, w: 100 },
+  fountain: { c: 500, b: 690, w: 150 }, pond: { c: 500, b: 472, w: 170 },
+  jupiter: { c: 60, y: 60, w: 84 }, moon: { c: 175, y: 70, w: 74 }, kite: { c: 170, y: 190, w: 96 },
+  comet: { c: 900, y: 52, w: 96 }, hotair: { c: 800, y: 124, w: 84 }, galaxy: { c: 930, y: 140, w: 96 },
+};
+const OWL_SLOT = { c: 500, b: 152, w: 64 };   // sova sedí na balkóne centrálnej veže
+// chodci: pruh (výška zeme) a čas jedného prechodu; chodia po chodníkoch, nie vo vzduchu
+const WALKERS = { hedgehog: [380, 30], squirrel: [692, 24], cat: [692, 36], krtko: [380, 28], ovecka: [380, 44], slimak: [692, 110] };
+// zámok so terasou, balustrádou a schodmi; za ním kopce a les (objekty stoja v #decor)
+function castleSVG() {
+  const box = (x, y, w, h) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#fff4e0" stroke="#e2c9a0" stroke-width="2"/>`;
+  const roof = (pts, f, s) => `<polygon points="${pts}" fill="${f}" stroke="${s}" stroke-width="2" stroke-linejoin="round"/>`;
+  const slate = pts => roof(pts, '#7b8fc4', '#5a6ea8'), purple = pts => roof(pts, '#b38cff', '#8c63d9');
+  const win = (x, y, w, h) => `<path d="M${x} ${y + h}V${y + w / 2}Q${x} ${y} ${x + w / 2} ${y}Q${x + w} ${y} ${x + w} ${y + w / 2}V${y + h}Z" fill="#bfe9ff" stroke="#8fc8ea" stroke-width="1.5"/>`;
+  const m = (x, w) => 1000 - x - w;   // zrkadlový posun cez stred zámku (x = 500)
+  return `
+    ${box(236, 190, 32, 110)}${purple('230,194 252,146 274,194')}${box(m(236, 32), 190, 32, 110)}${purple('726,194 748,146 770,194')}
+    ${box(268, 232, 92, 108)}${slate('262,236 366,236 350,212 278,212')}${box(m(268, 92), 232, 92, 108)}${slate('634,236 738,236 722,212 650,212')}
+    ${box(360, 146, 34, 150)}${purple('354,150 377,98 400,150')}${box(m(360, 34), 146, 34, 150)}${purple('600,150 623,98 646,150')}
+    ${box(380, 196, 240, 144)}
+    ${box(455, 96, 90, 104)}${purple('448,100 500,36 552,100')}
+    <rect x="440" y="150" width="120" height="6" rx="2" fill="#f7efe0" stroke="#d9c9a6" stroke-width="1.5"/>
+    ${slate('374,200 626,200 598,166 402,166')}
+    <line x1="500" y1="36" x2="500" y2="8" stroke="#8a5a3c" stroke-width="2"/>
+    <polygon class="flag" points="500,8 530,16 500,25" fill="#ff8fbf"/>
+    ${win(282, 252, 18, 26)}${win(326, 252, 18, 26)}${win(m(326, 18), 252, 18, 26)}${win(m(282, 18), 252, 18, 26)}
+    ${win(370, 176, 14, 22)}${win(m(370, 14), 176, 14, 22)}
+    ${win(244, 222, 16, 24)}${win(m(244, 16), 222, 16, 24)}
+    ${win(392, 226, 22, 30)}${win(436, 226, 22, 30)}${win(m(436, 22), 226, 22, 30)}${win(m(392, 22), 226, 22, 30)}
+    ${win(488, 224, 24, 32)}${win(487, 118, 26, 30)}
+    <path d="M486 340V298Q486 286 500 286Q514 286 514 298V340Z" fill="#8a5a3c"/>
+    <rect x="476" y="264" width="48" height="5" rx="2" fill="#f7efe0" stroke="#d9c9a6"/>
+    <rect x="240" y="336" width="520" height="16" rx="3" fill="#e8dcc4" stroke="#cbb994" stroke-width="1.5"/>
+    <rect x="240" y="314" width="222" height="22" fill="url(#gBalus)"/><rect x="240" y="311" width="222" height="5" rx="2" fill="#f7efe0" stroke="#d9c9a6"/>
+    <rect x="538" y="314" width="222" height="22" fill="url(#gBalus)"/><rect x="538" y="311" width="222" height="5" rx="2" fill="#f7efe0" stroke="#d9c9a6"/>
+    <rect x="468" y="338" width="64" height="5" fill="#f3e9d2" stroke="#cbb994"/>
+    <rect x="461" y="343" width="78" height="5" fill="#f3e9d2" stroke="#cbb994"/>
+    <rect x="454" y="348" width="92" height="5" fill="#f3e9d2" stroke="#cbb994"/>`;
+}
+// celá krajina: obloha so slnkom a oblakmi, kopce, zámok, trávnik, chodníky a 12 záhonov s živým plotom
 function landSVG() {
-  return `<svg viewBox="0 0 640 220" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+  const beds = Object.values(BEDS);
+  const hedges = beds.map(([cx, cy]) => `<rect x="${cx - 62}" y="${cy - 47}" width="124" height="94" rx="14" fill="#3f8f5a"/>`).join('');
+  const soil = beds.map(([cx, cy]) => `<rect x="${cx - 56}" y="${cy - 41}" width="112" height="82" rx="8" fill="#a9764d"/>`).join('');
+  const bushes = Array.from({ length: 24 }, (_, i) => `<ellipse cx="${i * 44}" cy="300" rx="30" ry="20"/>`).join('');
+  const rays = Array.from({ length: 8 }, (_, i) => {
+    const a = i * Math.PI / 4;
+    return `<line x1="${(500 + 30 * Math.cos(a)).toFixed(1)}" y1="${(40 + 30 * Math.sin(a)).toFixed(1)}" x2="${(500 + 44 * Math.cos(a)).toFixed(1)}" y2="${(40 + 44 * Math.sin(a)).toFixed(1)}"/>`;
+  }).join('');
+  const cloud = `<ellipse rx="46" ry="14" fill="#fff" opacity=".95"/><circle cx="-18" cy="-8" r="16" fill="#fff"/><circle cx="6" cy="-14" r="20" fill="#fff"/><circle cx="26" cy="-6" r="14" fill="#fff"/>`;
+  const gravel = '#f2e6c9', gravelE = '#dccaa0';
+  // jednorožec: dúha za zámkom (oblúky okolo stredu zámku)
+  const rainbow = S.mascot === 'unicorn' ? ['#ff6b6b', '#ffb347', '#ffe066', '#7bd389', '#6ec6ff', '#b38cff'].map((c, i) => {
+    const r = 322 - i * 12;
+    return `<path d="M${500 - r} 330A${r} ${r} 0 0 1 ${500 + r} 330" stroke="${c}" stroke-width="10" fill="none" opacity=".9"/>`;
+  }).join('') : '';
+  return `<svg viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
     <defs>
       <linearGradient id="gSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--s1)"/><stop offset="1" style="stop-color:var(--s2)"/></linearGradient>
-      <pattern id="gPicket" width="22" height="34" patternUnits="userSpaceOnUse"><path d="M2 8 L9 1 L16 8 L16 34 L2 34Z" fill="#ffffff"/></pattern>
+      <linearGradient id="gLawn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--g1)"/><stop offset="1" style="stop-color:var(--g2)"/></linearGradient>
+      <pattern id="gStripe" width="100" height="700" patternUnits="userSpaceOnUse"><rect width="50" height="700" fill="#ffffff" opacity=".07"/></pattern>
+      <pattern id="gBalus" width="14" height="22" patternUnits="userSpaceOnUse"><rect x="4" y="3" width="6" height="19" rx="2" fill="#f7efe0" stroke="#d9c9a6" stroke-width="1"/></pattern>
     </defs>
-    <rect width="640" height="220" fill="url(#gSky)"/>
-    <circle cx="584" cy="36" r="26" style="fill:var(--sun)"/>
-    <g fill="#ffffff" opacity=".95"><ellipse cx="96" cy="44" rx="36" ry="13"/><circle cx="84" cy="36" r="13"/><circle cx="110" cy="34" r="11"/></g>
-    <g fill="#ffffff" opacity=".9"><ellipse cx="300" cy="30" rx="30" ry="10"/><circle cx="286" cy="24" r="10"/></g>
-    <path d="M0 124 L70 84 L118 112 L190 76 L252 110 L320 80 L386 112 L452 84 L520 110 L584 82 L640 104 L640 136 L0 136Z" fill="#b8d8ea"/>
-    <g fill="#7bbf8a">${Array.from({ length: 19 }, (_, i) => `<ellipse cx="${i * 36}" cy="124" rx="20" ry="12"/>`).join('')}</g>
-    <path d="M0 134 Q120 118 240 132 T480 130 T640 126 L640 152 L0 152Z" style="fill:var(--hill)"/>
-    <rect x="0" y="150" width="640" height="70" style="fill:var(--g1)"/>
-    <rect x="0" y="138" width="640" height="34" fill="url(#gPicket)"/>
-    <rect x="0" y="146" width="640" height="5" fill="#f2dcc4"/><rect x="0" y="160" width="640" height="5" fill="#f2dcc4"/>
-    <g transform="translate(446 60) scale(0.96)">${HOUSE_SVG.replace(/<\/?svg[^>]*>/g, '')}</g>
+    <rect width="1000" height="360" fill="url(#gSky)"/>
+    <g class="rays" stroke="#ffe08a" stroke-width="5" stroke-linecap="round">${rays}</g>
+    <circle cx="500" cy="40" r="38" fill="#ffffff" opacity=".2"/>
+    <circle cx="500" cy="40" r="24" style="fill:var(--sun)"/>
+    <g transform="translate(300 96)"><g class="cl">${cloud}</g></g>
+    <g transform="translate(690 60) scale(.8)"><g class="cl c2">${cloud}</g></g>
+    ${rainbow}
+    <path d="M0 300 Q120 236 250 270 T500 262 T760 252 T1000 282 L1000 360 L0 360Z" fill="#b7d9e6"/>
+    <g fill="#6fb07d">${bushes}</g>
+    <path d="M0 326 Q160 296 320 318 T640 310 T1000 304 L1000 360 L0 360Z" style="fill:var(--hill)"/>
+    ${castleSVG()}
+    <rect x="0" y="350" width="1000" height="350" fill="url(#gLawn)"/>
+    <rect x="0" y="350" width="1000" height="350" fill="url(#gStripe)"/>
+    <rect x="0" y="342" width="236" height="10" rx="5" fill="#4f9d64"/><rect x="764" y="342" width="236" height="10" rx="5" fill="#4f9d64"/>
+    <rect x="0" y="362" width="1000" height="30" fill="${gravel}"/>
+    <rect x="466" y="352" width="68" height="348" fill="${gravel}"/>
+    <rect x="0" y="684" width="1000" height="16" fill="${gravel}"/>
+    <ellipse cx="500" cy="424" rx="92" ry="54" fill="${gravel}" stroke="${gravelE}" stroke-width="2"/>
+    <ellipse cx="84" cy="486" rx="80" ry="20" fill="${gravel}"/>
+    <ellipse cx="905" cy="486" rx="70" ry="18" fill="${gravel}"/>
+    <ellipse cx="880" cy="612" rx="64" ry="16" fill="${gravel}"/>
+    ${hedges}${soil}
   </svg>`;
 }
-const HOUSE_SVG = `<svg viewBox="0 0 140 120" aria-hidden="true">
-  <rect x="26" y="50" width="88" height="62" rx="4" fill="#fff1d6" stroke="#e0c49a" stroke-width="2"/>
-  <polygon points="14,56 70,12 126,56" fill="#ff8c7a" stroke="#d96a5a" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="92" y="18" width="13" height="28" fill="#c97a6a"/>
-  <circle cx="70" cy="42" r="6" fill="#ffd23c" stroke="#e8b400" stroke-width="1.5"/>
-  <rect x="56" y="70" width="28" height="42" rx="13" fill="#8a5a3c"/>
-  <circle cx="78" cy="94" r="2" fill="#ffd23c"/>
-  <rect x="34" y="64" width="16" height="16" rx="3" fill="#bfe9ff" stroke="#9fd0ee" stroke-width="1.5"/>
-  <rect x="90" y="64" width="16" height="16" rx="3" fill="#bfe9ff" stroke="#9fd0ee" stroke-width="1.5"/>
-  <circle cx="22" cy="110" r="5" fill="#ff8fbf"/><circle cx="118" cy="110" r="5" fill="#ffd23c"/>
-</svg>`;
 function currentSeason() {
   return S.season !== 'auto' ? S.season : SEASON_KEYS[Math.floor(S.rounds / 3) % SEASON_KEYS.length];
 }
-// dúha nad záhradou, keď je zvolený jednorožec
-const RAINBOW_SVG = `<svg class="rainbow" viewBox="0 0 150 80" aria-hidden="true">${['#ff6b6b', '#ffb347', '#ffe066', '#7bd389', '#6ec6ff', '#b38cff'].map((c, i) =>
-  `<path d="M${12 + i * 5} 78 A${66 - i * 5} ${66 - i * 5} 0 0 1 ${138 - i * 5} 78" stroke="${c}" stroke-width="5" fill="none" stroke-linecap="round"/>`).join('')}</svg>`;
 let WATER_N = 0;   // koľko zalievaní čaká na domovskú obrazovku (= správne odpovede v sade)
 // spoločník zaleje kvet; po zalievaní sa kvet podľa fázy zväčší
 function waterOne(plot, scene, done) {
@@ -1875,39 +1977,34 @@ function renderGarden(owned) {
   const season = currentSeason();
   $('#scene').className = 'gscene ' + season;
   $('#land').innerHTML = landSVG();
-  const plants = owned.filter(s => s.tier === 1);
-  const walkers = owned.filter(s => s.tier === 2 && !POND_ANIMALS.includes(s.id)).slice(0, 6);
-  const pondAnimals = owned.filter(s => POND_ANIMALS.includes(s.id));
-  // stavby a doplnky stoja na svojich miestach v krajine (vzadu sa kreslia skôr)
+  const has = id => owned.some(s => s.id === id);
+  // stavba stojí na svojom pevnom mieste; vzadu sa kreslí skôr
+  const place = (s, p, cls, inner) => `<div class="${cls}" title="${sName(s)}" style="left:${(p.c - p.w / 2) / GW * 100}%;bottom:${(GH - p.b) / GH * 100}%;width:${p.w / GW * 100}%;z-index:${p.b}">${inner}</div>`;
   let decor = owned.filter(s => s.tier === 3 && s.id !== 'pond')
     .sort((a, b) => SLOT[a.id].b - SLOT[b.id].b)
-    .map(s => {
-      const p = SLOT[s.id];
-      return `<div class="bld" title="${sName(s)}" style="left:${p.x / 6.4}%;bottom:${(220 - p.b) / 2.2}%;width:${p.w / 6.4}%;z-index:${Math.round(p.b)}">${itemSVG(s.id, 100)}</div>`;
-    }).join('');
-  if (owned.some(s => s.id === 'pond')) {
-    const p = SLOT.pond;
-    const kids = pondAnimals.map(s => `<span class="pa" title="${sName(s)}" style="${POND_POS[s.id]}">${itemSVG(s.id, 60)}</span>`).join('');
-    decor += `<div class="bld pondb" style="left:${p.x / 6.4}%;bottom:${(220 - p.b) / 2.2}%;width:${p.w / 6.4}%;z-index:${p.b}">${itemSVG('pond', 100)}${kids}</div>`;
+    .map(s => place(s, SLOT[s.id], 'bld', itemSVG(s.id, 100))).join('');
+  if (has('pond')) {   // jazierko stojí v strede pred zámkom; plávajú v ňom žabka, korytnačka, rybka a labuť
+    const kids = owned.filter(s => POND_ANIMALS.includes(s.id))
+      .map(s => `<span class="pa" title="${sName(s)}" style="${POND_POS[s.id]}">${itemSVG(s.id, 60)}</span>`).join('');
+    decor += place(owned.find(s => s.id === 'pond'), SLOT.pond, 'bld pondb', itemSVG('pond', 170) + kids);
   }
+  if (has('owl')) decor += place(owned.find(s => s.id === 'owl'), OWL_SLOT, 'bld', itemSVG('owl', 100));   // sova na veži
   decor += owned.filter(s => s.tier === 4).map(s => {
     const p = SLOT[s.id];
-    return `<div class="sky" title="${sName(s)}" style="left:${p.x / 6.4}%;top:${p.t / 2.2}%;width:${p.w / 6.4}%">${itemSVG(s.id, 100)}</div>`;
+    return `<div class="sky" title="${sName(s)}" style="left:${(p.c - p.w / 2) / GW * 100}%;top:${(p.y - p.w / 2) / GH * 100}%;width:${p.w / GW * 100}%">${itemSVG(s.id, 100)}</div>`;
   }).join('');
-  if (S.mascot === 'unicorn') decor += RAINBOW_SVG;   // jednorožec nad záhradou
   $('#decor').innerHTML = decor;
-  // záhon: rastliny; ich veľkosť závisí od toho, koľkokrát ich Lara zalievala
-  const cells = Math.max(12, Math.ceil(plants.length / 4) * 4);
-  let g = '';
-  for (let i = 0; i < cells; i++) {
-    const s = plants[i];
-    g += s
-      ? `<div class="plot" data-id="${s.id}" title="${sName(s)}"><span class="plant g${S.grow[s.id] || 0}" style="animation-delay:${-(i % 5) * 0.7}s">${itemSVG(s.id, 64)}</span></div>`
-      : '<div class="plot empty"><span class="sprout">🌱</span></div>';
-  }
-  $('#album').innerHTML = g;
-  $('#walkers').innerHTML = walkers.map((s, i) =>
-    `<div class="walker" style="top:${12 + i * 14}%;animation-duration:${20 + i * 6}s;animation-delay:${-i * 7}s">${itemSVG(s.id, 54)}</div>`).join('');
+  // záhony: každá rastlina rastie na svojom mieste; rastie podľa toho, koľkokrát ju Lara zalievala
+  $('#album').innerHTML = owned.filter(s => s.tier === 1 && BEDS[s.id]).map((s, i) => {
+    const [cx, cy] = BEDS[s.id];
+    return `<div class="plot" data-id="${s.id}" title="${sName(s)}" style="left:${(cx - 56) / GW * 100}%;top:${(cy - 41) / GH * 100}%">` +
+      `<span class="plant g${S.grow[s.id] || 0}" style="animation-delay:${-(i % 5) * 0.7}s">${itemSVG(s.id, 110)}</span></div>`;
+  }).join('');
+  // chodci po chodníkoch: krtko, slimák, ovečka a ďalší
+  $('#walkers').innerHTML = owned.filter(s => WALKERS[s.id]).map((s, i) => {
+    const [lane, dur] = WALKERS[s.id];
+    return `<div class="walker" style="bottom:${(GH - lane) / GH * 100}%;animation-duration:${dur}s;animation-delay:${-(i * 9) % dur}s">${itemSVG(s.id, 90)}</div>`;
+  }).join('');
   $('#fxl').innerHTML = Array.from({ length: 10 }, (_, i) =>
     `<i class="p ${season}" style="left:${(i * 37) % 100}%;animation-delay:${-(i * 1.7)}s;animation-duration:${(season === 'summer' ? 7 : 9) + (i % 4) * 2}s"></i>`).join('');
   $('#gardenCount').textContent = T('gardenCount', { n: owned.length, total: STICKERS.length, season: T(season) });
