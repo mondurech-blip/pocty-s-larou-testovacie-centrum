@@ -99,6 +99,19 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 .fl svg{width:34px;height:34px;display:block}
 .fl.tap{cursor:pointer;animation:pulse 1.6s ease-in-out infinite}
 .fl.gone{animation:fly .6s ease-in forwards;pointer-events:none}
+/* pomôcka pre dvojciferné čísla: desiatky (tyčinky) a jednotky (guličky) */
+.help-btn{display:block;margin:0 auto 8px}
+.cnt-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;margin:4px 0}
+.cnt-grp{display:flex;flex-direction:column;align-items:center;gap:8px;padding:8px 10px;border-radius:14px;background:rgba(255,255,255,.75);border:2px dashed #d6c8f5;max-width:100%}
+.cnt-bars{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:250px}
+.cnt-dots{display:grid;grid-template-columns:repeat(5,26px);gap:6px;justify-content:center}
+.cnt-item{cursor:pointer;display:inline-block;transition:opacity .2s}
+.cnt-item.bar{width:18px;height:60px;border-radius:5px;border:2px solid #4f8ef7;background:repeating-linear-gradient(to bottom,#cfe2ff 0 5px,#4f8ef7 5px 6px)}
+.cnt-item.dot{width:26px;height:26px;border-radius:50%;background:#ffb703;border:2px solid #d98e00}
+.cnt-item.done{opacity:.3}
+.cnt-op{font-size:28px;font-weight:800;color:var(--ink)}
+.cnt-info{font-size:18px;font-weight:700;color:var(--ink);text-align:center}
+.cnt-msg{font-size:15px;font-weight:700;color:#e0457b;text-align:center}
 .fl.faded{opacity:.3}
 .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px;transition:opacity .2s}
 .pad.off,.cmp.off{opacity:.4;pointer-events:none}
@@ -376,6 +389,7 @@ const TX = {
     gardenCount: '{n} / {total} items · {season}', weakNone: 'Nothing yet. Great! ✨',
     retry: '🔁 Let\'s review', streakBadge: '🔥 {n} in a row',
     tapHint: 'Tap what goes away', tapCount: 'Taken away: {n}', tapLeft: '{n} left. Now type the answer!',
+    helpBtn: 'Help me', helpHide: 'Hide help', cntCounted: 'Counted: {n}', cntSum: 'Total: {n}', cntTaken: 'Taken away: {n} · left: {left}', cntLeft: 'Left: {n}', cntSplit: 'One ten becomes 10 ones',
     backupTitle: 'Progress backup', backupShow: 'Show backup', backupCopyHint: 'Copy this code and keep it. It holds your stars and garden.', backupCopyBtn: 'Copy',
     backupRestoreHint: 'To restore, paste the code here.', backupRestoreBtn: 'Restore', backupDone: 'Restored ✓', backupBad: 'This code does not fit.', backupCopied: 'Copied ✓',
     great: 'Great! 🎉', correctSecond: 'Correct, nice! ⭐', tryAgain: 'Try again! 💪',
@@ -412,6 +426,7 @@ const TX = {
     gardenCount: '{n} / {total} kúskov · {season}', weakNone: 'Zatiaľ nič. Super! ✨',
     retry: '🔁 Zopakujeme', streakBadge: '🔥 {n} v rade',
     tapHint: 'Ťukni na to, čo odíde', tapCount: 'Odobrali sme: {n}', tapLeft: 'Zostalo {n}. Teraz napíš odpoveď!',
+    helpBtn: 'Pomôž si', helpHide: 'Skry pomôcku', cntCounted: 'Spočítali sme: {n}', cntSum: 'Spolu: {n}', cntTaken: 'Odobrali sme: {n} · zostáva: {left}', cntLeft: 'Zostáva: {n}', cntSplit: 'Jednu desiatku rozmeníme na 10 jednotiek',
     backupTitle: 'Záloha postupu', backupShow: 'Zobraziť zálohu', backupCopyHint: 'Skopíruj tento kód a ulož si ho. Obsahuje tvoje hviezdičky a záhradu.', backupCopyBtn: 'Skopírovať',
     backupRestoreHint: 'Na obnovenie vlož kód sem.', backupRestoreBtn: 'Obnoviť', backupDone: 'Obnovené ✓', backupBad: 'Tento kód nepasuje.', backupCopied: 'Skopírované ✓',
     great: 'Výborne! 🎉', correctSecond: 'Správne, super! ⭐', tryAgain: 'Skús to ešte raz! 💪',
@@ -1255,8 +1270,71 @@ function makeTask() {
   lastKey = key;
   return t;
 }
+/* pomôcka pre dvojciferné čísla: počítadlo s desiatkami a jednotkami (dieťa ťuká na guličky).
+   Sčítanie: ťuknutím sa počítajú guličky. Odčítanie: ťuknutím sa odoberajú guličky.
+   Desiatka sa pri odčítaní rozmení na 10 jednotiek, ak treba. */
+function cntState(t) {
+  if (!R.cnt || R.cnt.key !== t.key) {
+    R.cnt = t.op === '+'
+      ? { key: t.key, done: {} }
+      : { key: t.key, T: Math.floor(t.a / 10), O: t.a % 10, taken: 0, msg: '' };
+  }
+  return R.cnt;
+}
+function cntGroupPlus(gid, n, st) {
+  let bars = '', dots = '';
+  for (let i = 0; i < Math.floor(n / 10); i++) {
+    const id = gid + 't' + i;
+    bars += `<span class="cnt-item bar${st.done[id] ? ' done' : ''}" data-id="${id}"></span>`;
+  }
+  for (let j = 0; j < n % 10; j++) {
+    const id = gid + 'o' + j;
+    dots += `<span class="cnt-item dot${st.done[id] ? ' done' : ''}" data-id="${id}"></span>`;
+  }
+  return `<div class="cnt-grp"><div class="cnt-bars">${bars}</div><div class="cnt-dots">${dots}</div></div>`;
+}
+function cntGroupMinus(st) {
+  let bars = '', dots = '';
+  for (let i = 0; i < st.T; i++) bars += `<span class="cnt-item bar" data-id="mt"></span>`;
+  for (let j = 0; j < st.O; j++) dots += `<span class="cnt-item dot" data-id="mo"></span>`;
+  return `<div class="cnt-grp"><div class="cnt-bars">${bars}</div><div class="cnt-dots">${dots}</div></div>`;
+}
+function cntHTML(t) {
+  const st = cntState(t);
+  if (t.op === '+') {
+    const counted = Object.keys(st.done).filter(k => st.done[k]).reduce((s, k) => s + (k.includes('t') ? 10 : 1), 0);
+    const info = counted === t.total ? T('cntSum', { n: t.total }) : T('cntCounted', { n: counted });
+    return `<div class="cnt-wrap">${cntGroupPlus('A', t.a, st)}<div class="cnt-op">+</div>${cntGroupPlus('B', t.b, st)}<div class="cnt-info">${info}</div></div>`;
+  }
+  const left = t.a - st.taken;
+  const info = st.taken === t.b ? T('cntLeft', { n: left }) : T('cntTaken', { n: st.taken, left });
+  return `<div class="cnt-wrap">${cntGroupMinus(st)}<div class="cnt-info">${info}</div>${st.msg ? `<div class="cnt-msg">${st.msg}</div>` : ''}</div>`;
+}
+function cntTap(t, el) {
+  const st = cntState(t);
+  if (t.op === '+') {
+    if (st.done[el.dataset.id]) return;
+    st.done[el.dataset.id] = true;
+    return;
+  }
+  if (st.taken >= t.b) return;
+  st.msg = '';
+  if (el.classList.contains('bar')) {
+    if (st.T <= 0) return;
+    if (st.taken + 10 <= t.b) { st.T--; st.taken += 10; }
+    else { st.T--; st.O += 10; st.msg = T('cntSplit'); }   // desiatku treba rozmeniť
+  } else {
+    if (st.O <= 0) return;
+    st.O--; st.taken++;
+  }
+}
 // pomôcka: desiatkový rámik pre čísla do 20, inak len text kroku
 function hintHTML(t, reveal) {
+  if ((t.op === '+' || t.op === '−') && t.mi === 0 && t.total > 20 && !reveal) {
+    const open = !!R.cntOpen;
+    return `<div class="hintbox" data-left="${t.g1}"><button class="chip help-btn" type="button" id="helpBtn">${T(open ? 'helpHide' : 'helpBtn')}</button>` +
+      (open ? cntHTML(t) : '') + `<div class="tip">${t.step}</div></div>`;
+  }
   if (t.op === 'cmp' || t.total > 20) return `<div class="tip">${t.step}</div>`;
   const tappable = t.op === '−' && t.mi === 0 && !reveal;   // odčítanie: dieťa ťukne na to, čo odíde
   const tip = `<div class="tip">${t.step}</div>` + (tappable ? `<div class="tip tapmsg">${T('tapHint')}</div>` : '');
@@ -1538,6 +1616,19 @@ $('#nextBtn').onclick = next;
 $('#sayBtn').onclick = () => playSeq(R.t.snd, R.t.story || R.t.speak);
 // odčítanie: každá guľôčka, na ktorú dieťa ťukne, odletí a ozve sa počet
 $('#hint').addEventListener('click', e => {
+  // pomôcka pre dvojciferné čísla: tlačidlo a guličky počítadla
+  if (e.target.closest('#helpBtn')) {
+    R.cntOpen = !R.cntOpen;
+    $('#hint').innerHTML = hintHTML(R.t, false);
+    return;
+  }
+  const ci = e.target.closest('.cnt-item');
+  if (ci && R.cntOpen) {
+    cntTap(R.t, ci);
+    if (S.sound) SFX.tap();
+    $('#hint').innerHTML = hintHTML(R.t, false);
+    return;
+  }
   const c = e.target.closest('.tap');
   if (!c || c.classList.contains('gone')) return;
   c.classList.add('gone');
