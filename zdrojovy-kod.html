@@ -286,6 +286,7 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 <div class="wrap">
   <header class="top">
     <button class="icon" id="homeBtn" aria-label="Home">🏠</button>
+    <button class="icon" id="soundBtn" aria-label="Sound">🔊</button>
     <div class="stars">⭐ <b id="starsTop">0</b></div>
     <button class="icon txt" id="langBtn" aria-label="Language"></button>
     <button class="icon gear" id="gearBtn" type="button" aria-label="Parents"><span class="gearico">⚙️</span><svg class="ring" viewBox="0 0 44 44" aria-hidden="true"><circle id="gearRing" cx="22" cy="22" r="20" pathLength="100"/></svg></button>
@@ -315,24 +316,6 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
     <div class="card">
       <div class="label" data-t="myPet"></div>
       <div class="chips" id="mascots"></div>
-    </div>
-  </section>
-
-  <!-- RODIČOVSKÝ ZÁMOK: štatistiky, najčastejšie chyby, nastavenia, záloha a vynulovanie -->
-  <section id="parent" class="screen hidden">
-    <h1 data-t="parentTitle"></h1>
-    <p class="sub" data-t="parentSub"></p>
-    <div class="card">
-      <div class="stats">
-        <div><b id="sRight">0</b><span data-t="correct"></span></div>
-        <div><b id="sAcc">–</b><span data-t="accuracy"></span></div>
-        <div><b id="sRounds">0</b><span data-t="rounds"></span></div>
-        <div><b id="sStreak">0</b><span data-t="bestStreak"></span></div>
-      </div>
-      <div class="label" data-t="toPractice"></div>
-      <div class="tip" id="weak"></div>
-    </div>
-    <div class="card">
       <div class="label" data-t="whatWeCount"></div>
       <div class="chips" id="types">
         <button class="chip" data-type="pm">X ± Y = ?</button>
@@ -358,8 +341,24 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
         <button class="chip" data-season="autumn" data-t="autumn"></button>
         <button class="chip" data-season="winter" data-t="winter"></button>
       </div>
-      <div class="label" data-t="soundLabel"></div>
-      <div class="chips"><button class="chip" id="soundChip" type="button"></button></div>
+    </div>
+  </section>
+
+  <!-- RODIČOVSKÝ ZÁMOK: štatistiky, najčastejšie chyby, nastavenia, záloha a vynulovanie -->
+  <section id="parent" class="screen hidden">
+    <h1 data-t="parentTitle"></h1>
+    <p class="sub" data-t="parentSub"></p>
+    <div class="card">
+      <div class="stats">
+        <div><b id="sRight">0</b><span data-t="correct"></span></div>
+        <div><b id="sAcc">–</b><span data-t="accuracy"></span></div>
+        <div><b id="sRounds">0</b><span data-t="rounds"></span></div>
+        <div><b id="sStreak">0</b><span data-t="bestStreak"></span></div>
+      </div>
+      <div class="label" data-t="toPractice"></div>
+      <div class="tip" id="weak"></div>
+    </div>
+    <div class="card">
       <div style="text-align:center;margin-top:18px">
         <button class="resetbtn" id="resetBtn" type="button" data-t="reset"></button>
       </div>
@@ -541,7 +540,7 @@ const TX = {
     ctDone: 'Hotovo! Teraz napíš výsledok.',
     waterChip: '💧 Zalievame: {d} z {n}', waterFinished: '🌱 Hotovo! Rastliny dostali {n} {kv}', waterNeedPlant: '💧 Kvapky čakajú. Kúp si v obchode rastlinu a zalejeme ju.',
     waterAllBloom: '🌸 Všetky kvety už kvitnú!', dragonWatered: '🐉 Dráčik dnes zalial celú záhradu',
-    planted: '🌱 {name} je zasadená! Zalievame ju tvojimi správnymi odpoveďami.', dropsGot: '💧 Tvoje správne odpovede sú kvapky pre rastliny: {n}',
+    planted: '🌱 {name} je {z}! Zalievame {j} tvojimi správnymi odpoveďami.', dropsGot: '💧 Tvoje správne odpovede sú kvapky pre rastliny: {n}',
     gardenLegend: '🌱 Semiačko → 🌿 výhonok → 🌼 kvitne · každá správna odpoveď je 💧 kvapka',
     puppyBonus: 'Pejsko prináša hviezdičku!', foxStar: 'Líška našla skrytú hviezdičku!', unicornDouble: 'Čarovný jednorožec: dvojnásobné hviezdičky!', capyBreak: 'Kapybara hovorí: čas na prestávku!',
     backupTitle: 'Záloha postupu', backupShow: 'Zobraziť zálohu', backupCopyHint: 'Skopíruj tento kód a ulož si ho. Obsahuje tvoje hviezdičky a záhradu.', backupCopyBtn: 'Skopírovať',
@@ -1358,7 +1357,7 @@ function say(text) {
   if (!S.sound || !('speechSynthesis' in window)) return;
   try {
     speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
+    const u = new SpeechSynthesisUtterance(plainSpeech(text));
     u.lang = LANG === 'sk' ? 'sk-SK' : 'en-US';
     const v = bestVoice();
     if (v) u.voice = v;
@@ -1423,7 +1422,7 @@ function trimClip(buf) {
     let last = rms.length - 1;
     while (last > first && rms[last] <= th) last--;
     const s = Math.max(0, first * win - Math.floor(buf.sampleRate * 0.08));
-    const e = Math.min(ch.length - 1, (last + 1) * win + Math.floor(buf.sampleRate * 0.2));   // dlhší dych po slove
+    const e = Math.min(ch.length - 1, (last + 1) * win + Math.floor(buf.sampleRate * 0.12));   // krátky dych po slove
     const out = ctx.createBuffer(buf.numberOfChannels, e - s + 1, buf.sampleRate);
     for (let c = 0; c < buf.numberOfChannels; c++) out.copyToChannel(buf.getChannelData(c).subarray(s, e + 1), c);
     return out;
@@ -1441,7 +1440,9 @@ function loadClip(key) {
   }
   return clipCache[key];
 }
-async function playSeq(keys, fallbackText) {
+let chainId = 0;   // rozbehnutá reťaz viet (speakList); každé iné hlásenie ju preruší
+async function playSeq(keys, fallbackText, inChain) {
+  if (!inChain) chainId++;
   if (!S.sound) return;
   if (!keys || !keys.length) { say(fallbackText); return; }
   const c = getCtx();
@@ -1513,7 +1514,7 @@ function buildDeco() {
 /* ====== OBRAZOVKY A HORNÝ PANEL ====== */
 let SHOW_TIMER = null;   // čakanie pred zalievaním; ak sa obrazovka zmení skôr, zruší sa
 function show(id) {
-  if (id !== 'done') flushWatering();   // zalievanie, ktoré ešte beží, sa dokončí hneď
+  if (id !== 'done') flushWatering();   // zalievanie, ktoré ešte beží, sa zruší; kvapky ostanú na ďalšiu návštevu
   clearTimeout(SHOW_TIMER);
   document.querySelectorAll('.screen').forEach(s => s.classList.toggle('hidden', s.id !== id));
   $('#gearBtn').classList.toggle('hidden', id !== 'home');   // ozubené koliesko je len na Lariných hlavnej obrazovke
@@ -1525,6 +1526,8 @@ function show(id) {
     if (S.water > 0) SHOW_TIMER = setTimeout(() => { $('#scene').scrollIntoView({ block: 'center', behavior: 'smooth' }); runWatering(); }, 900);
   }
 }
+// návrat domov: legenda záhrady sa ozve sama (ťuknutie je gesto, takže zvuk smie hrať)
+function goHome() { renderHome(); show('home'); playSeq(gardenKeys(), T('gardenLegend')); }
 function applyStatic() {
   document.documentElement.lang = LANG;
   document.title = T('title');
@@ -1533,7 +1536,7 @@ function applyStatic() {
 }
 function renderTop() {
   $('#starsTop').textContent = S.stars;
-  $('#soundChip').textContent = T(S.sound ? 'soundOn' : 'soundOff');
+  $('#soundBtn').textContent = S.sound ? '🔊' : '🔇';
   $('#langBtn').textContent = T('otherLang');
 }
 function renderHome() {
@@ -1810,8 +1813,29 @@ function flowerRow(t, reveal, tappable) {
    Text sa prehrá z nahrávok (kľúče); ak niektorá nahrávka chýba, prečíta celý text hlas zariadenia. */
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 const N = n => 'n' + n;   // kľúč nahrávky čísla
+// text pre systémový hlas: bez emoji a šípok, aby ich hlas nečítal po názvoch
+const plainSpeech = s => String(s).replace(/[\p{Extended_Pictographic}\p{Variation_Selector}]/gu, '').replace(/→/g, ', ').replace(/·/g, '. ').replace(/\s+/g, ' ').replace(/\s+([,.!?:])/g, '$1').trim();
+// hlas Lary: vety za sebou; ďalšia sa rozbehne, až keď sa predchádzajúca dohrá, a len ak ju nič nepreruší
+function speakList(items) {
+  const mine = ++chainId;
+  return items.reduce((p, [keys, text]) => p.then(() => (mine === chainId ? playSeq(keys, text, true) : null)), Promise.resolve()).catch(() => {});
+}
+// kľúče nahrávok pre správy zložené z častí; názvy odmien sú kľúče „odm_<id>“
+const effortKeys = () => (LANG === 'sk' ? ['zasnahumas', 'jednuhviezdicku'] : ['fortrying', 'onestar']);   // STARS_EFFORT je 1
+const tapCountKeys = n => (LANG === 'sk' ? ['odobrali', N(n)] : ['takenaway', N(n)]);
+const tapLeftKeys = n => (LANG === 'sk' ? ['zostalo', N(n), 'teraznapis'] : [N(n), 'left', 'nowtypetheanswer']);
+const dropsKeys = n => (LANG === 'sk' ? ['tvojespravne', N(n)] : ['yourcorrect', N(n)]);
+const boughtKeys = id => (LANG === 'sk' ? ['masnovuodmenu', 'odm_' + id] : ['newreward', 'odm_' + id]);
+const gardenKeys = () => (LANG === 'sk' ? ['semiacko', 'vyhonok', 'kvitne', 'kazdaspravna'] : ['seed', 'sprout', 'blooms', 'everycorrect']);
+const capyKeys = () => (LANG === 'sk' ? ['kapybara'] : ['capybara']);
+const MASC_PLANTS = ['tulip', 'poppy', 'watermelon'];   // mená s mužským rodom: „zasadený“, „ho“
+const plantedVars = s => ({ z: MASC_PLANTS.includes(s.id) ? 'zasadený' : 'zasadená', j: MASC_PLANTS.includes(s.id) ? 'ho' : 'ju' });
+const plantedKeys = s => {
+  const m = MASC_PLANTS.includes(s.id);
+  return LANG === 'sk' ? ['odm_' + s.id, m ? 'jezasadeny' : 'jezasadena', m ? 'zalievameho' : 'zalievajuju'] : ['odm_' + s.id, 'isplanted', 'wewater'];
+};
 function speakable(text, keys) {
-  return `<span class="spkrow"><span class="spk">${text}</span><button class="spkbtn" type="button" data-keys='${JSON.stringify(keys || [])}' data-text="${esc(text)}" aria-label="🔊">🔊</button></span>`;
+  return `<span class="spkrow"><span class="spk">${text}</span><button class="spkbtn" type="button" data-keys='${JSON.stringify(keys || [])}' data-text="${esc(plainSpeech(text))}" aria-label="🔊">🔊</button></span>`;
 }
 document.addEventListener('click', e => {
   const b = e.target.closest('.spkbtn');
@@ -1832,9 +1856,19 @@ function stepKeysOf(t) {
   if (t.op === '+') return SK ? ['zacni', N(t.a), 'pocitajdalej', N(t.b)] : ['startat', N(t.a), 'andcounton', N(t.b)];
   return SK ? ['zacni', N(t.a), 'odpocitaj', N(t.b)] : ['startat', N(t.a), 'andtakeaway', N(t.b)];
 }
-function answerKeys(ans) { return LANG === 'sk' ? ['vysledok', N(ans), 'nevadi'] : ['theanswer', N(ans), 'noworries']; }
+// porovnanie: odpoveď sa povie slovom (menšie, väčšie, rovné), na obrazovke ostáva znak
+const CMP_KEY = { '<': ['mensie', 'smaller'], '>': ['vacsie', 'bigger'], '=': ['rovne', 'equal'] };
+const CMP_TXT = { '<': ['menšie', 'smaller'], '>': ['väčšie', 'bigger'], '=': ['rovné', 'equal'] };
+function answerKeys(ans) {
+  if (CMP_KEY[ans]) return [LANG === 'sk' ? 'vysledok' : 'theanswer', CMP_KEY[ans][LANG === 'sk' ? 0 : 1], LANG === 'sk' ? 'nevadi' : 'noworries'];
+  return LANG === 'sk' ? ['vysledok', N(ans), 'nevadi'] : ['theanswer', N(ans), 'noworries'];
+}
 function streakKeys(n, b) { return LANG === 'sk' ? [N(n), 'zasebou', 'bonus', N(b)] : [N(n), 'inarow', 'bonus', N(b)]; }
-function needKeys(n) { return LANG === 'sk' ? ['este', N(n), 'chyba', 'hrajdalej'] : [N(n), 'morestarsneeded', 'keepplaying']; }
+// nahrávky čísel sú len do 100: 101 až 199 povieme ako „sto …“, pri 200 a viac hovoríme bez čísla
+function needKeys(n) {
+  const num = n <= 100 ? [N(n)] : n < 200 ? ['n100', N(n - 100)] : [];
+  return LANG === 'sk' ? ['este', ...num, 'chyba', 'hrajdalej'] : [...num, 'morestarsneeded', 'keepplaying'];
+}
 // veta o úrovni: predpona + „do“ + číslo + prípadný dodatok o prechode cez desiatku
 function lvKeys(prefix, id) {
   const st = STAGES[STAGE_IDS.indexOf(id)] || STAGES[1];
@@ -1849,8 +1883,7 @@ function startRound() {
   R = { res: [], queue: [], ok: 0, first: 0, gained: 0, t: null, tries: 0, done: false, input: '' };
   $('#mascotP').innerHTML = laraSVG(64);
   show('play');
-  const praise = playSeq(['praise1'], T('praise1', { name: S.name }));   // pochvala dohrá, až potom ide úloha
-  startTask(praise);
+  startTask();   // na začiatku kola sa nechváli, úloha sa ozve hneď
 }
 function startTask(after) {
   // úlohy, ktoré sa nepodarili, sa niekedy zopakujú
@@ -1957,25 +1990,27 @@ function win() {
   S.bestStreak = Math.max(S.bestStreak, streak);
   gain(first ? CONFIG.STARS_FIRST_TRY : CONFIG.STARS_SECOND_TRY);
   let msg = first ? T('great') : T('correctSecond');
+  let said = null;   // správa, ktorú Lara povie nahlas aj s tlačidlom: [kľúče, text]
   if (streak % CONFIG.STREAK_EVERY === 0) {
     gain(CONFIG.STREAK_BONUS);
-    msg = speakable(T('streakMsg', { n: streak, b: CONFIG.STREAK_BONUS }), streakKeys(streak, CONFIG.STREAK_BONUS));
+    said = [streakKeys(streak, CONFIG.STREAK_BONUS), T('streakMsg', { n: streak, b: CONFIG.STREAK_BONUS })];
     SFX.win(); confetti(20);
   } else { SFX.ok(); confetti(8); }
   // úlohy zvolených spoločníkov
-  if (S.mascot === 'puppy' && first) { gain(1); msg = T('puppyBonus'); }             // pejsko: +1 za správnu na prvý pokus
-  if (S.mascot === 'fox' && Math.random() < 0.125) { gain(1); msg = T('foxStar'); }   // líška: občas nájde skrytú hviezdičku
+  if (S.mascot === 'puppy' && first) { gain(1); said = [LANG === 'sk' ? ['pejskoprinasa'] : ['puppybrings'], T('puppyBonus')]; }             // pejsko: +1 za správnu na prvý pokus
+  if (S.mascot === 'fox' && Math.random() < 0.125) { gain(1); said = [LANG === 'sk' ? ['liskanasla'] : ['foxfound'], T('foxStar')]; }   // líška: občas nájde skrytú hviezdičku
   if (S.mascot === 'unicorn') {                                                       // jednorožec: každá 10. odpoveď dvojnásobne
     S.uniCount = (S.uniCount || 0) + 1;
-    if (S.uniCount % 10 === 0) { gain(first ? CONFIG.STARS_FIRST_TRY : CONFIG.STARS_SECOND_TRY); msg = T('unicornDouble'); }
+    if (S.uniCount % 10 === 0) { gain(first ? CONFIG.STARS_FIRST_TRY : CONFIG.STARS_SECOND_TRY); said = [LANG === 'sk' ? ['carovnyjednorozec'] : ['unicornmagic'], T('unicornDouble')]; }
   }
+  if (said) msg = speakable(said[1], said[0]);
   fbHTML(msg, true);
   bump($('#mascotP'), 'happy');
   bump($('#rider'), 'happy');
   // pochvala nie pri každej správnej odpovedi, a keď áno, z viacerých variant
   const pk = pick(LANG === 'en' ? ['praise1', 'praise2', 'praise3', 'praise4', 'praise5', 'praise6'] : ['praise1', 'praise2', 'praise3']);
-  if (first && Math.random() < 0.5) playSeq([pk], T(pk, { name: S.name }));
-  else playSeq(['correct'], T('speakRight'));
+  const prs = first && Math.random() < 0.5 ? [[pk], T(pk, { name: S.name })] : [['correct'], T('speakRight')];
+  speakList(said ? [prs, said] : [prs]);   // pochvala, potom prípadná správa o sérii alebo spoločníkovi
   $('#hint').innerHTML = '';   // po správnej odpovedi pomôcku nezobrazujeme
   finishTask();
 }
@@ -1989,7 +2024,10 @@ function lose() {
   bump($('#mascotP'), 'sad');
   R.input = String(R.t.ans); updateAns();
   gain(CONFIG.STARS_EFFORT);
-  fbHTML(`${speakable(T('answerIs', { a: R.t.ans }), answerKeys(R.t.ans))} ${T('effort', { n: CONFIG.STARS_EFFORT })}`, false);
+  const ansK = answerKeys(R.t.ans);
+  const spoken = R.t.op === 'cmp' ? CMP_TXT[R.t.ans][LANG === 'sk' ? 0 : 1] : R.t.ans;   // pri porovnaní sa povie slovo, na obrazovke ostáva znak
+  fbHTML(`${speakable(T('answerIs', { a: R.t.ans }), ansK)} ${speakable(T('effort', { n: CONFIG.STARS_EFFORT }), effortKeys())}`, false);
+  speakList([[ansK, T('answerIs', { a: spoken })], [effortKeys(), T('effort', { n: CONFIG.STARS_EFFORT })]]);
   $('#hint').innerHTML = hintHTML(R.t, true);
   finishTask();
 }
@@ -2030,18 +2068,25 @@ function endRound() {
 
   S.rounds++;
   S.water = (S.water || 0) + R.ok;   // každá správna odpoveď je jedna kvapka pre rastliny
-  if (S.mascot === 'capybara' && S.rounds % 3 === 0) setTimeout(() => fbHTML(speakable(T('capyBreak'), [LANG === 'sk' ? 'kapybara' : 'capybara']), true), 1600);   // kapybara pripomína prestávku
+  const capy = S.mascot === 'capybara' && S.rounds % 3 === 0;   // kapybara pripomína prestávku
   save();
   const cheapest = Math.min(...STICKERS.filter(s => !S.unlocked.includes(s.id)).map(s => s.price), Infinity);
   const shopMsg = S.stars >= cheapest ? T('shopHint') : '';
+  const capyMsg = capy ? T('capyBreak') : '';
   $('#doneMascot').innerHTML = mascotSVG(S.mascot, 110, 'idle');
   $('#doneMsg').innerHTML = speakable(msg, [mk]);
   $('#dOk').textContent = `${R.ok}/${CONFIG.ROUND_LENGTH}`;
   $('#dStars').textContent = `+${R.gained}`;
-  $('#doneHint').innerHTML = [levelMsg && speakable(levelMsg, levelKeys), shopMsg && speakable(shopMsg, ['shophint'])].filter(Boolean).join(' ');
-  $('#doneWater').textContent = R.ok ? T('dropsGot', { n: R.ok }) : '';
+  $('#doneHint').innerHTML = [levelMsg && speakable(levelMsg, levelKeys), shopMsg && speakable(shopMsg, ['shophint']), capy && speakable(capyMsg, capyKeys())].filter(Boolean).join(' ');
+  $('#doneWater').innerHTML = R.ok ? speakable(T('dropsGot', { n: R.ok }), dropsKeys(R.ok)) : '';
   SFX.win(); confetti(25);
-  playSeq([mk], msg);
+  // výsledok a ďalšie správy zaznejú za sebou, v rovnakom poradí ako na obrazovke
+  const items = [[[mk], msg]];
+  if (R.ok) items.push([dropsKeys(R.ok), T('dropsGot', { n: R.ok })]);
+  if (levelMsg) items.push([levelKeys, levelMsg]);
+  if (shopMsg) items.push([['shophint'], shopMsg]);
+  if (capy) items.push([capyKeys(), capyMsg]);
+  speakList(items);
   renderHome();
   show('done');
 }
@@ -2227,33 +2272,29 @@ function pourAt(s, scene) {
   }, 850);
   setTimeout(() => w.remove(), 1700);
 }
-// zalievanie po sade: kvapky sa rozdávajú jedna po druhej (medvedík zalieva dve naraz); stav sa ukladá po každej kvapke
+// zalievanie raz za kolo (po 10 úlohách): spoločník príde raz a zaleje všetky kvapky z kola naraz
 function runWatering() {
   if (POUR || !S.water) return;
   const plants = plantsOwned();
   if (!plants.length) { setChip(T('waterNeedPlant')); return; }   // kvapky počkajú na prvú rastlinu
   const scene = $('#scene');
   const total = S.water;
-  const per = S.mascot === 'bear' ? 2 : 1;
-  const beat = total > 12 ? 900 : 1700;   // pri veľa kvapkách ide zalievanie rýchlejšie
   POUR = { total, timer: null };
-  const step = () => {
+  // jedna návšteva: spoločník pri kvete naklopí konvičku a kvapky dopadnú naraz
+  pourAt(plants.find(s => (S.grow[s.id] || 0) < 3) || plants[0], scene);
+  if (S.mascot === 'unicorn') sparkles(scene);   // jednorožec zanechá iskričky
+  POUR.timer = setTimeout(() => {   // stav sa zmení tesne pred dopadom, aby rastlina ukázala novú fázu
     if (!POUR) return;
-    if (S.water <= 0) { finishWatering(total); return; }
     const taken = [];
-    for (let k = 0; k < per && S.water > 0; k++) {
-      S.water--;
+    for (let k = 0; k < total; k++) {
       const s = dropTarget(plants, taken);
-      if (s) { taken.push(s.id); S.grow[s.id] = (S.grow[s.id] || 0) + 1; pourAt(s, scene); }
+      if (s) { taken.push(s.id); S.grow[s.id] = (S.grow[s.id] || 0) + 1; }
       else sparkles(scene);   // všetky kvety už kvitnú: kvapka sa len vsiakne
     }
-    if (S.mascot === 'unicorn') sparkles(scene);   // jednorožec zanechá iskričky
+    S.water = 0;
     save();
-    setChip(taken.length ? T('waterChip', { d: total - S.water, n: total }) : T('waterAllBloom'));
-    if (S.water <= 0) { POUR.timer = setTimeout(() => finishWatering(total), 1000); return; }   // posledná kvapka dopadne, potom správa o hotovo
-    POUR.timer = setTimeout(step, beat);
-  };
-  step();
+    finishWatering(total);
+  }, 800);
 }
 // iskričky: jednorožec ich zanecháva a aj kvety, ktoré už kvitnú
 function sparkles(scene) {
@@ -2272,19 +2313,11 @@ function finishWatering(total) {
   refreshStages();
   setChip(T('waterFinished', { n: total, drops: total === 1 ? 'drop' : 'drops', kv: kvapky(total) }), true);
 }
-// zalievanie, ktoré ešte beží, sa dokončí hneď (napr. keď dieťa ide ďalej); kvapky sa rozdelia bez animácie
+// keď dieťa odíde, zalievanie sa len zruší: stav sa nemení a kvapky ostanú na ďalšiu návštevu (nič sa nezaleje potichu)
 function flushWatering() {
   if (!POUR) return;
   clearTimeout(POUR.timer);
-  const plants = plantsOwned();
-  while (S.water > 0) {
-    S.water--;
-    const s = dropTarget(plants);
-    if (s) S.grow[s.id] = (S.grow[s.id] || 0) + 1;
-  }
   POUR = null;
-  save();
-  refreshStages();
   document.querySelectorAll('#scene .waterer, #scene .drop').forEach(e => e.remove());
   setChip('');
 }
@@ -2394,7 +2427,7 @@ function renderGarden(owned) {
   if (!critTimer) critTimer = setInterval(critTick, 100);
   $('#fxl').innerHTML = Array.from({ length: 10 }, (_, i) =>
     `<i class="p ${season}" style="left:${(i * 37) % 100}%;animation-delay:${-(i * 1.7)}s;animation-duration:${(season === 'summer' ? 7 : 9) + (i % 4) * 2}s"></i>`).join('');
-  $('#gardenCount').textContent = T('gardenLegend');
+  $('#gardenCount').innerHTML = speakable(T('gardenLegend'), gardenKeys());
 }
 
 /* ====== OBCHOD ====== */
@@ -2427,10 +2460,10 @@ function renderShop() {
 /* ====== UDALOSTI ====== */
 $('#startBtn').onclick = () => { SFX.tap(); startRound(); };
 $('#againBtn').onclick = () => { SFX.tap(); startRound(); };
-$('#backHomeBtn').onclick = () => { renderHome(); show('home'); };
-$('#homeBtn').onclick = () => { renderHome(); show('home'); };
+$('#backHomeBtn').onclick = goHome;
+$('#homeBtn').onclick = goHome;
 $('#shopBtn').onclick = () => { renderShop(); show('shop'); };
-$('#shopBack').onclick = () => { renderHome(); show('home'); };
+$('#shopBack').onclick = goHome;
 $('#nextBtn').onclick = next;
 $('#sayBtn').onclick = () => playSeq(R.t.snd, R.t.story || R.t.speak);
 // odčítanie: každá guľôčka, na ktorú dieťa ťukne, odletí a ozve sa počet
@@ -2456,10 +2489,11 @@ $('#hint').addEventListener('click', e => {
   const done = !document.querySelector('#hint .tap:not(.gone)');
   const left = Number(document.querySelector('#hint .hintbox').dataset.left);
   // jedno hlásenie na ťuknutie: vždy počet odobratých (pri poslednej guličke "päť", nie zvyšok "jeden")
-  playSeq([gone], String(gone));
+  if (done) speakList([[[gone], String(gone)], [tapLeftKeys(left), T('tapLeft', { n: left })]]);   // na konci aj „zostalo …“
+  else playSeq([gone], String(gone));
   const msg = document.querySelector('#hint .tapmsg');
-  if (msg) msg.textContent = done ? T('tapLeft', { n: left }) : T('tapCount', { n: gone });
-  if (done) fb(T('tapLeft', { n: left }), true);
+  if (msg) msg.innerHTML = speakable(done ? T('tapLeft', { n: left }) : T('tapCount', { n: gone }), done ? tapLeftKeys(left) : tapCountKeys(gone));
+  if (done) fbHTML(speakable(T('tapLeft', { n: left }), tapLeftKeys(left)), true);
 });
 $('#langBtn').onclick = () => { location.href = LANG === 'en' ? 'sk/' : '../'; };
 $('#pad').addEventListener('click', e => {
@@ -2485,7 +2519,7 @@ $('#mascotBig').onclick = () => {
   const m = MASCOTS.find(x => x.id === S.mascot) || MASCOTS[0];
   playSeq(['hilara'], T('mascotHi', { name: S.name, mascot: mName(m) }));
 };
-$('#soundChip').onclick = () => {
+$('#soundBtn').onclick = () => {
   S.sound = !S.sound; save(); renderTop();
   if (S.sound) SFX.tap();
 };
@@ -2559,7 +2593,9 @@ $('#companionGrid').onclick = e => {
   if (S.companions.includes(m.id)) { S.mascot = m.id; save(); renderShop(); renderHome(); return; }
   if (S.stars < m.price) {
     SFX.oops();
-    $('#shopMsg').innerHTML = speakable(T('needMore', { n: m.price - S.stars }), needKeys(m.price - S.stars));
+    const txt = T('needMore', { n: m.price - S.stars }), keys = needKeys(m.price - S.stars);
+    $('#shopMsg').innerHTML = speakable(txt, keys);
+    playSeq(keys, txt);
     return;
   }
   S.stars -= m.price;
@@ -2567,7 +2603,9 @@ $('#companionGrid').onclick = e => {
   S.mascot = m.id;
   save(); SFX.ok(); confetti(12);
   renderShop(); renderTop();
-  $('#shopMsg').innerHTML = speakable(T('bought', { name: mName(m) }), []);
+  const boughtTxt = T('bought', { name: mName(m) });
+  $('#shopMsg').innerHTML = speakable(boughtTxt, boughtKeys(m.id));
+  playSeq(boughtKeys(m.id), boughtTxt);
 };
 $('#shopGrid').onclick = e => {
   const b = e.target.closest('[data-buy]');
@@ -2575,7 +2613,9 @@ $('#shopGrid').onclick = e => {
   const s = STICKERS.find(x => x.id === b.dataset.buy);
   if (S.stars < s.price) {
     SFX.oops();
-    $('#shopMsg').innerHTML = speakable(T('needMore', { n: s.price - S.stars }), needKeys(s.price - S.stars));
+    const txt = T('needMore', { n: s.price - S.stars }), keys = needKeys(s.price - S.stars);
+    $('#shopMsg').innerHTML = speakable(txt, keys);
+    playSeq(keys, txt);
     return;
   }
   S.stars -= s.price;
@@ -2583,7 +2623,10 @@ $('#shopGrid').onclick = e => {
   if (s.tier === 1) S.grow[s.id] = 0;   // nová rastlina je semiačko; zaleje sa po najbližšej sade
   save(); SFX.ok(); confetti(12);
   renderShop(); renderTop();   // prekreslenie obchodu vymaže správu, preto sa nastaví až potom
-  $('#shopMsg').innerHTML = speakable(s.tier === 1 ? T('planted', { name: sName(s) }) : T('bought', { name: sName(s) }), []);
+  const soldTxt = s.tier === 1 ? T('planted', { name: sName(s), ...plantedVars(s) }) : T('bought', { name: sName(s) });
+  const soldKeys = s.tier === 1 ? plantedKeys(s) : boughtKeys(s.id);
+  $('#shopMsg').innerHTML = speakable(soldTxt, soldKeys);
+  playSeq(soldKeys, soldTxt);
 };
 
 /* ====== RODIČOVSKÝ ZÁMOK: ozubené koliesko sa otvorí až po podržaní 3 sekundy; počas držania sa vypĺňa krúžok ====== */
@@ -2608,7 +2651,7 @@ function gearPress(e) {
 $('#gearBtn').addEventListener('pointerdown', gearPress);
 ['pointerup', 'pointerleave', 'pointercancel'].forEach(t => $('#gearBtn').addEventListener(t, gearRelease));
 $('#gearBtn').addEventListener('contextmenu', e => e.preventDefault());
-$('#parentBack').onclick = () => { renderHome(); show('home'); };
+$('#parentBack').onclick = goHome;
 
 /* ====== ŠTART ====== */
 // žiadne priblíženie dvoma prstami (gestá Safari) a žiadne poskakovanie stránky
