@@ -1515,7 +1515,7 @@ function buildDeco() {
 /* ====== OBRAZOVKY A HORNÝ PANEL ====== */
 let SHOW_TIMER = null;   // čakanie pred zalievaním; ak sa obrazovka zmení skôr, zruší sa
 function show(id) {
-  if (id !== 'done') flushWatering();   // zalievanie, ktoré ešte beží, sa dokončí hneď
+  if (id !== 'done') flushWatering();   // zalievanie, ktoré ešte beží, sa zruší; kvapky ostanú na ďalšiu návštevu
   clearTimeout(SHOW_TIMER);
   document.querySelectorAll('.screen').forEach(s => s.classList.toggle('hidden', s.id !== id));
   $('#gearBtn').classList.toggle('hidden', id !== 'home');   // ozubené koliesko je len na Lariných hlavnej obrazovke
@@ -2273,33 +2273,29 @@ function pourAt(s, scene) {
   }, 850);
   setTimeout(() => w.remove(), 1700);
 }
-// zalievanie po sade: kvapky sa rozdávajú jedna po druhej (medvedík zalieva dve naraz); stav sa ukladá po každej kvapke
+// zalievanie raz za kolo (po 10 úlohách): spoločník príde raz a zaleje všetky kvapky z kola naraz
 function runWatering() {
   if (POUR || !S.water) return;
   const plants = plantsOwned();
   if (!plants.length) { setChip(T('waterNeedPlant')); return; }   // kvapky počkajú na prvú rastlinu
   const scene = $('#scene');
   const total = S.water;
-  const per = S.mascot === 'bear' ? 2 : 1;
-  const beat = total > 12 ? 900 : 1700;   // pri veľa kvapkách ide zalievanie rýchlejšie
   POUR = { total, timer: null };
-  const step = () => {
+  // jedna návšteva: spoločník pri kvete naklopí konvičku a kvapky dopadnú naraz
+  pourAt(plants.find(s => (S.grow[s.id] || 0) < 3) || plants[0], scene);
+  if (S.mascot === 'unicorn') sparkles(scene);   // jednorožec zanechá iskričky
+  POUR.timer = setTimeout(() => {   // stav sa zmení tesne pred dopadom, aby rastlina ukázala novú fázu
     if (!POUR) return;
-    if (S.water <= 0) { finishWatering(total); return; }
     const taken = [];
-    for (let k = 0; k < per && S.water > 0; k++) {
-      S.water--;
+    for (let k = 0; k < total; k++) {
       const s = dropTarget(plants, taken);
-      if (s) { taken.push(s.id); S.grow[s.id] = (S.grow[s.id] || 0) + 1; pourAt(s, scene); }
+      if (s) { taken.push(s.id); S.grow[s.id] = (S.grow[s.id] || 0) + 1; }
       else sparkles(scene);   // všetky kvety už kvitnú: kvapka sa len vsiakne
     }
-    if (S.mascot === 'unicorn') sparkles(scene);   // jednorožec zanechá iskričky
+    S.water = 0;
     save();
-    setChip(taken.length ? T('waterChip', { d: total - S.water, n: total }) : T('waterAllBloom'));
-    if (S.water <= 0) { POUR.timer = setTimeout(() => finishWatering(total), 1000); return; }   // posledná kvapka dopadne, potom správa o hotovo
-    POUR.timer = setTimeout(step, beat);
-  };
-  step();
+    finishWatering(total);
+  }, 800);
 }
 // iskričky: jednorožec ich zanecháva a aj kvety, ktoré už kvitnú
 function sparkles(scene) {
@@ -2318,19 +2314,11 @@ function finishWatering(total) {
   refreshStages();
   setChip(T('waterFinished', { n: total, drops: total === 1 ? 'drop' : 'drops', kv: kvapky(total) }), true);
 }
-// zalievanie, ktoré ešte beží, sa dokončí hneď (napr. keď dieťa ide ďalej); kvapky sa rozdelia bez animácie
+// keď dieťa odíde, zalievanie sa len zruší: stav sa nemení a kvapky ostanú na ďalšiu návštevu (nič sa nezaleje potichu)
 function flushWatering() {
   if (!POUR) return;
   clearTimeout(POUR.timer);
-  const plants = plantsOwned();
-  while (S.water > 0) {
-    S.water--;
-    const s = dropTarget(plants);
-    if (s) S.grow[s.id] = (S.grow[s.id] || 0) + 1;
-  }
   POUR = null;
-  save();
-  refreshStages();
   document.querySelectorAll('#scene .waterer, #scene .drop').forEach(e => e.remove());
   setChip('');
 }
