@@ -43,7 +43,7 @@ body{
   font-family:system-ui,"Segoe UI",Roboto,sans-serif; overflow-x:hidden;
 }
 .hidden{display:none !important}
-.wrap{max-width:460px;margin:0 auto;padding:4px 16px 40px;position:relative;z-index:1}
+.wrap{max-width:min(720px,100%);margin:0 auto;padding:4px 16px 40px;position:relative;z-index:1}
 .top{display:flex;align-items:center;justify-content:space-between;gap:8px;position:sticky;top:0;padding:10px 0;z-index:5}
 .icon{width:44px;height:44px;border-radius:50%;border:0;background:var(--card);box-shadow:var(--shadow);font-size:20px;cursor:pointer}
 .icon.txt{font-size:14px;font-weight:800;color:var(--ink)}
@@ -117,6 +117,7 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 .ab-bead.hint,.ab-borrow.hint{outline:3px solid #ff5fa2;outline-offset:2px;animation:abPulse 1s ease-in-out infinite}
 @keyframes abPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
 .ab-done{font-size:18px;font-weight:800;color:#2fa36b;text-align:center}
+.st .role{display:block;font-style:normal;font-size:11px;line-height:1.25;color:var(--muted);font-weight:600;margin-top:2px}
 .cnt-msg{font-size:15px;font-weight:700;color:#e0457b;text-align:center}
 .fl.faded{opacity:.3}
 .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px;transition:opacity .2s}
@@ -207,6 +208,14 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 .waterer .can{position:absolute;right:-8px;top:-6px;font-size:20px;animation:pour 1.4s ease-in-out 1.3s 1 both}
 @keyframes pour{0%,100%{transform:rotate(0)}50%{transform:rotate(-40deg)}}
 .plot.grow svg{animation:growPop .9s ease-out}
+.spark{position:absolute;z-index:5;pointer-events:none;font-size:18px;animation:sparkUp 1.6s ease-out forwards}
+@keyframes sparkUp{0%{opacity:0;transform:translateY(8px) scale(.6)}40%{opacity:1}100%{opacity:0;transform:translateY(-20px) scale(1.1)}}
+/* stavby za záhonom a vzácne veci na oblohe */
+#sky{position:absolute;left:8px;top:6px;width:150px;display:flex;flex-wrap:wrap;align-items:flex-start;gap:2px;z-index:1;pointer-events:none}
+#sky .rainbow{width:150px;height:80px;display:block}
+.skyi{animation:bob 3s ease-in-out infinite alternate}
+#builds{position:absolute;left:10px;right:150px;top:112px;display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;gap:2px;z-index:1;pointer-events:none}
+.bld{animation:sway 3.6s ease-in-out infinite;transform-origin:50% 100%}
 @keyframes growPop{0%{transform:scale(.7)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
 @keyframes walk{from{left:-16%}to{left:104%}}
 @keyframes bob{to{transform:translateY(-4px)}}
@@ -260,6 +269,8 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
         <div class="gbot">
           <div class="path"></div>
           <div class="plots" id="album"></div>
+          <div id="sky"></div>
+          <div id="builds"></div>
           <div id="walkers"></div>
         </div>
         <div class="fxl" id="fxl"></div>
@@ -404,6 +415,7 @@ const TX = {
     tapHint: 'Tap what goes away', tapCount: 'Taken away: {n}', tapLeft: '{n} left. Now type the answer!',
     helpBtn: 'Help me', helpHide: 'Hide help',
     abTens: 'Tens', abOnes: 'Ones', abNow: 'On the abacus: {n}', abAdd: 'Add {x}', abSub: 'Take away {x}', abBorrow: 'Swap a ten', abCarry: '10 ones make 1 ten', abBorrowMsg: 'We swapped 1 ten for 10 ones', abDone: 'Great! Now type the answer.',
+    puppyBonus: 'Puppy brings a star!', foxStar: 'The fox found a hidden star!', unicornDouble: 'Unicorn magic: double stars!', capyBreak: 'Capybara says: time for a break!',
     backupTitle: 'Progress backup', backupShow: 'Show backup', backupCopyHint: 'Copy this code and keep it. It holds your stars and garden.', backupCopyBtn: 'Copy',
     backupRestoreHint: 'To restore, paste the code here.', backupRestoreBtn: 'Restore', backupDone: 'Restored ✓', backupBad: 'This code does not fit.', backupCopied: 'Copied ✓',
     great: 'Great! 🎉', correctSecond: 'Correct, nice! ⭐', tryAgain: 'Try again! 💪',
@@ -443,6 +455,7 @@ const TX = {
     tapHint: 'Ťukni na to, čo odíde', tapCount: 'Odobrali sme: {n}', tapLeft: 'Zostalo {n}. Teraz napíš odpoveď!',
     helpBtn: 'Pomôž si', helpHide: 'Skry pomôcku',
     abTens: 'Desiatky', abOnes: 'Jednotky', abNow: 'Na počítadle: {n}', abAdd: 'Pridaj {x}', abSub: 'Odober {x}', abBorrow: 'Rozmeň desiatku', abCarry: 'Desať jednotiek je jedna desiatka', abBorrowMsg: 'Jednu desiatku sme rozmenili na 10 jednotiek', abDone: 'Výborne! Teraz napíš výsledok.',
+    puppyBonus: 'Pejsko prináša hviezdičku!', foxStar: 'Líška našla skrytú hviezdičku!', unicornDouble: 'Čarovný jednorožec: dvojnásobné hviezdičky!', capyBreak: 'Kapybara hovorí: čas na prestávku!',
     backupTitle: 'Záloha postupu', backupShow: 'Zobraziť zálohu', backupCopyHint: 'Skopíruj tento kód a ulož si ho. Obsahuje tvoje hviezdičky a záhradu.', backupCopyBtn: 'Skopírovať',
     backupRestoreHint: 'Na obnovenie vlož kód sem.', backupRestoreBtn: 'Obnoviť', backupDone: 'Obnovené ✓', backupBad: 'Tento kód nepasuje.', backupCopied: 'Skopírované ✓',
     great: 'Výborne! 🎉', correctSecond: 'Správne, super! ⭐', tryAgain: 'Skús to ešte raz! 💪',
@@ -527,10 +540,21 @@ function limbsSVG(id) {
   return `<ellipse cx="32" cy="94" rx="8" ry="7" fill="${c}" ${e}/><ellipse cx="88" cy="94" rx="8" ry="7" fill="${c}" ${e}/>
     <ellipse cx="46" cy="110" rx="11" ry="7" fill="${c}" ${e}/><ellipse cx="74" cy="110" rx="11" ry="7" fill="${c}" ${e}/>`;
 }
+// doplnky spoločníkov: každý má jeden výrazný znak (šatka, obojok, kvet, krídla, iskra)
+const DECO = {
+  bunny: `<path d="M50 104 L60 110 L50 116Z M70 104 L60 110 L70 116Z" fill="#ff8fbf"/><circle cx="60" cy="110" r="4" fill="#ff5fa2"/>`,
+  puppy: `<path d="M34 92 Q60 108 86 92" stroke="#e5484d" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="60" cy="104" r="5" fill="#ffd23c" stroke="#e8b400" stroke-width="1.5"/>`,
+  bear: `<path d="M34 96 Q60 110 86 96 L88 104 Q60 118 32 104Z" fill="#5fa8ff" stroke="#3f86e0" stroke-width="1.5"/><path d="M66 110 L72 124 L62 120Z" fill="#5fa8ff"/>`,
+  fox: `<path d="M16 26 L30 14 L42 28 L28 40Z" fill="#ff6b9d"/><circle cx="28" cy="28" r="4" fill="#ff8fbf"/>`,
+  capybara: `<circle cx="68" cy="40" r="5" fill="#ffb3d1"/><circle cx="80" cy="40" r="5" fill="#ffb3d1"/><circle cx="74" cy="34" r="5" fill="#ffb3d1"/><circle cx="74" cy="46" r="5" fill="#ffb3d1"/><circle cx="74" cy="40" r="4" fill="#ffd23c"/>`,
+  dragon: `<path d="M18 64 Q2 46 10 30 Q24 40 28 58Z" fill="#c9f2b8" stroke="#8bd08a" stroke-width="1.5"/><path d="M102 64 Q118 46 110 30 Q96 40 92 58Z" fill="#c9f2b8" stroke="#8bd08a" stroke-width="1.5"/>`,
+  unicorn: `<path d="M92 14 L94 24 L104 26 L94 28 L92 40 L90 28 L80 26 L90 24Z" fill="#ffd36e" stroke="#e8b84a" stroke-width="1"/>`,
+};
 function mascotSVG(id, size = 120, cls = '') {
   const art = CHARS[id] || CHARS.bunny;
   const limbs = LIMB_COLOR[id] ? limbsSVG(id) : '';
-  return `<svg viewBox="0 0 120 130" width="${size}" height="${Math.round(size * 130 / 120)}" class="${cls}" aria-hidden="true">${limbs}${art}</svg>`;
+  const shadow = `<ellipse cx="60" cy="126" rx="30" ry="4" fill="#3b2a5a" opacity=".12"/>`;   // tieň pod nohami
+  return `<svg viewBox="0 0 120 130" width="${size}" height="${Math.round(size * 130 / 120)}" class="${cls}" aria-hidden="true">${shadow}${limbs}${art}${DECO[id] || ''}</svg>`;
 }
 function petals(color, cx, cy, n, len, w = 10) {
   let s = '';
@@ -721,9 +745,12 @@ const ITEM_ART = {
     <polygon points="70,34 40,58 52,68 78,44" fill="#d2f0ff" opacity=".9"/>
     <circle cx="82" cy="44" r="18" fill="#bfe9ff" stroke="#7fc8f0" stroke-width="2"/>
     <circle cx="76" cy="40" r="4" fill="#fff"/><circle cx="86" cy="50" r="2.5" fill="#fff"/>`,
-  saturn: `<ellipse cx="60" cy="62" rx="48" ry="13" fill="none" stroke="#e8a94a" stroke-width="6" transform="rotate(-18 60 62)"/>
-    <circle cx="60" cy="62" r="28" fill="#ffc86b" stroke="#e8a94a" stroke-width="2"/>
-    ${face(62, 10)}`,
+  jupiter: `<circle cx="60" cy="62" r="40" fill="#f2c28a" stroke="#d9a060" stroke-width="2"/>
+    <path d="M24 46 Q60 40 96 46" stroke="#d98a4a" stroke-width="5" fill="none"/>
+    <path d="M22 62 Q60 56 98 62" stroke="#c9733a" stroke-width="6" fill="none"/>
+    <path d="M26 80 Q60 74 94 80" stroke="#d98a4a" stroke-width="5" fill="none"/>
+    <ellipse cx="88" cy="78" rx="8" ry="5" fill="#e0654a"/>
+    ${face(60, 12)}`,
   balloon: `<path d="M60 84 Q52 100 62 116" stroke="#8a6a8a" stroke-width="2" fill="none"/>
     <ellipse cx="60" cy="46" rx="26" ry="32" fill="#ff8fb6" stroke="#e86a98" stroke-width="2"/>
     <ellipse cx="50" cy="34" rx="6" ry="10" fill="#fff" opacity=".6" transform="rotate(-20 50 34)"/>
@@ -882,10 +909,10 @@ function laraSVG(size = 120, cls = '') {
   </svg>`;
 }
 const MASCOTS = [
-  { id: 'bunny', sk: 'Zajko', en: 'Bunny', price: 0 }, { id: 'puppy', sk: 'Pejsko', en: 'Puppy', price: 20 },
-  { id: 'bear', sk: 'Medvedík', en: 'Bear', price: 30 }, { id: 'fox', sk: 'Líška', en: 'Fox', price: 40 },
-  { id: 'capybara', sk: 'Kapybara', en: 'Capybara', price: 50 }, { id: 'dragon', sk: 'Dráčik', en: 'Dragon', price: 80 },
-  { id: 'unicorn', sk: 'Jednorožec', en: 'Unicorn', price: 120 },
+  { id: 'bunny', sk: 'Zajko', en: 'Bunny', price: 0 }, { id: 'puppy', sk: 'Pejsko', en: 'Puppy', price: 40 },
+  { id: 'bear', sk: 'Medvedík', en: 'Bear', price: 60 }, { id: 'fox', sk: 'Líška', en: 'Fox', price: 90 },
+  { id: 'capybara', sk: 'Kapybara', en: 'Capybara', price: 120 }, { id: 'dragon', sk: 'Dráčik', en: 'Dragon', price: 160 },
+  { id: 'unicorn', sk: 'Jednorožec', en: 'Unicorn', price: 200 },
 ];
 const mName = m => (LANG === 'en' ? m.en : m.sk);
 
@@ -935,7 +962,7 @@ const STICKERS = [
   { id: 'moon',       e: '🌙', name: 'Mesiačik',        price: 25 },
   { id: 'sun',        e: '☀️', name: 'Slniečko',        price: 25 },
   { id: 'comet',      e: '☄️', name: 'Kométa',          price: 60 },
-  { id: 'saturn',     e: '🪐', name: 'Saturn',          price: 80 },
+  { id: 'jupiter',    e: '🪐', name: 'Jupiter',         price: 200 },
   { id: 'balloon',    e: '🎈', name: 'Balónik',         price: 10 },
   { id: 'gift',       e: '🎁', name: 'Darček',          price: 30 },
   { id: 'palette',    e: '🎨', name: 'Paleta',          price: 20 },
@@ -956,6 +983,19 @@ const STICKERS = [
   { id: 'crystal',    e: '🔮', name: 'Krištáľová guľa', price: 150 },
   { id: 'mermaid',    e: '🧜', name: 'Morská víla',     price: 120 },
 ];
+/* úrovne odmien: 1 ozdoby, 2 pomocníci, 3 stavby (kreslia sa v záhrade), 4 vzácne (na oblohe);
+   cena rastie s úrovňou: po 1 dni ~30–40, po 4 dňoch ~190–200 ⭐ */
+const TIER_OF = {
+  flower: 1, tulip: 1, sunflower: 1, rose: 1, clover: 1, cactus: 1, mushroom: 1, tree: 1, strawberry: 1,
+  icecream: 1, cake: 1, cupcake: 1, balloon: 1, gift: 1, palette: 1, guitar: 1, bike: 1, cup: 1, medal: 1, star: 1,
+  cat: 2, parrot: 2, squirrel: 2, panda: 2, butterfly: 2, hedgehog: 2, frog: 2, koala: 2, turtle: 2, owl: 2,
+  penguin: 2, bee: 2, ladybug: 2, fish: 2, swan: 2,
+  rainbow: 3, rocket: 3, castle: 3, dolphin: 3, whale: 3, trex: 3, elephant: 3, giraffe: 3, lion: 3, tiger: 3,
+  flamingo: 3, moon: 3, sun: 3, helicopter: 3, circus: 3, island: 3, ufo: 3,
+  crown: 4, fairy: 4, princess: 4, comet: 4, jupiter: 4, diamond: 4, galaxy: 4, ring: 4, dress: 4, shoes: 4, crystal: 4, mermaid: 4,
+};
+const TIER_PRICE = { 1: 30, 2: 90, 3: 140, 4: 190 };
+STICKERS.forEach((s, i) => { s.tier = TIER_OF[s.id] || 1; s.price = TIER_PRICE[s.tier] + (i % 3) * 5; });
 const EN_NAME = {
   parrot: 'Parrot', squirrel: 'Squirrel', hedgehog: 'Hedgehog', frog: 'Frog',
   cat: 'Cat', unicorn: 'Unicorn', fox: 'Fox', panda: 'Panda', rainbow: 'Rainbow', rocket: 'Rocket',
@@ -965,7 +1005,7 @@ const EN_NAME = {
   tiger: 'Tiger', owl: 'Owl', penguin: 'Penguin', flamingo: 'Flamingo', bee: 'Bee', ladybug: 'Ladybug',
   fish: 'Fish', sunflower: 'Sunflower', tulip: 'Tulip', clover: 'Clover', cactus: 'Cactus', mushroom: 'Mushroom',
   tree: 'Tree', strawberry: 'Strawberry', icecream: 'Ice cream', cake: 'Cake', cupcake: 'Cupcake', moon: 'Moon',
-  sun: 'Sun', comet: 'Comet', saturn: 'Saturn', balloon: 'Balloon', gift: 'Gift', palette: 'Paint palette',
+  sun: 'Sun', comet: 'Comet', jupiter: 'Jupiter', balloon: 'Balloon', gift: 'Gift', palette: 'Paint palette',
   guitar: 'Guitar', bike: 'Bike', helicopter: 'Helicopter', cup: 'Trophy', medal: 'Gold medal', diamond: 'Diamond',
   circus: 'Circus', island: 'Island', galaxy: 'Galaxy', ufo: 'UFO', ring: 'Ring', dress: 'Dress', shoes: 'Shoes',
   swan: 'Swan', crystal: 'Crystal ball', mermaid: 'Mermaid',
@@ -983,7 +1023,7 @@ function defaults() {
            unlocked: [], stats: { right: 0, total: 0 }, bestStreak: 0, rounds: 0, miss: {}, season: 'auto', companions: ['bunny'] };
 }
 // staré zvieratká v záhrade, ktoré sa nahradili novými (aby sa nikomu nestratili kúpené odmeny)
-const OLD_STICKER = { puppy: 'hedgehog', bunny: 'frog', fox: 'squirrel', unicorn: 'parrot' };
+const OLD_STICKER = { puppy: 'hedgehog', bunny: 'frog', fox: 'squirrel', unicorn: 'parrot', saturn: 'jupiter' };
 function load() {
   try {
     const d = Object.assign(defaults(), JSON.parse(localStorage.getItem(KEY)) || {});
@@ -992,6 +1032,7 @@ function load() {
     d.companions = d.companions.map(c => (c === 'cat' ? 'puppy' : c));   // Mačička sa zmenila na Pejska
     if (d.mascot === 'cat') d.mascot = 'puppy';
     if (!d.companions.includes(d.mascot)) d.mascot = 'bunny';
+    if (!d.uniCount) d.uniCount = 0;
     d.unlocked = [...new Set((d.unlocked || []).map(id => OLD_STICKER[id] || id))];
     return d;
   }
@@ -1232,6 +1273,8 @@ function renderHome() {
   document.querySelectorAll('#seasons .chip').forEach(b => b.classList.toggle('on', b.dataset.season === S.season));
   renderGarden(STICKERS.filter(s => S.unlocked.includes(s.id)));
   if (WATER_PENDING) { WATER_PENDING = false; setTimeout(waterAnim, 500); }
+  const today = new Date().toDateString();
+  if (S.mascot === 'dragon' && S.dragonDay !== today) { S.dragonDay = today; save(); setTimeout(waterAll, 500); }
   const weak = Object.entries(S.miss).sort((x, y) => y[1] - x[1]).slice(0, 3);
   $('#weak').textContent = weak.length ? weak.map(([k, v]) => `${k} (${v}×)`).join('   ·   ') : T('weakNone');
   renderTop();
@@ -1555,6 +1598,13 @@ function win() {
     msg = T('streakMsg', { n: streak, b: CONFIG.STREAK_BONUS });
     SFX.win(); confetti(20);
   } else { SFX.ok(); confetti(8); }
+  // úlohy zvolených spoločníkov
+  if (S.mascot === 'puppy' && first) { gain(1); msg = T('puppyBonus'); }             // pejsko: +1 za správnu na prvý pokus
+  if (S.mascot === 'fox' && Math.random() < 0.125) { gain(1); msg = T('foxStar'); }   // líška: občas nájde skrytú hviezdičku
+  if (S.mascot === 'unicorn') {                                                       // jednorožec: každá 10. odpoveď dvojnásobne
+    S.uniCount = (S.uniCount || 0) + 1;
+    if (S.uniCount % 10 === 0) { gain(first ? CONFIG.STARS_FIRST_TRY : CONFIG.STARS_SECOND_TRY); msg = T('unicornDouble'); }
+  }
   fb(msg, true);
   bump($('#mascotP'), 'happy');
   bump($('#rider'), 'happy');
@@ -1614,6 +1664,7 @@ function endRound() {
   }
 
   S.rounds++;
+  if (S.mascot === 'capybara' && S.rounds % 3 === 0) setTimeout(() => fb(T('capyBreak'), true), 1600);   // kapybara pripomína prestávku
   save();
   const cheapest = Math.min(...STICKERS.filter(s => !S.unlocked.includes(s.id)).map(s => s.price), Infinity);
   const shopMsg = S.stars >= cheapest ? T('shopHint') : '';
@@ -1650,13 +1701,21 @@ const LAMP_SVG = `<svg viewBox="0 0 30 80" aria-hidden="true">
 function currentSeason() {
   return S.season !== 'auto' ? S.season : SEASON_KEYS[Math.floor(S.rounds / 3) % SEASON_KEYS.length];
 }
+// dúha nad záhradou, keď je zvolený jednorožec
+const RAINBOW_SVG = `<svg class="rainbow" viewBox="0 0 150 80" aria-hidden="true">${['#ff6b6b', '#ffb347', '#ffe066', '#7bd389', '#6ec6ff', '#b38cff'].map((c, i) =>
+  `<path d="M${12 + i * 5} 78 A${66 - i * 5} ${66 - i * 5} 0 0 1 ${138 - i * 5} 78" stroke="${c}" stroke-width="5" fill="none" stroke-linecap="round"/>`).join('')}</svg>`;
 let WATER_PENDING = false;
 // spoločník (zvolený v domčeku) prejde k náhodnému kvetu, zaleje ho a kvet sa „vyšvihne“
 function waterAnim() {
   const plots = [...document.querySelectorAll('#album .plot:not(.empty)')];
   const scene = document.querySelector('#scene');
   if (!plots.length || !scene || !S.mascot) return;
-  const plot = plots[Math.floor(Math.random() * plots.length)];
+  // medvedík zaleje dva kvety naraz, ostatní jeden
+  const picked = plots.sort(() => Math.random() - 0.5).slice(0, S.mascot === 'bear' ? 2 : 1);
+  picked.forEach(plot => waterOne(plot, scene));
+  if (S.mascot === 'unicorn') sparkles(scene);   // jednorožec zanechá iskričky
+}
+function waterOne(plot, scene) {
   const sr = scene.getBoundingClientRect(), pr = plot.getBoundingClientRect();
   const x = pr.left - sr.left + pr.width * 0.3;
   const w = document.createElement('div');
@@ -1669,13 +1728,33 @@ function waterAnim() {
   setTimeout(() => plot.classList.add('grow'), 2000);
   setTimeout(() => w.remove(), 3400);
 }
+function sparkles(scene) {
+  for (let i = 0; i < 6; i++) {
+    const s = document.createElement('span');
+    s.className = 'spark';
+    s.textContent = '✨';
+    s.style.left = (10 + Math.random() * 80) + '%';
+    s.style.top = (20 + Math.random() * 50) + '%';
+    scene.appendChild(s);
+    setTimeout(() => s.remove(), 1800);
+  }
+}
+// dráčik zaleje celú záhradu (raz denne, pri prvom otvorení domčeka)
+function waterAll() {
+  document.querySelectorAll('#album .plot:not(.empty)').forEach(p => p.classList.add('grow'));
+}
 function renderGarden(owned) {
   const season = currentSeason();
-  const ANIMAL_IDS = ['puppy', 'bunny', 'koala', 'turtle', 'elephant', 'giraffe', 'lion', 'tiger', 'owl', 'penguin', 'flamingo', 'cat', 'fox', 'panda', 'unicorn', 'trex'];
   $('#scene').className = 'gscene ' + season;
-  // zvieratká chodia po záhrade, ostatné kúsky sú na záhone
-  const walkers = owned.filter(s => ANIMAL_IDS.includes(s.id)).slice(0, 4);
-  const plants = owned.filter(s => !walkers.includes(s));
+  // zvieratká (úroveň 2) chodia po záhrade, ozdoby (úroveň 1) sú na záhone,
+  // stavby (úroveň 3) stoja za záhonom a vzácne veci (úroveň 4) sú na oblohe
+  const walkers = owned.filter(s => s.tier === 2).slice(0, 4);
+  const plants = owned.filter(s => s.tier <= 2 && !walkers.includes(s));
+  const builds = owned.filter(s => s.tier === 3);
+  const sky = owned.filter(s => s.tier === 4);
+  $('#builds').innerHTML = builds.map(s => `<div class="bld" title="${sName(s)}">${itemSVG(s.id, 52)}</div>`).join('');
+  $('#sky').innerHTML = (S.mascot === 'unicorn' ? RAINBOW_SVG : '') +
+    sky.map((s, i) => `<div class="skyi" style="animation-delay:${-i * 0.7}s">${itemSVG(s.id, 36)}</div>`).join('');
   let decor = `<div class="house">${HOUSE_SVG}</div>`;
   if (owned.length >= 6) decor += `<div class="lamp">${LAMP_SVG}</div>`;
   $('#decor').innerHTML = decor;
@@ -1697,18 +1776,28 @@ function renderGarden(owned) {
 }
 
 /* ====== OBCHOD ====== */
+// úloha spoločníka a úroveň predmetu – zobrazia sa v obchode
+const ROLE_TXT = {
+  sk: { bunny: 'Vysvetlí úlohu hlasom', puppy: '+1 ⭐ za správnu na prvý pokus', bear: 'Zalieva dva kvety naraz',
+    fox: 'Občas nájde skrytú hviezdičku', capybara: 'Pripomenie prestávku', dragon: 'Každý deň zaleje celú záhradu',
+    unicorn: 'Každá 10. správna = dvojnásobok ⭐ a dúha nad záhradou' },
+  en: { bunny: 'Explains the task out loud', puppy: '+1 ⭐ for a first-try answer', bear: 'Waters two flowers at once',
+    fox: 'Sometimes finds a hidden star', capybara: 'Reminds you to take a break', dragon: 'Waters the whole garden every day',
+    unicorn: 'Every 10th correct = double ⭐ and a rainbow' },
+};
+const TIER_TXT = { sk: ['', 'Ozdoba', 'Pomocník', 'Stavba', 'Vzácne'], en: ['', 'Decor', 'Helper', 'Building', 'Rare'] };
 function renderShop() {
   $('#shopSub').textContent = T('haveStars', { n: S.stars });
   $('#shopGrid').innerHTML = [...STICKERS].sort((a, b) => a.price - b.price).map(s => {
     const own = S.unlocked.includes(s.id);
     return `<button class="st ${own ? 'owned' : ''}" data-buy="${s.id}" ${own ? 'disabled' : ''}>
-      <span class="se">${itemSVG(s.id, 56)}</span>${sName(s)}<small>${own ? '✓' : s.price + ' ⭐'}</small></button>`;
+      <span class="se">${itemSVG(s.id, 56)}</span>${sName(s)}<em class="role">${TIER_TXT[LANG][s.tier]}</em><small>${own ? '✓' : s.price + ' ⭐'}</small></button>`;
   }).join('');
   $('#companionGrid').innerHTML = MASCOTS.map(m => {
     const own = S.companions.includes(m.id);
     const active = own && S.mascot === m.id;
     return `<button class="st ${own ? 'owned' : ''} ${active ? 'on' : ''}" data-comp="${m.id}">
-      <span class="se">${mascotSVG(m.id, 56)}</span>${mName(m)}<small>${own ? (active ? '✓ ' + T('on') : '✓') : m.price + ' ⭐'}</small></button>`;
+      <span class="se">${mascotSVG(m.id, 56)}</span>${mName(m)}<em class="role">${ROLE_TXT[LANG][m.id]}</em><small>${own ? (active ? '✓ ' + T('on') : '✓') : m.price + ' ⭐'}</small></button>`;
   }).join('');
   $('#shopMsg').textContent = '';
 }
@@ -1727,6 +1816,7 @@ $('#hint').addEventListener('click', e => {
   // pomôcka pre dvojciferné čísla: tlačidlo a guličky počítadla
   if (e.target.closest('#helpBtn')) {
     R.cntOpen = !R.cntOpen;
+    if (R.cntOpen && S.mascot === 'bunny' && S.sound) playSeq(R.t.snd, R.t.speak);   // zajko vysvetlí úlohu hlasom
     $('#hint').innerHTML = hintHTML(R.t, false);
     return;
   }
