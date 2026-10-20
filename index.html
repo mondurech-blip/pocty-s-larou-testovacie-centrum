@@ -1005,11 +1005,20 @@ const AUDIO_BASE = ROOT + (LANG === 'sk' ? 'audio/sk/' : 'audio/en/');
 const clipCache = {};
 let actx = null, srcs = [], seqId = 0;
 function getCtx() {
+  // iPad: po zamknutí sa zvukový kontext môže zatvoriť, vtedy vytvoríme nový a nahrávky sa znova dekódujú
+  if (actx && actx.state === 'closed') { actx = null; for (const k in clipCache) delete clipCache[k]; }
   if (!actx) {
     try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; }
   }
   return actx;
 }
+// po návrate do appky (odomknutie iPadu, obnovenie karty) zvuk znova zapneme
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && actx && actx.state !== 'running') actx.resume().catch(() => {});
+});
+window.addEventListener('pageshow', () => {
+  if (actx && actx.state !== 'running') actx.resume().catch(() => {});
+});
 /* Nahrávky sú aj v súbore clips.js (funguje to zo súboru na disku aj na webe, bez sťahovania). */
 const CLIPS_READY = new Promise(res => {
   const s = document.createElement('script');
@@ -1069,7 +1078,9 @@ async function playSeq(keys, fallbackText) {
   if (!S.sound) return;
   const c = getCtx();
   if (!c) { say(fallbackText); return; }
-  if (c.state === 'suspended') c.resume();
+  if (c.state !== 'running') {   // iPad môže byť v stave „interrupted“; čakáme najviac 0,4 s, aby sa nezasekla hra
+    try { await Promise.race([c.resume(), new Promise(r => setTimeout(r, 400))]); } catch (e) {}
+  }
   const id = ++seqId;
   srcs.forEach(s => { try { s.stop(); } catch (e) {} });
   srcs = [];
