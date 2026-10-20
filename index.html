@@ -99,26 +99,10 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 .fl svg{width:34px;height:34px;display:block}
 .fl.tap{cursor:pointer;animation:pulse 1.6s ease-in-out infinite}
 .fl.gone{animation:fly .6s ease-in forwards;pointer-events:none}
-/* pomôcka pre dvojciferné čísla: počítadlo s dvoma radmi (desiatky, jednotky) */
+/* pomôcka pre dvojciferné čísla */
 .help-btn{display:block;margin:0 auto 8px}
-.ab-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;margin:4px 0;width:100%}
-.ab-row{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px;border-radius:14px;background:#fff;border:2px solid #e6dcf7;max-width:100%}
-.ab-lab{font-size:15px;font-weight:700;color:var(--muted)}
-.ab-lab b{color:var(--ink);font-size:18px}
-.ab-beads{display:grid;grid-template-columns:repeat(10,24px);gap:4px}
-.ab-bead{width:24px;height:24px;border-radius:50%;border:2px solid #c9b8ea;background:#fff;cursor:pointer;box-sizing:border-box}
-.ab-bead.t{border-color:#4f8ef7}
-.ab-bead.o{border-color:#d98e00}
-.ab-bead.on.t{background:#4f8ef7}
-.ab-bead.on.o{background:#ffb703}
-.ab-now{font-size:22px;font-weight:800;color:var(--ink)}
-.ab-step{font-size:17px;font-weight:700;color:var(--ink);text-align:center}
-.ab-val{display:inline-block;min-width:30px;padding:1px 6px;border-radius:8px;background:#eef4ff;color:#2d6fd6;font-size:17px;font-weight:800;text-align:center}
-.ab-bead.hint,.ab-borrow.hint{outline:3px solid #ff5fa2;outline-offset:2px;animation:abPulse 1s ease-in-out infinite}
 @keyframes abPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
-.ab-done{font-size:18px;font-weight:800;color:#2fa36b;text-align:center}
 .st .role{display:block;font-style:normal;font-size:11px;line-height:1.25;color:var(--muted);font-weight:600;margin-top:2px}
-.cnt-msg{font-size:15px;font-weight:700;color:#e0457b;text-align:center}
 .fl.faded{opacity:.3}
 .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px;transition:opacity .2s}
 .pad.off,.cmp.off{opacity:.4;pointer-events:none}
@@ -162,12 +146,14 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 .rider svg{width:48px;height:48px;display:block}
 .mascotP svg{width:64px;height:64px}
 /* záhrada – scéna */
-.gscene{position:relative;border-radius:22px;overflow:hidden;--s1:#b9e6ff;--s2:#eefcff;--g1:#8fd490;--g2:#68bd6e;--hill:#86cf86;--sun:#ffd36e;background:linear-gradient(180deg,var(--s1) 0,var(--s2) 190px,var(--g1) 190px,var(--g2) 100%);box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+.gscene{position:relative;border-radius:22px;overflow:hidden;--s1:#b9e6ff;--s2:#eefcff;--g1:#8fd490;--g2:#68bd6e;--hill:#86cf86;--sun:#ffd36e;background:linear-gradient(180deg,var(--g1) 0,var(--g2) 100%);box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
 .gscene.spring{--s1:#c4eeff;--s2:#f3fff0;--g1:#a7e89a;--g2:#72c86f;--hill:#9ad994;--sun:#ffe07a}
 .gscene.summer{--s1:#8fdcff;--s2:#fff7d6;--g1:#9be07a;--g2:#5fb24e;--hill:#7cc766;--sun:#ffc93c}
 .gscene.autumn{--s1:#ffd3a0;--s2:#fff1dc;--g1:#e2b66a;--g2:#b9864a;--hill:#d9a25a;--sun:#ffb347}
 .gscene.winter{--s1:#d6e6f7;--s2:#f5fbff;--g1:#f7fcff;--g2:#dbe9f6;--hill:#eef7ff;--sun:#fff3c4}
-.gtop{position:relative;height:190px}
+.gtop{position:relative}
+#land svg{display:block;width:100%;height:auto}
+#decor{position:absolute;inset:0;pointer-events:none}
 .sun{position:absolute;top:14px;right:18px;width:44px;height:44px;border-radius:50%;background:var(--sun);box-shadow:0 0 0 8px rgba(255,211,110,.28),0 0 26px rgba(255,211,110,.85)}
 .gscene.summer .sun{width:60px;height:60px;top:8px;right:14px;box-shadow:0 0 0 10px rgba(255,201,60,.25),0 0 30px rgba(255,201,60,.85)}
 .cloud{position:absolute;height:22px;width:74px;border-radius:20px;background:#fff;opacity:.95;animation:drift 22s ease-in-out infinite alternate}
@@ -210,12 +196,36 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 .plot.grow svg{animation:growPop .9s ease-out}
 .spark{position:absolute;z-index:5;pointer-events:none;font-size:18px;animation:sparkUp 1.6s ease-out forwards}
 @keyframes sparkUp{0%{opacity:0;transform:translateY(8px) scale(.6)}40%{opacity:1}100%{opacity:0;transform:translateY(-20px) scale(1.1)}}
-/* stavby za záhonom a vzácne veci na oblohe */
-#sky{position:absolute;left:8px;top:-186px;width:150px;display:flex;flex-wrap:wrap;align-items:flex-start;gap:2px;z-index:1;pointer-events:none}
-#sky .rainbow{width:150px;height:80px;display:block}
-.skyi{animation:bob 3s ease-in-out infinite alternate}
-#builds{position:absolute;left:10px;right:150px;top:-74px;display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;gap:2px;z-index:1;pointer-events:none}
-.bld{animation:sway 3.6s ease-in-out infinite;transform-origin:50% 100%}
+/* krajina: stavby a doplnky na svojich miestach, nebo a dúha */
+#decor .bld{position:absolute}
+#decor .bld svg{width:100%!important;height:auto!important;display:block}
+#decor .sky{position:absolute;animation:bob 3.4s ease-in-out infinite alternate}
+#decor .sky svg{width:100%!important;height:auto!important;display:block}
+#decor .rainbow{position:absolute;left:12%;top:6%;width:44%;height:auto;opacity:.92}
+.pondb .pa{position:absolute;width:18%;animation:swim 6s ease-in-out infinite alternate}
+.pondb .pa svg{width:100%!important;height:auto!important;display:block}
+@keyframes swim{0%{transform:translateX(-8px)}100%{transform:translateX(8px)}}
+/* rastliny rastú: 0 semiačko, 1 malá, 2 stredná, 3 celá */
+.plant svg{transition:transform .9s ease;transform-origin:50% 100%}
+.plant.g0 svg{transform:scale(.4)}
+.plant.g1 svg{transform:scale(.62)}
+.plant.g2 svg{transform:scale(.82)}
+.plant.g3 svg{transform:scale(1)}
+/* počítadlo: kytice (10 kvetov) a kvety (1) */
+.ct{display:flex;flex-direction:column;align-items:center;gap:8px;margin:4px 0}
+.ct-task{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px;min-height:40px;font-size:30px;font-weight:800;color:var(--ink)}
+.ct-sign{font-size:30px;margin-right:4px}
+.ct-piece{display:inline-block;transition:opacity .3s,filter .3s}
+.ct-piece.used{opacity:.25;filter:grayscale(1)}
+.ct-board{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;min-height:62px;width:100%;max-width:320px;box-sizing:border-box;padding:8px;border-radius:16px;background:rgba(255,255,255,.7);border:2px dashed #d6c8f5}
+.ct-zero{font-size:28px;font-weight:800;color:var(--muted)}
+.ct-num{font-size:34px;font-weight:800;color:var(--ink)}
+.ct-btns{display:flex;gap:12px;justify-content:center}
+.ct-btn{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:120px;padding:8px 10px 6px;border-radius:16px;border:2px solid #d6c8f5;background:#fff;cursor:pointer;font:inherit;color:var(--ink)}
+.ct-btn b{font-size:22px}
+.ct-btn.hint{outline:3px solid #ff5fa2;outline-offset:2px;animation:abPulse 1s ease-in-out infinite}
+.ct-msg{font-size:15px;font-weight:700;color:#e0457b;text-align:center}
+.ct-done{font-size:18px;font-weight:800;color:#2fa36b;text-align:center}
 @keyframes growPop{0%{transform:scale(.7)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
 @keyframes walk{from{left:-16%}to{left:104%}}
 @keyframes bob{to{transform:translateY(-4px)}}
@@ -261,16 +271,12 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
       <div class="label" data-t="myGarden"></div>
       <div class="gscene" id="scene">
         <div class="gtop">
-          <div class="sun"></div><div class="cloud c1"></div><div class="cloud c2"></div>
-          <div class="hills"></div>
-          <div class="fence"></div>
+          <div id="land"></div>
           <div id="decor"></div>
         </div>
         <div class="gbot">
           <div class="path"></div>
           <div class="plots" id="album"></div>
-          <div id="sky"></div>
-          <div id="builds"></div>
           <div id="walkers"></div>
         </div>
         <div class="fxl" id="fxl"></div>
@@ -414,7 +420,8 @@ const TX = {
     retry: '🔁 Let\'s review', streakBadge: '🔥 {n} in a row',
     tapHint: 'Tap what goes away', tapCount: 'Taken away: {n}', tapLeft: '{n} left. Now type the answer!',
     helpBtn: 'Help me', helpHide: 'Hide help',
-    abTens: 'Tens', abOnes: 'Ones', abNow: 'On the abacus: {n}', abAdd: 'Add {x}', abSub: 'Take away {x}', abBorrow: 'Swap a ten', abCarry: '10 ones make 1 ten', abBorrowMsg: 'We swapped 1 ten for 10 ones', abDone: 'Great! Now type the answer.',
+    ctCarry: 'Ten flowers make one bouquet!', ctBorrow: 'The bouquet came apart into 10 flowers', ctDone: 'Done! Now type the answer.',
+    waterNone: 'Buy a plant in the shop, then you can water it.', waterDone: 'You watered {n} times. The garden is growing!',
     puppyBonus: 'Puppy brings a star!', foxStar: 'The fox found a hidden star!', unicornDouble: 'Unicorn magic: double stars!', capyBreak: 'Capybara says: time for a break!',
     backupTitle: 'Progress backup', backupShow: 'Show backup', backupCopyHint: 'Copy this code and keep it. It holds your stars and garden.', backupCopyBtn: 'Copy',
     backupRestoreHint: 'To restore, paste the code here.', backupRestoreBtn: 'Restore', backupDone: 'Restored ✓', backupBad: 'This code does not fit.', backupCopied: 'Copied ✓',
@@ -454,7 +461,8 @@ const TX = {
     retry: '🔁 Zopakujeme', streakBadge: '🔥 {n} v rade',
     tapHint: 'Ťukni na to, čo odíde', tapCount: 'Odobrali sme: {n}', tapLeft: 'Zostalo {n}. Teraz napíš odpoveď!',
     helpBtn: 'Pomôž si', helpHide: 'Skry pomôcku',
-    abTens: 'Desiatky', abOnes: 'Jednotky', abNow: 'Na počítadle: {n}', abAdd: 'Pridaj {x}', abSub: 'Odober {x}', abBorrow: 'Rozmeň desiatku', abCarry: 'Desať jednotiek je jedna desiatka', abBorrowMsg: 'Jednu desiatku sme rozmenili na 10 jednotiek', abDone: 'Výborne! Teraz napíš výsledok.',
+    ctCarry: 'Desať kvetov je jedna kytica!', ctBorrow: 'Kytica sa rozviazala na 10 kvetov', ctDone: 'Hotovo! Teraz napíš výsledok.',
+    waterNone: 'Kúp si v obchode rastlinu, potom ju budeš môcť zalievať.', waterDone: 'Zalial si {n}-krát. Záhrada rastie!',
     puppyBonus: 'Pejsko prináša hviezdičku!', foxStar: 'Líška našla skrytú hviezdičku!', unicornDouble: 'Čarovný jednorožec: dvojnásobné hviezdičky!', capyBreak: 'Kapybara hovorí: čas na prestávku!',
     backupTitle: 'Záloha postupu', backupShow: 'Zobraziť zálohu', backupCopyHint: 'Skopíruj tento kód a ulož si ho. Obsahuje tvoje hviezdičky a záhradu.', backupCopyBtn: 'Skopírovať',
     backupRestoreHint: 'Na obnovenie vlož kód sem.', backupRestoreBtn: 'Obnoviť', backupDone: 'Obnovené ✓', backupBad: 'Tento kód nepasuje.', backupCopied: 'Skopírované ✓',
@@ -572,6 +580,108 @@ function rays(cx, cy, r1, r2, n, color) {
   return s;
 }
 const ITEM_ART = {
+  // rastliny: kvety a zelenina/ovocie (rastú pri zalievaní)
+  daisy: `<path d="M60 112 L60 70" stroke="#4fae52" stroke-width="4" stroke-linecap="round"/>
+    <ellipse cx="46" cy="96" rx="12" ry="5" fill="#6cc98c" transform="rotate(-25 46 96)"/>
+    ${petals('#ffffff', 60, 52, 12, 24, 7)}<circle cx="60" cy="52" r="8" fill="#ffd23c" stroke="#e8b400" stroke-width="1.5"/>`,
+  poppy: `<path d="M60 112 L60 62" stroke="#4fae52" stroke-width="4" stroke-linecap="round"/>
+    ${petals('#ff5a5a', 60, 54, 4, 30, 17)}<circle cx="60" cy="54" r="7" fill="#2a1d1d"/>`,
+  lavender: `<path d="M60 112 L60 60" stroke="#4fae52" stroke-width="3" stroke-linecap="round"/>
+    <ellipse cx="60" cy="50" rx="7" ry="13" fill="#9b6bd6"/><ellipse cx="60" cy="66" rx="6" ry="10" fill="#b58be0"/><ellipse cx="60" cy="82" rx="5" ry="8" fill="#9b6bd6"/>
+    <path d="M60 112 L44 92 M60 112 L76 92" stroke="#4fae52" stroke-width="3" stroke-linecap="round" fill="none"/>`,
+  carrot: `<path d="M52 56 Q60 46 68 56 L70 62 L60 112 L50 62Z" fill="#ff8a3d" stroke="#e0662a" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M60 58 Q48 36 40 40 Q48 52 58 60Z M60 58 Q60 34 56 26 Q66 38 62 58Z M60 58 Q72 36 80 40 Q72 52 62 60Z" fill="#4fae52"/>`,
+  tomato: `<circle cx="60" cy="72" r="34" fill="#ff5a4a" stroke="#d94a3a" stroke-width="2"/>
+    <ellipse cx="46" cy="60" rx="8" ry="5" fill="#fff" opacity=".5"/>
+    <path d="M44 46 L60 54 L76 46 L66 40 L60 50 L54 40Z" fill="#4fae52"/><rect x="58" y="34" width="4" height="10" fill="#4fa878"/>`,
+  pumpkin: `<ellipse cx="60" cy="76" rx="40" ry="30" fill="#ff9a3c" stroke="#e0701c" stroke-width="2"/>
+    <path d="M60 46 Q48 76 60 106 M40 52 Q34 76 40 100 M80 52 Q86 76 80 100" stroke="#e0701c" stroke-width="2" fill="none"/>
+    <rect x="56" y="32" width="8" height="16" rx="3" fill="#6b4a2b"/><path d="M64 36 Q84 26 92 36 Q80 42 64 40Z" fill="#4fae52"/>`,
+  corn: `<ellipse cx="60" cy="62" rx="16" ry="30" fill="#ffd23c" stroke="#e8b400" stroke-width="2"/>
+    <path d="M50 50 L70 50 M50 62 L70 62 M50 74 L70 74 M60 34 L60 92" stroke="#e8b400" stroke-width="1.5"/>
+    <path d="M60 96 Q30 92 26 60 Q44 76 60 84Z M60 96 Q90 92 94 60 Q76 76 60 84Z" fill="#6cc98c" stroke="#4fae52" stroke-width="1.5"/>`,
+  watermelon: `<path d="M14 56 Q60 118 106 56 Z" fill="#ff6b7e"/>
+    <path d="M14 56 Q60 118 106 56" stroke="#4fae52" stroke-width="7" fill="none" stroke-linejoin="round"/>
+    <circle cx="44" cy="78" r="2.2" fill="#2a1d1d"/><circle cx="60" cy="88" r="2.2" fill="#2a1d1d"/><circle cx="76" cy="78" r="2.2" fill="#2a1d1d"/><circle cx="52" cy="70" r="2" fill="#2a1d1d"/><circle cx="68" cy="70" r="2" fill="#2a1d1d"/>`,
+  // stavby a dekorácie v záhrade (kreslia sa v rovnakom priestore 120 × 120, zem je pri y = 116)
+  bench: `<ellipse cx="60" cy="116" rx="46" ry="4" fill="#000" opacity=".08"/>
+    <rect x="22" y="80" width="6" height="34" fill="#8a5a33"/><rect x="92" y="80" width="6" height="34" fill="#8a5a33"/>
+    <rect x="22" y="58" width="6" height="10" fill="#8a5a33"/><rect x="92" y="58" width="6" height="10" fill="#8a5a33"/>
+    <rect x="14" y="62" width="92" height="7" rx="3" fill="#d69a62"/><rect x="14" y="72" width="92" height="9" rx="3" fill="#c48d57"/>`,
+  lamp: `<ellipse cx="60" cy="116" rx="14" ry="3" fill="#000" opacity=".08"/>
+    <rect x="56" y="36" width="8" height="78" rx="3" fill="#8a6a5a"/>
+    <path d="M44 40 Q60 14 76 40 Z" fill="#ffe08a" stroke="#e8b84a" stroke-width="2"/>
+    <rect x="48" y="38" width="24" height="6" fill="#8a6a5a"/><rect x="46" y="110" width="28" height="6" rx="2" fill="#8a6a5a"/>
+    <circle cx="60" cy="26" r="4" fill="#ffd23c"/>`,
+  statue: `<ellipse cx="60" cy="116" rx="28" ry="4" fill="#000" opacity=".08"/>
+    <rect x="38" y="92" width="44" height="22" rx="3" fill="#d9d4c7" stroke="#bdb6a6" stroke-width="2"/>
+    <rect x="32" y="86" width="56" height="8" rx="3" fill="#e8e1d4" stroke="#bdb6a6" stroke-width="2"/>
+    <path d="M46 86 Q44 62 52 52 L68 52 Q76 62 74 86Z" fill="#f2efe8" stroke="#bdb6a6" stroke-width="2"/>
+    <circle cx="60" cy="40" r="10" fill="#f2efe8" stroke="#bdb6a6" stroke-width="2"/>
+    <path d="M46 60 Q36 50 40 40 M74 60 Q84 54 80 46" stroke="#f2efe8" stroke-width="6" fill="none" stroke-linecap="round"/>`,
+  fountain: `<ellipse cx="60" cy="112" rx="50" ry="8" fill="#cfe9f5" stroke="#9fb9c4" stroke-width="2"/>
+    <ellipse cx="60" cy="110" rx="42" ry="5" fill="#8fd3f5"/>
+    <rect x="54" y="66" width="12" height="44" fill="#d9d4c7" stroke="#bdb6a6" stroke-width="1.5"/>
+    <ellipse cx="60" cy="66" rx="20" ry="5" fill="#d9d4c7" stroke="#bdb6a6" stroke-width="1.5"/>
+    <path d="M60 56 Q50 40 40 50 M60 56 Q70 40 80 50 M60 56 L60 36" stroke="#8fd3f5" stroke-width="3" fill="none" stroke-linecap="round"/>`,
+  well: `<ellipse cx="60" cy="116" rx="30" ry="4" fill="#000" opacity=".08"/>
+    <rect x="30" y="82" width="60" height="32" rx="6" fill="#b7b1a4" stroke="#8f897c" stroke-width="2"/>
+    <ellipse cx="60" cy="82" rx="30" ry="7" fill="#9c978a" stroke="#8f897c" stroke-width="2"/>
+    <ellipse cx="60" cy="82" rx="20" ry="4" fill="#4a5a6a"/>
+    <rect x="26" y="38" width="5" height="46" fill="#8a5a33"/><rect x="89" y="38" width="5" height="46" fill="#8a5a33"/>
+    <path d="M16 42 L60 18 L104 42 Z" fill="#c0643c" stroke="#a04f2c" stroke-width="2" stroke-linejoin="round"/>
+    <line x1="60" y1="30" x2="60" y2="62" stroke="#8a5a33" stroke-width="3"/><rect x="54" y="60" width="12" height="9" rx="2" fill="#8a5a33"/>`,
+  gazebo: `<ellipse cx="60" cy="116" rx="46" ry="4" fill="#000" opacity=".08"/>
+    <rect x="18" y="104" width="84" height="8" rx="2" fill="#c8925a"/>
+    <rect x="24" y="60" width="6" height="46" fill="#a86a33"/><rect x="90" y="60" width="6" height="46" fill="#a86a33"/>
+    <rect x="24" y="90" width="72" height="4" fill="#d69a62"/>
+    <polygon points="60,10 100,40 92,50 28,50 20,40" fill="#d9783f" stroke="#b85f2c" stroke-width="2" stroke-linejoin="round"/>
+    <polygon points="60,4 66,14 54,14" fill="#ffd23c"/><rect x="22" y="48" width="76" height="6" fill="#b85f2c"/>`,
+  swing: `<ellipse cx="60" cy="116" rx="46" ry="4" fill="#000" opacity=".08"/>
+    <line x1="24" y1="112" x2="52" y2="30" stroke="#9c6b3e" stroke-width="5" stroke-linecap="round"/>
+    <line x1="96" y1="112" x2="68" y2="30" stroke="#9c6b3e" stroke-width="5" stroke-linecap="round"/>
+    <line x1="20" y1="30" x2="100" y2="30" stroke="#9c6b3e" stroke-width="6" stroke-linecap="round"/>
+    <line x1="50" y1="30" x2="48" y2="72" stroke="#6b4a2b" stroke-width="1.8"/><line x1="70" y1="30" x2="72" y2="72" stroke="#6b4a2b" stroke-width="1.8"/>
+    <rect x="44" y="72" width="32" height="6" rx="3" fill="#e0a85a"/>`,
+  birdhouse: `<ellipse cx="60" cy="116" rx="18" ry="3" fill="#000" opacity=".08"/>
+    <rect x="57" y="56" width="6" height="60" fill="#8a5a33"/>
+    <polygon points="60,18 88,40 32,40" fill="#c96a4a" stroke="#a04f2c" stroke-width="2" stroke-linejoin="round"/>
+    <rect x="36" y="40" width="48" height="34" rx="3" fill="#f2d7a8" stroke="#d9b888" stroke-width="2"/>
+    <circle cx="60" cy="56" r="6" fill="#5a3a22"/>`,
+  greenhouse: `<ellipse cx="60" cy="116" rx="52" ry="4" fill="#000" opacity=".08"/>
+    <rect x="8" y="66" width="104" height="48" rx="2" fill="#e6f8ff" stroke="#9fd0ee" stroke-width="2"/>
+    <polygon points="4,68 60,30 116,68" fill="#e6f8ff" stroke="#9fd0ee" stroke-width="2" stroke-linejoin="round"/>
+    <line x1="34" y1="66" x2="34" y2="114" stroke="#9fd0ee" stroke-width="2"/><line x1="60" y1="66" x2="60" y2="114" stroke="#9fd0ee" stroke-width="2"/><line x1="86" y1="66" x2="86" y2="114" stroke="#9fd0ee" stroke-width="2"/>
+    <line x1="8" y1="90" x2="112" y2="90" stroke="#9fd0ee" stroke-width="2"/>
+    <rect x="52" y="92" width="16" height="22" rx="2" fill="#9fd0ee" opacity=".8"/>`,
+  windmill: `<ellipse cx="60" cy="116" rx="24" ry="4" fill="#000" opacity=".08"/>
+    <polygon points="46,116 74,116 68,46 52,46" fill="#f2d7a8" stroke="#d9b888" stroke-width="2" stroke-linejoin="round"/>
+    <polygon points="48,46 72,46 60,26" fill="#c96a4a" stroke="#a04f2c" stroke-width="2" stroke-linejoin="round"/>
+    <g transform="translate(60 40)">
+      <rect x="-5" y="-36" width="10" height="36" rx="2" fill="#f7f1e6" stroke="#d9b888" stroke-width="1.5"/>
+      <rect x="-5" y="0" width="10" height="36" rx="2" fill="#f7f1e6" stroke="#d9b888" stroke-width="1.5"/>
+      <rect x="-36" y="-5" width="36" height="10" rx="2" fill="#f7f1e6" stroke="#d9b888" stroke-width="1.5"/>
+      <rect x="0" y="-5" width="36" height="10" rx="2" fill="#f7f1e6" stroke="#d9b888" stroke-width="1.5"/>
+    </g><circle cx="60" cy="40" r="5" fill="#8a5a33"/>`,
+  table: `<ellipse cx="60" cy="116" rx="46" ry="4" fill="#000" opacity=".08"/>
+    <rect x="56" y="62" width="8" height="50" fill="#8a5a33"/>
+    <ellipse cx="60" cy="60" rx="38" ry="8" fill="#d9a86a" stroke="#b5844a" stroke-width="2"/>
+    <ellipse cx="60" cy="112" rx="16" ry="4" fill="#8a5a33"/>
+    <rect x="8" y="78" width="28" height="5" rx="2" fill="#d9a86a"/><rect x="12" y="83" width="4" height="30" fill="#8a5a33"/><rect x="28" y="83" width="4" height="30" fill="#8a5a33"/>
+    <rect x="84" y="78" width="28" height="5" rx="2" fill="#d9a86a"/><rect x="88" y="83" width="4" height="30" fill="#8a5a33"/><rect x="104" y="83" width="4" height="30" fill="#8a5a33"/>`,
+  pond: `<ellipse cx="60" cy="72" rx="56" ry="36" fill="#c9b08a" stroke="#a8906a" stroke-width="3"/>
+    <ellipse cx="60" cy="72" rx="48" ry="29" fill="#8fd3f5" stroke="#5fb8e6" stroke-width="2"/>
+    <ellipse cx="40" cy="78" rx="9" ry="4" fill="#6cc98c"/><ellipse cx="82" cy="66" rx="7" ry="3" fill="#6cc98c"/>`,
+  // nebo (na oblohe)
+  kite: `<path d="M60 14 L84 42 L60 70 L36 42 Z" fill="#ff6b9d" stroke="#e0507a" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M60 14 L60 70 M36 42 L84 42" stroke="#fff" stroke-width="3"/>
+    <path d="M60 70 Q50 84 64 96 Q52 104 62 116" stroke="#4fa4ff" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M60 70 Q72 80 58 94" stroke="#ffd23c" stroke-width="3" fill="none" stroke-linecap="round"/>`,
+  hotair: `<ellipse cx="60" cy="42" rx="30" ry="34" fill="#ffd23c" stroke="#e8b400" stroke-width="2"/>
+    <path d="M60 8 Q50 42 60 76 Q70 42 60 8Z" fill="#ff8fbf" opacity=".85"/>
+    <path d="M40 56 Q60 30 80 56" stroke="#ff6b9d" stroke-width="5" fill="none" opacity=".9"/>
+    <line x1="46" y1="72" x2="52" y2="96" stroke="#8a6a4a" stroke-width="2"/><line x1="74" y1="72" x2="68" y2="96" stroke="#8a6a4a" stroke-width="2"/>
+    <rect x="50" y="96" width="20" height="14" rx="3" fill="#a6743a"/>`,
   // nové zvieratká do záhrady (nie sú medzi spoločníkmi)
   hedgehog: `<path d="M16 84 Q14 42 60 36 Q106 42 104 84 Z" fill="#a9825b" stroke="#7f5d3c" stroke-width="2"/>
     <polygon points="28,62 34,38 42,60" fill="#7f5d3c"/><polygon points="44,52 52,30 60,50" fill="#7f5d3c"/>
@@ -918,96 +1028,63 @@ const mName = m => (LANG === 'en' ? m.en : m.sk);
 
 /* odmeny – slovenský názov a cena; anglický názov je v EN_NAME */
 const STICKERS = [
-  { id: 'cat',       e: '🐱', name: 'Mačka',       price: 10 },
-  { id: 'parrot',    e: '🦜', name: 'Papagáj',     price: 10 },
-  { id: 'squirrel',  e: '🐿️', name: 'Veverička',   price: 15 },
-  { id: 'panda',     e: '🐼', name: 'Panda',       price: 15 },
-  { id: 'rocket',    e: '🚀', name: 'Raketa',      price: 20 },
-  { id: 'butterfly', e: '🦋', name: 'Motýľ',       price: 25 },
-  { id: 'flower',    e: '🌸', name: 'Kvetina',     price: 25 },
-  { id: 'star',      e: '🌟', name: 'Hviezdička',  price: 30 },
-  { id: 'crown',     e: '👑', name: 'Korunka',     price: 40 },
-  { id: 'fairy',     e: '🧚', name: 'Víla',        price: 20 },
-  { id: 'rose',      e: '🌹', name: 'Ruža',        price: 15 },
-  { id: 'castle',    e: '🏰', name: 'Zámok',       price: 35 },
-  { id: 'princess',  e: '👸', name: 'Princezná',   price: 45 },
-  { id: 'hedgehog',   e: '🦔', name: 'Ježko',           price: 10 },
-  { id: 'frog',       e: '🐸', name: 'Žabka',           price: 10 },
-  { id: 'koala',      e: '🐨', name: 'Koala',           price: 15 },
-  { id: 'turtle',     e: '🐢', name: 'Korytnačka',      price: 15 },
-  { id: 'dolphin',    e: '🐬', name: 'Delfín',          price: 25 },
-  { id: 'whale',      e: '🐳', name: 'Veľryba',         price: 40 },
-  { id: 'trex',       e: '🦖', name: 'Tyranosaurus',    price: 30 },
-  { id: 'elephant',   e: '🐘', name: 'Slon',            price: 25 },
-  { id: 'giraffe',    e: '🦒', name: 'Žirafa',          price: 25 },
-  { id: 'lion',       e: '🦁', name: 'Lev',             price: 35 },
-  { id: 'tiger',      e: '🐯', name: 'Tiger',           price: 35 },
-  { id: 'owl',        e: '🦉', name: 'Sova',            price: 20 },
-  { id: 'penguin',    e: '🐧', name: 'Tučniak',         price: 25 },
-  { id: 'flamingo',   e: '🦩', name: 'Plameniak',       price: 30 },
-  { id: 'bee',        e: '🐝', name: 'Včielka',         price: 15 },
-  { id: 'ladybug',    e: '🐞', name: 'Lienka',          price: 10 },
-  { id: 'fish',       e: '🐠', name: 'Rybka',           price: 10 },
-  { id: 'sunflower',  e: '🌻', name: 'Slnečnica',       price: 15 },
-  { id: 'tulip',      e: '🌷', name: 'Tulipán',         price: 15 },
-  { id: 'clover',     e: '🍀', name: 'Štvorlístok',     price: 20 },
-  { id: 'cactus',     e: '🌵', name: 'Kaktus',          price: 15 },
-  { id: 'mushroom',   e: '🍄', name: 'Hríb',            price: 15 },
-  { id: 'tree',       e: '🌳', name: 'Strom',           price: 20 },
-  { id: 'strawberry', e: '🍓', name: 'Jahoda',          price: 10 },
-  { id: 'icecream',   e: '🍦', name: 'Zmrzlina',        price: 15 },
-  { id: 'cake',       e: '🎂', name: 'Torta',           price: 25 },
-  { id: 'cupcake',    e: '🧁', name: 'Mafinka',         price: 20 },
-  { id: 'moon',       e: '🌙', name: 'Mesiačik',        price: 25 },
-  { id: 'sun',        e: '☀️', name: 'Slniečko',        price: 25 },
-  { id: 'comet',      e: '☄️', name: 'Kométa',          price: 60 },
-  { id: 'jupiter',    e: '🪐', name: 'Jupiter',         price: 200 },
-  { id: 'balloon',    e: '🎈', name: 'Balónik',         price: 10 },
-  { id: 'gift',       e: '🎁', name: 'Darček',          price: 30 },
-  { id: 'palette',    e: '🎨', name: 'Paleta',          price: 20 },
-  { id: 'guitar',     e: '🎸', name: 'Gitara',          price: 40 },
-  { id: 'bike',       e: '🚲', name: 'Bicykel',         price: 30 },
-  { id: 'helicopter', e: '🚁', name: 'Helikoptéra',     price: 50 },
-  { id: 'cup',        e: '🏆', name: 'Pohár',           price: 100 },
-  { id: 'medal',      e: '🥇', name: 'Zlatá medaila',   price: 150 },
-  { id: 'diamond',    e: '💎', name: 'Diamant',         price: 200 },
-  { id: 'circus',     e: '🎪', name: 'Cirkus',          price: 120 },
-  { id: 'island',     e: '🏝️', name: 'Ostrov',          price: 150 },
-  { id: 'galaxy',     e: '🌌', name: 'Galaxia',         price: 250 },
-  { id: 'ufo',        e: '🛸', name: 'Lietajúci tanier', price: 300 },
-  { id: 'ring',       e: '💍', name: 'Prsteň',          price: 90 },
-  { id: 'dress',      e: '👗', name: 'Šaty',            price: 80 },
-  { id: 'shoes',      e: '👠', name: 'Topánky',         price: 70 },
-  { id: 'swan',       e: '🦢', name: 'Labuť',           price: 60 },
-  { id: 'crystal',    e: '🔮', name: 'Krištáľová guľa', price: 150 },
-  { id: 'mermaid',    e: '🧜', name: 'Morská víla',     price: 120 },
+  // 1 rastliny (kvety a zelenina, rastú pri zalievaní)
+  { id: 'tulip',      e: '🌷', name: 'Tulipán',         tier: 1 },
+  { id: 'sunflower',  e: '🌻', name: 'Slnečnica',       tier: 1 },
+  { id: 'rose',       e: '🌹', name: 'Ruža',            tier: 1 },
+  { id: 'daisy',      e: '🌼', name: 'Sedmokráska',     tier: 1 },
+  { id: 'poppy',      e: '🌺', name: 'Mak',             tier: 1 },
+  { id: 'lavender',   e: '💜', name: 'Levanduľa',       tier: 1 },
+  { id: 'strawberry', e: '🍓', name: 'Jahoda',          tier: 1 },
+  { id: 'carrot',     e: '🥕', name: 'Mrkva',           tier: 1 },
+  { id: 'tomato',     e: '🍅', name: 'Paradajka',       tier: 1 },
+  { id: 'pumpkin',    e: '🎃', name: 'Tekvica',         tier: 1 },
+  { id: 'corn',       e: '🌽', name: 'Kukurica',        tier: 1 },
+  { id: 'watermelon', e: '🍉', name: 'Melón',           tier: 1 },
+  // 2 zvieratká (pomocníci; žabka, korytnačka, rybka a labuť žijú v jazierku)
+  { id: 'bee',        e: '🐝', name: 'Včielka',         tier: 2 },
+  { id: 'butterfly',  e: '🦋', name: 'Motýľ',           tier: 2 },
+  { id: 'ladybug',    e: '🐞', name: 'Lienka',          tier: 2 },
+  { id: 'hedgehog',   e: '🦔', name: 'Ježko',           tier: 2 },
+  { id: 'squirrel',   e: '🐿️', name: 'Veverička',       tier: 2 },
+  { id: 'owl',        e: '🦉', name: 'Sova',            tier: 2 },
+  { id: 'cat',        e: '🐱', name: 'Mačka',           tier: 2 },
+  { id: 'frog',       e: '🐸', name: 'Žabka',           tier: 2 },
+  { id: 'turtle',     e: '🐢', name: 'Korytnačka',      tier: 2 },
+  { id: 'fish',       e: '🐠', name: 'Rybka',           tier: 2 },
+  { id: 'swan',       e: '🦢', name: 'Labuť',           tier: 2 },
+  // 3 stavby a doplnky v záhrade
+  { id: 'bench',      e: '🪑', name: 'Lavička',         tier: 3 },
+  { id: 'lamp',       e: '🏮', name: 'Lampáš',          tier: 3 },
+  { id: 'statue',     e: '🗿', name: 'Socha',           tier: 3 },
+  { id: 'fountain',   e: '⛲', name: 'Fontána',         tier: 3 },
+  { id: 'well',       e: '🪣', name: 'Studňa',          tier: 3 },
+  { id: 'gazebo',     e: '🏡', name: 'Altánok',         tier: 3 },
+  { id: 'swing',      e: '🛝', name: 'Hojdačka',        tier: 3 },
+  { id: 'birdhouse',  e: '🐦', name: 'Domček pre vtáky', tier: 3 },
+  { id: 'greenhouse', e: '🏠', name: 'Skleník',         tier: 3 },
+  { id: 'windmill',   e: '🌬️', name: 'Veterný mlyn',    tier: 3 },
+  { id: 'table',      e: '🍽️', name: 'Stôl a stoličky', tier: 3 },
+  { id: 'pond',       e: '💧', name: 'Jazierko',        tier: 3 },
+  // 4 nebo (na oblohe)
+  { id: 'moon',       e: '🌙', name: 'Mesiac',          tier: 4 },
+  { id: 'kite',       e: '🪁', name: 'Šarkan',          tier: 4 },
+  { id: 'hotair',     e: '🎈', name: 'Horúcovzdušný balón', tier: 4 },
+  { id: 'comet',      e: '☄️', name: 'Kométa',          tier: 4 },
+  { id: 'jupiter',    e: '🪐', name: 'Jupiter',         tier: 4 },
+  { id: 'galaxy',     e: '🌌', name: 'Galaxia',         tier: 4 },
 ];
-/* úrovne odmien: 1 ozdoby, 2 pomocníci, 3 stavby (kreslia sa v záhrade), 4 vzácne (na oblohe);
-   cena rastie s úrovňou: po 1 dni ~30–40, po 4 dňoch ~190–200 ⭐ */
-const TIER_OF = {
-  flower: 1, tulip: 1, sunflower: 1, rose: 1, clover: 1, cactus: 1, mushroom: 1, tree: 1, strawberry: 1,
-  icecream: 1, cake: 1, cupcake: 1, balloon: 1, gift: 1, palette: 1, guitar: 1, bike: 1, cup: 1, medal: 1, star: 1,
-  cat: 2, parrot: 2, squirrel: 2, panda: 2, butterfly: 2, hedgehog: 2, frog: 2, koala: 2, turtle: 2, owl: 2,
-  penguin: 2, bee: 2, ladybug: 2, fish: 2, swan: 2,
-  rocket: 3, castle: 3, dolphin: 3, whale: 3, trex: 3, elephant: 3, giraffe: 3, lion: 3, tiger: 3,
-  flamingo: 3, moon: 3, sun: 3, helicopter: 3, circus: 3, island: 3, ufo: 3,
-  crown: 4, fairy: 4, princess: 4, comet: 4, jupiter: 4, diamond: 4, galaxy: 4, ring: 4, dress: 4, shoes: 4, crystal: 4, mermaid: 4,
-};
+/* úrovne odmien: 1 rastliny, 2 zvieratká, 3 stavby a doplnky, 4 nebo; cena rastie s úrovňou */
 const TIER_PRICE = { 1: 30, 2: 90, 3: 140, 4: 190 };
-STICKERS.forEach((s, i) => { s.tier = TIER_OF[s.id] || 1; s.price = TIER_PRICE[s.tier] + (i % 3) * 5; });
+STICKERS.forEach((s, i) => { s.price = TIER_PRICE[s.tier] + (i % 3) * 5; });
 const EN_NAME = {
-  parrot: 'Parrot', squirrel: 'Squirrel', hedgehog: 'Hedgehog', frog: 'Frog',
-  cat: 'Cat', unicorn: 'Unicorn', fox: 'Fox', panda: 'Panda', rainbow: 'Rainbow', rocket: 'Rocket',
-  butterfly: 'Butterfly', flower: 'Flower', star: 'Star', crown: 'Crown', fairy: 'Fairy', rose: 'Rose',
-  castle: 'Castle', princess: 'Princess', puppy: 'Puppy', bunny: 'Bunny', koala: 'Koala', turtle: 'Turtle',
-  dolphin: 'Dolphin', whale: 'Whale', trex: 'T-Rex', elephant: 'Elephant', giraffe: 'Giraffe', lion: 'Lion',
-  tiger: 'Tiger', owl: 'Owl', penguin: 'Penguin', flamingo: 'Flamingo', bee: 'Bee', ladybug: 'Ladybug',
-  fish: 'Fish', sunflower: 'Sunflower', tulip: 'Tulip', clover: 'Clover', cactus: 'Cactus', mushroom: 'Mushroom',
-  tree: 'Tree', strawberry: 'Strawberry', icecream: 'Ice cream', cake: 'Cake', cupcake: 'Cupcake', moon: 'Moon',
-  sun: 'Sun', comet: 'Comet', jupiter: 'Jupiter', balloon: 'Balloon', gift: 'Gift', palette: 'Paint palette',
-  guitar: 'Guitar', bike: 'Bike', helicopter: 'Helicopter', cup: 'Trophy', medal: 'Gold medal', diamond: 'Diamond',
-  circus: 'Circus', island: 'Island', galaxy: 'Galaxy', ufo: 'UFO', ring: 'Ring', dress: 'Dress', shoes: 'Shoes',
-  swan: 'Swan', crystal: 'Crystal ball', mermaid: 'Mermaid',
+  tulip: 'Tulip', sunflower: 'Sunflower', rose: 'Rose', daisy: 'Daisy', poppy: 'Poppy', lavender: 'Lavender',
+  strawberry: 'Strawberry', carrot: 'Carrot', tomato: 'Tomato', pumpkin: 'Pumpkin', corn: 'Corn', watermelon: 'Watermelon',
+  bee: 'Bee', butterfly: 'Butterfly', ladybug: 'Ladybug', hedgehog: 'Hedgehog', squirrel: 'Squirrel', owl: 'Owl', cat: 'Cat',
+  frog: 'Frog', turtle: 'Turtle', fish: 'Fish', swan: 'Swan',
+  bench: 'Bench', lamp: 'Lamp', statue: 'Statue', fountain: 'Fountain', well: 'Well', gazebo: 'Gazebo', swing: 'Swing',
+  birdhouse: 'Birdhouse', greenhouse: 'Greenhouse', windmill: 'Windmill', table: 'Table and chairs', pond: 'Pond',
+  moon: 'Moon', kite: 'Kite', hotair: 'Hot-air balloon', comet: 'Comet', jupiter: 'Jupiter', galaxy: 'Galaxy',
 };
 const sName = s => (LANG === 'en' ? EN_NAME[s.id] : s.name);
 
@@ -1022,7 +1099,15 @@ function defaults() {
            unlocked: [], stats: { right: 0, total: 0 }, bestStreak: 0, rounds: 0, miss: {}, season: 'auto', companions: ['bunny'] };
 }
 // staré zvieratká v záhrade, ktoré sa nahradili novými (aby sa nikomu nestratili kúpené odmeny)
-const OLD_STICKER = { puppy: 'hedgehog', bunny: 'frog', fox: 'squirrel', unicorn: 'parrot', saturn: 'jupiter', rainbow: 'castle' };
+const OLD_STICKER = {
+  puppy: 'hedgehog', bunny: 'frog', fox: 'squirrel', unicorn: 'bee', saturn: 'jupiter', rainbow: 'fountain', castle: 'fountain',
+  flower: 'daisy', clover: 'lavender', cactus: 'corn', mushroom: 'carrot', tree: 'tomato', icecream: 'watermelon', cake: 'pumpkin',
+  cupcake: 'strawberry', balloon: 'hotair', gift: 'bench', palette: 'table', guitar: 'swing', bike: 'birdhouse', cup: 'well',
+  medal: 'statue', star: 'galaxy', parrot: 'bee', panda: 'hedgehog', koala: 'owl', penguin: 'frog', dolphin: 'fish', whale: 'pond',
+  trex: 'bench', elephant: 'statue', giraffe: 'swing', lion: 'statue', tiger: 'lamp', flamingo: 'swan', sun: 'moon',
+  helicopter: 'kite', circus: 'gazebo', island: 'pond', ufo: 'comet', crown: 'hotair', fairy: 'kite', princess: 'galaxy',
+  diamond: 'comet', ring: 'moon', dress: 'kite', shoes: 'hotair', crystal: 'galaxy', mermaid: 'jupiter', rocket: 'kite',
+};
 function load() {
   try {
     const d = Object.assign(defaults(), JSON.parse(localStorage.getItem(KEY)) || {});
@@ -1032,6 +1117,7 @@ function load() {
     if (d.mascot === 'cat') d.mascot = 'puppy';
     if (!d.companions.includes(d.mascot)) d.mascot = 'bunny';
     if (!d.uniCount) d.uniCount = 0;
+    if (!d.grow) d.grow = {};   // fáza rastu každej rastliny (0 až 3)
     d.unlocked = [...new Set((d.unlocked || []).map(id => OLD_STICKER[id] || id))];
     return d;
   }
@@ -1240,6 +1326,7 @@ function buildDeco() {
 function show(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.toggle('hidden', s.id !== id));
   window.scrollTo(0, 0);
+  if (id === 'home' && WATER_N) setTimeout(runWatering, 600);   // po sade sa zaleje záhrada
 }
 function applyStatic() {
   document.documentElement.lang = LANG;
@@ -1271,7 +1358,6 @@ function renderHome() {
   $('#autoBtn').textContent = `${T('autoLevel')}: ${S.auto ? T('on') : T('off')}`;
   document.querySelectorAll('#seasons .chip').forEach(b => b.classList.toggle('on', b.dataset.season === S.season));
   renderGarden(STICKERS.filter(s => S.unlocked.includes(s.id)));
-  if (WATER_PENDING) { WATER_PENDING = false; setTimeout(waterAnim, 500); }
   const today = new Date().toDateString();
   if (S.mascot === 'dragon' && S.dragonDay !== today) { S.dragonDay = today; save(); setTimeout(waterAll, 500); }
   const weak = Object.entries(S.miss).sort((x, y) => y[1] - x[1]).slice(0, 3);
@@ -1380,78 +1466,68 @@ function makeTask() {
   lastKey = key;
   return t;
 }
-/* pomôcka pre dvojciferné čísla: počítadlo s desiatkami a jednotkami (dieťa ťuká na guličky).
-   Sčítanie: ťuknutím sa počítajú guličky. Odčítanie: ťuknutím sa odoberajú guličky.
-   Desiatka sa pri odčítaní rozmení na 10 jednotiek, ak treba. */
+/* pomôcka pre dvojciferné čísla: kytice (10 kvetov) a kvety (1).
+   Dieťa stláča tlačidlá +10 / +1 (alebo −10 / −1) podľa obrázkov druhého čísla.
+   Keď je 10 kvetov, zviažu sa do kytice; pri odčítaní sa kytica rozviaže na 10 kvetov. */
 function cntState(t) {
   if (!R.cnt || R.cnt.key !== t.key) {
-    R.cnt = { key: t.key, T: Math.floor(t.a / 10), O: t.a % 10, msg: '' };
+    R.cnt = { key: t.key, T: Math.floor(t.a / 10), O: t.a % 10, pT: 0, pO: 0, msg: '' };   // pT, pO: koľko kúskov druhého čísla je už stlačených
   }
   return R.cnt;
 }
-// slovné vyjadrenie počtu desiatok a jednotiek (správne tvary)
-function abPhrase(n10, n1) {
-  const p = [];
-  if (LANG === 'en') {
-    if (n10) p.push(`${n10} ${n10 === 1 ? 'ten' : 'tens'}`);
-    if (n1) p.push(`${n1} ${n1 === 1 ? 'one' : 'ones'}`);
-    return p.join(' and ');
-  }
-  if (n10) p.push(`${n10} ${n10 === 1 ? 'desiatku' : (n10 <= 4 ? 'desiatky' : 'desiatok')}`);
-  if (n1) p.push(`${n1} ${n1 === 1 ? 'jednotku' : (n1 <= 4 ? 'jednotky' : 'jednotiek')}`);
-  return p.join(' a ');
+function bouquetSVG(size = 40) {
+  const heads = [[20, 18], [30, 12], [40, 18], [15, 28], [25, 24], [35, 24], [45, 28], [20, 36], [30, 32], [40, 36]];
+  return `<svg viewBox="0 0 60 60" width="${size}" height="${size}" aria-hidden="true">
+    <path d="M30 36 L22 58 M30 36 L38 58 M30 36 L30 58" stroke="#4fae52" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    ${heads.map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="5.5" fill="${i % 2 ? '#ffd23c' : '#ff8fbf'}" stroke="#ffffff" stroke-width="1"/>`).join('')}
+    <rect x="22" y="44" width="16" height="6" rx="3" fill="#ff5fa2"/></svg>`;
 }
-// jeden rad počítadla: desiatky (10 korálikov) alebo jednotky (do 19, dva rady po 10)
-function abRow(kind, n, hi = -1) {
-  const slots = kind === 't' ? 10 : 20;
-  let beads = '';
-  for (let i = 0; i < slots; i++) {
-    beads += `<span class="ab-bead ${kind}${i < n ? ' on' : ''}${i === hi ? ' hint' : ''}" data-k="${kind}" data-i="${i}"></span>`;
-  }
-  return `<div class="ab-row"><div class="ab-lab"><span class="ab-val">${kind === 't' ? '10' : '1'}</span> ${T(kind === 't' ? 'abTens' : 'abOnes')}</div><div class="ab-beads">${beads}</div></div>`;
+function flowerSVG(size = 24) {
+  return `<svg viewBox="0 0 40 40" width="${size}" height="${size}" aria-hidden="true">${petals('#ff8fbf', 20, 20, 5, 14, 6)}<circle cx="20" cy="20" r="5" fill="#ffd23c"/></svg>`;
 }
-// čo má dieťa ťuknúť ďalej (zvýrazní sa); null, keď je výsledok na počítadle
-function abHint(t, st) {
-  const val = st.T * 10 + st.O;
-  const c = t.op === '+' ? t.a + t.b : t.a - t.b;
-  if (t.op === '+') {
-    const rem = c - val;
-    if (rem <= 0) return null;
-    if (rem >= 10 && st.T < 9) return { k: 't', i: st.T };
-    return { k: 'o', i: st.O };
-  }
-  const rem = val - c;
-  if (rem <= 0) return null;
-  if (rem >= 10 && st.T > 0) return { k: 't', i: st.T - 1 };
-  if (st.O >= rem) return { k: 'o', i: st.O - rem };
-  return { k: 'b' };   // treba rozmeniť desiatku
-}
+// obrázky a tlačidlá počítadla: pri každom stlačení sa kytica alebo kvet pridá (odoberie) a odškrtne sa kúsok úlohy
 function cntHTML(t) {
   const st = cntState(t);
-  const h = abHint(t, st);
-  const verb = T(t.op === '+' ? 'abAdd' : 'abSub', { x: abPhrase(Math.floor(t.b / 10), t.b % 10) });
-  const now = T('abNow', { n: st.T * 10 + st.O });
-  const showBorrow = t.op === '−' && st.T > 0;
-  const borrow = showBorrow ? `<button class="chip ab-borrow${h && h.k === 'b' ? ' hint' : ''}" type="button">${T('abBorrow')}</button>` : '';
-  const done = h ? '' : `<div class="ab-done">${T('abDone')}</div>`;
-  return `<div class="ab-wrap">${abRow('t', st.T, h && h.k === 't' ? h.i : -1)}${abRow('o', st.O, h && h.k === 'o' ? h.i : -1)}<div class="ab-now">${now}</div><div class="ab-step">${verb}</div>${borrow}${done}${st.msg ? `<div class="cnt-msg">${st.msg}</div>` : ''}</div>`;
+  const plus = t.op === '+';
+  const sign = plus ? '+' : '−';
+  const bT = Math.floor(t.b / 10), bO = t.b % 10;
+  const remT = Math.max(0, bT - st.pT), remO = Math.max(0, bO - st.pO);
+  // druhé číslo ako obrázky: odškrtnuté kúsky zblednú
+  const task = Array.from({ length: bT }, (_, i) => `<span class="ct-piece${i < st.pT ? ' used' : ''}">${bouquetSVG(34)}</span>`).join('') +
+    Array.from({ length: bO }, (_, i) => `<span class="ct-piece${i < st.pO ? ' used' : ''}">${flowerSVG(22)}</span>`).join('');
+  // čo stlačiť ďalej: najprv kytice, potom kvety (podľa obrázkov, nie podľa výsledku)
+  const hi = remT > 0 ? 't' : (remO > 0 ? 'o' : '');
+  const board = Array.from({ length: st.T }, () => bouquetSVG(38)).join('') + Array.from({ length: st.O }, () => flowerSVG(24)).join('');
+  const done = !remT && !remO;
+  const op = plus ? 'add' : 'sub';
+  return `<div class="ct">
+    <div class="ct-task"><span class="ct-sign">${sign}</span>${task}</div>
+    <div class="ct-board">${board || '<span class="ct-zero">0</span>'}</div>
+    <div class="ct-num">${st.T * 10 + st.O}</div>
+    <div class="ct-btns">
+      <button class="ct-btn${hi === 't' ? ' hint' : ''}" data-op="${op}" data-k="t" type="button">${bouquetSVG(40)}<b>${sign}10</b></button>
+      <button class="ct-btn${hi === 'o' ? ' hint' : ''}" data-op="${op}" data-k="o" type="button">${flowerSVG(30)}<b>${sign}1</b></button>
+    </div>
+    ${st.msg ? `<div class="ct-msg">${st.msg}</div>` : ''}
+    ${done ? `<div class="ct-done">${T('ctDone')}</div>` : ''}
+  </div>`;
 }
-// ťuknutie na korálik: zapnutý sa vypne (aj všetky nad ním), vypnutý sa zapne (aj všetky pod ním)
-function abTap(t, el) {
+// stlačenie tlačidla: pribudne alebo ubudne kytica (10) alebo kvet (1);
+// 10 kvetov sa samo zviaže do kytice, a pri odčítaní bez kvetov sa kytica rozviaže
+function ctPress(t, op, k) {
   const st = cntState(t);
-  const key = el.dataset.k === 't' ? 'T' : 'O';
-  const i = Number(el.dataset.i), n = st[key];
   st.msg = '';
-  st[key] = i < n ? i : i + 1;
-  if (key === 'O' && st.O === 10 && n < 10) {          // sčítanie: 10 jednotiek sa zmení na desiatku
-    st.O = 0; st.T = Math.min(9, st.T + 1); st.msg = T('abCarry');
+  if (k === 't') {
+    if (op === 'add') { if (st.T >= 9) return; st.T++; st.pT++; }
+    else { if (st.T <= 0) return; st.T--; st.pT++; }
+  } else if (op === 'add') {
+    st.O++; st.pO++;
+    if (st.O === 10) { st.O = 0; st.T = Math.min(9, st.T + 1); st.msg = T('ctCarry'); }
+  } else if (st.O > 0) {
+    st.O--; st.pO++;
+  } else if (st.T > 0) {
+    st.T--; st.O = 9; st.pO++; st.msg = T('ctBorrow');
   }
-}
-// odčítanie: desiatka sa rozmení na 10 jednotiek
-function abBorrow(t) {
-  const st = cntState(t);
-  if (st.T <= 0) return;
-  st.T -= 1; st.O += 10; st.msg = T('abBorrowMsg');
 }
 // pomôcka: desiatkový rámik pre čísla do 20, inak len text kroku
 function hintHTML(t, reveal) {
@@ -1607,7 +1683,6 @@ function win() {
   fb(msg, true);
   bump($('#mascotP'), 'happy');
   bump($('#rider'), 'happy');
-  if (first) WATER_PENDING = true;   // na domovskej obrazovke spoločník zaleje kvet
   // pochvala nie pri každej správnej odpovedi, a keď áno, z viacerých variant
   const pk = pick(LANG === 'en' ? ['praise1', 'praise2', 'praise3', 'praise4', 'praise5', 'praise6'] : ['praise1', 'praise2', 'praise3']);
   if (first && Math.random() < 0.5) playSeq([pk], T(pk, { name: S.name }));
@@ -1663,6 +1738,7 @@ function endRound() {
   }
 
   S.rounds++;
+  WATER_N = R.ok;   // na domovskej obrazovke sa zaleje toľkokrát, koľko správnych odpovedí bolo
   if (S.mascot === 'capybara' && S.rounds % 3 === 0) setTimeout(() => fb(T('capyBreak'), true), 1600);   // kapybara pripomína prestávku
   save();
   const cheapest = Math.min(...STICKERS.filter(s => !S.unlocked.includes(s.id)).map(s => s.price), Infinity);
@@ -1680,7 +1756,37 @@ function endRound() {
 
 /* ====== ZÁHRADA – SCÉNA ====== */
 const SEASON_KEYS = ['spring', 'summer', 'autumn', 'winter'];
-const POND_CELL = `<div class="pond-cell"><div class="water"><i class="lily l1"></i><i class="lily l2"></i><i class="ripple"></i></div></div>`;
+/* krajina za plotom: obloha, kopce, les, plot, dom a zem; objekty sa kladú na svoje miesta (SLOT) */
+const POND_ANIMALS = ['frog', 'turtle', 'fish', 'swan'];
+const POND_POS = { fish: 'left:30%;top:50%', swan: 'left:56%;top:30%;width:30%', frog: 'left:14%;top:26%;width:14%', turtle: 'left:70%;top:58%;width:16%' };
+// miesta v krajine (súradnice 640 × 200): x = ľavý okraj, w = šírka, b = zem (dole), t = vrch (nebo)
+const SLOT = {
+  windmill: { x: 292, b: 144, w: 42 }, gazebo: { x: 90, b: 150, w: 96 }, greenhouse: { x: 330, b: 164, w: 76 },
+  birdhouse: { x: 228, b: 166, w: 24 }, well: { x: 300, b: 178, w: 32 }, statue: { x: 262, b: 184, w: 32 },
+  fountain: { x: 190, b: 192, w: 56 }, swing: { x: 14, b: 188, w: 64 }, pond: { x: 88, b: 199, w: 112 },
+  bench: { x: 350, b: 194, w: 44 }, table: { x: 404, b: 196, w: 44 }, lamp: { x: 470, b: 190, w: 22 },
+  moon: { x: 18, t: 14, w: 42 }, kite: { x: 96, t: 42, w: 36 }, hotair: { x: 168, t: 8, w: 40 },
+  comet: { x: 250, t: 24, w: 60 }, jupiter: { x: 340, t: 10, w: 40 }, galaxy: { x: 400, t: 34, w: 52 },
+};
+function landSVG() {
+  return `<svg viewBox="0 0 640 200" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+    <defs>
+      <linearGradient id="gSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--s1)"/><stop offset="1" style="stop-color:var(--s2)"/></linearGradient>
+      <pattern id="gPicket" width="22" height="34" patternUnits="userSpaceOnUse"><path d="M2 8 L9 1 L16 8 L16 34 L2 34Z" fill="#ffffff"/></pattern>
+    </defs>
+    <rect width="640" height="200" fill="url(#gSky)"/>
+    <circle cx="584" cy="36" r="26" style="fill:var(--sun)"/>
+    <g fill="#ffffff" opacity=".95"><ellipse cx="96" cy="44" rx="36" ry="13"/><circle cx="84" cy="36" r="13"/><circle cx="110" cy="34" r="11"/></g>
+    <g fill="#ffffff" opacity=".9"><ellipse cx="300" cy="30" rx="30" ry="10"/><circle cx="286" cy="24" r="10"/></g>
+    <path d="M0 124 L70 84 L118 112 L190 76 L252 110 L320 80 L386 112 L452 84 L520 110 L584 82 L640 104 L640 136 L0 136Z" fill="#b8d8ea"/>
+    <g fill="#7bbf8a">${Array.from({ length: 19 }, (_, i) => `<ellipse cx="${i * 36}" cy="124" rx="20" ry="12"/>`).join('')}</g>
+    <path d="M0 134 Q120 118 240 132 T480 130 T640 126 L640 152 L0 152Z" style="fill:var(--hill)"/>
+    <rect x="0" y="150" width="640" height="50" style="fill:var(--g1)"/>
+    <rect x="0" y="138" width="640" height="34" fill="url(#gPicket)"/>
+    <rect x="0" y="146" width="640" height="5" fill="#f2dcc4"/><rect x="0" y="160" width="640" height="5" fill="#f2dcc4"/>
+    <g transform="translate(446 60) scale(0.96)">${HOUSE_SVG.replace(/<\/?svg[^>]*>/g, '')}</g>
+  </svg>`;
+}
 const HOUSE_SVG = `<svg viewBox="0 0 140 120" aria-hidden="true">
   <rect x="26" y="50" width="88" height="62" rx="4" fill="#fff1d6" stroke="#e0c49a" stroke-width="2"/>
   <polygon points="14,56 70,12 126,56" fill="#ff8c7a" stroke="#d96a5a" stroke-width="2" stroke-linejoin="round"/>
@@ -1692,29 +1798,15 @@ const HOUSE_SVG = `<svg viewBox="0 0 140 120" aria-hidden="true">
   <rect x="90" y="64" width="16" height="16" rx="3" fill="#bfe9ff" stroke="#9fd0ee" stroke-width="1.5"/>
   <circle cx="22" cy="110" r="5" fill="#ff8fbf"/><circle cx="118" cy="110" r="5" fill="#ffd23c"/>
 </svg>`;
-const LAMP_SVG = `<svg viewBox="0 0 30 80" aria-hidden="true">
-  <rect x="13" y="22" width="4" height="58" rx="2" fill="#8a6a5a"/>
-  <circle cx="15" cy="14" r="10" fill="#ffe08a" stroke="#e8b84a" stroke-width="2"/>
-  <rect x="9" y="76" width="12" height="4" rx="2" fill="#8a6a5a"/>
-</svg>`;
 function currentSeason() {
   return S.season !== 'auto' ? S.season : SEASON_KEYS[Math.floor(S.rounds / 3) % SEASON_KEYS.length];
 }
 // dúha nad záhradou, keď je zvolený jednorožec
 const RAINBOW_SVG = `<svg class="rainbow" viewBox="0 0 150 80" aria-hidden="true">${['#ff6b6b', '#ffb347', '#ffe066', '#7bd389', '#6ec6ff', '#b38cff'].map((c, i) =>
   `<path d="M${12 + i * 5} 78 A${66 - i * 5} ${66 - i * 5} 0 0 1 ${138 - i * 5} 78" stroke="${c}" stroke-width="5" fill="none" stroke-linecap="round"/>`).join('')}</svg>`;
-let WATER_PENDING = false;
-// spoločník (zvolený v domčeku) prejde k náhodnému kvetu, zaleje ho a kvet sa „vyšvihne“
-function waterAnim() {
-  const plots = [...document.querySelectorAll('#album .plot:not(.empty)')];
-  const scene = document.querySelector('#scene');
-  if (!plots.length || !scene || !S.mascot) return;
-  // medvedík zaleje dva kvety naraz, ostatní jeden
-  const picked = plots.sort(() => Math.random() - 0.5).slice(0, S.mascot === 'bear' ? 2 : 1);
-  picked.forEach(plot => waterOne(plot, scene));
-  if (S.mascot === 'unicorn') sparkles(scene);   // jednorožec zanechá iskričky
-}
-function waterOne(plot, scene) {
+let WATER_N = 0;   // koľko zalievaní čaká na domovskú obrazovku (= správne odpovede v sade)
+// spoločník zaleje kvet; po zalievaní sa kvet podľa fázy zväčší
+function waterOne(plot, scene, done) {
   const sr = scene.getBoundingClientRect(), pr = plot.getBoundingClientRect();
   const x = pr.left - sr.left + pr.width * 0.3;
   const w = document.createElement('div');
@@ -1724,8 +1816,8 @@ function waterOne(plot, scene) {
   w.innerHTML = mascotSVG(S.mascot, 46) + '<span class="can">💧</span>';
   scene.appendChild(w);
   requestAnimationFrame(() => requestAnimationFrame(() => { w.style.left = x + 'px'; }));
-  setTimeout(() => plot.classList.add('grow'), 2000);
-  setTimeout(() => w.remove(), 3400);
+  setTimeout(done, 1300);
+  setTimeout(() => w.remove(), 2600);
 }
 function sparkles(scene) {
   for (let i = 0; i < 6; i++) {
@@ -1738,37 +1830,84 @@ function sparkles(scene) {
     setTimeout(() => s.remove(), 1800);
   }
 }
-// dráčik zaleje celú záhradu (raz denne, pri prvom otvorení domčeka)
+// najmenej vyrastený kvet (pri rovnosti náhodne)
+function lowestPlant(plants) {
+  return plants.slice().sort((a, b) => (S.grow[a.id] || 0) - (S.grow[b.id] || 0) || Math.random() - 0.5)[0];
+}
+function setPlantStage(plot, stage) {
+  const p = plot.querySelector('.plant');
+  if (p) p.className = 'plant g' + stage;
+}
+// zalievanie po sade: každá správna odpoveď = jedno zalievanie (medvedík zalieva dva kvety naraz)
+function runWatering() {
+  const n = WATER_N;
+  WATER_N = 0;
+  if (!n) return;
+  const plants = S.unlocked.map(id => STICKERS.find(s => s.id === id)).filter(s => s && s.tier === 1);
+  if (!plants.length) { fb(T('waterNone'), false); return; }
+  const scene = $('#scene');
+  let done = 0;
+  const step = () => {
+    if (done >= n) { fb(T('waterDone', { n }), true); save(); return; }
+    const per = S.mascot === 'bear' ? 2 : 1;
+    for (let k = 0; k < per && done < n; k++) {
+      done++;
+      const s = lowestPlant(plants);
+      S.grow[s.id] = Math.min(3, (S.grow[s.id] || 0) + 1);
+      const plot = document.querySelector(`#album .plot[data-id="${s.id}"]`);
+      if (plot) waterOne(plot, scene, () => setPlantStage(plot, S.grow[s.id]));
+    }
+    if (S.mascot === 'unicorn') sparkles(scene);   // jednorožec zanechá iskričky
+    setTimeout(step, 1500);
+  };
+  step();
+}
+// dráčik zaleje celú záhradu (raz denne): každý kvet o jednu fázu
 function waterAll() {
-  document.querySelectorAll('#album .plot:not(.empty)').forEach(p => p.classList.add('grow'));
+  S.unlocked.forEach(id => {
+    const s = STICKERS.find(x => x.id === id);
+    if (s && s.tier === 1) S.grow[id] = Math.min(3, (S.grow[id] || 0) + 1);
+  });
+  document.querySelectorAll('#album .plot[data-id]').forEach(p => setPlantStage(p, S.grow[p.dataset.id] || 0));
+  save();
 }
 function renderGarden(owned) {
   const season = currentSeason();
   $('#scene').className = 'gscene ' + season;
-  // zvieratká (úroveň 2) chodia po záhrade, ozdoby (úroveň 1) sú na záhone,
-  // stavby (úroveň 3) stoja za záhonom a vzácne veci (úroveň 4) sú na oblohe
-  const walkers = owned.filter(s => s.tier === 2).slice(0, 4);
-  const plants = owned.filter(s => s.tier <= 2 && !walkers.includes(s));
-  const builds = owned.filter(s => s.tier === 3);
-  const sky = owned.filter(s => s.tier === 4);
-  $('#builds').innerHTML = builds.map(s => `<div class="bld" title="${sName(s)}">${itemSVG(s.id, 52)}</div>`).join('');
-  $('#sky').innerHTML = (S.mascot === 'unicorn' ? RAINBOW_SVG : '') +
-    sky.map((s, i) => `<div class="skyi" style="animation-delay:${-i * 0.7}s">${itemSVG(s.id, 36)}</div>`).join('');
-  let decor = `<div class="house">${HOUSE_SVG}</div>`;
-  if (owned.length >= 6) decor += `<div class="lamp">${LAMP_SVG}</div>`;
+  $('#land').innerHTML = landSVG();
+  const plants = owned.filter(s => s.tier === 1);
+  const walkers = owned.filter(s => s.tier === 2 && !POND_ANIMALS.includes(s.id)).slice(0, 6);
+  const pondAnimals = owned.filter(s => POND_ANIMALS.includes(s.id));
+  // stavby a doplnky stoja na svojich miestach v krajine (vzadu sa kreslia skôr)
+  let decor = owned.filter(s => s.tier === 3 && s.id !== 'pond')
+    .sort((a, b) => SLOT[a.id].b - SLOT[b.id].b)
+    .map(s => {
+      const p = SLOT[s.id];
+      return `<div class="bld" title="${sName(s)}" style="left:${p.x / 6.4}%;bottom:${(200 - p.b) / 2}%;width:${p.w / 6.4}%;z-index:${Math.round(p.b)}">${itemSVG(s.id, 100)}</div>`;
+    }).join('');
+  if (owned.some(s => s.id === 'pond')) {
+    const p = SLOT.pond;
+    const kids = pondAnimals.map(s => `<span class="pa" title="${sName(s)}" style="${POND_POS[s.id]}">${itemSVG(s.id, 60)}</span>`).join('');
+    decor += `<div class="bld pondb" style="left:${p.x / 6.4}%;bottom:${(200 - p.b) / 2}%;width:${p.w / 6.4}%;z-index:${p.b}">${itemSVG('pond', 100)}${kids}</div>`;
+  }
+  decor += owned.filter(s => s.tier === 4).map(s => {
+    const p = SLOT[s.id];
+    return `<div class="sky" title="${sName(s)}" style="left:${p.x / 6.4}%;top:${p.t / 2}%;width:${p.w / 6.4}%">${itemSVG(s.id, 100)}</div>`;
+  }).join('');
+  if (S.mascot === 'unicorn') decor += RAINBOW_SVG;   // jednorožec nad záhradou
   $('#decor').innerHTML = decor;
-  const pondCells = owned.length >= 3 ? 2 : 0;
-  const cells = Math.max(12, Math.ceil((plants.length + pondCells) / 4) * 4);
-  let g = pondCells ? POND_CELL : '';
-  for (let i = 0; i < cells - pondCells; i++) {
+  // záhon: rastliny; ich veľkosť závisí od toho, koľkokrát ich Lara zalievala
+  const cells = Math.max(12, Math.ceil(plants.length / 4) * 4);
+  let g = '';
+  for (let i = 0; i < cells; i++) {
     const s = plants[i];
     g += s
-      ? `<div class="plot" title="${sName(s)}"><span class="plant" style="animation-delay:${-(i % 5) * 0.7}s">${itemSVG(s.id, 52)}</span></div>`
+      ? `<div class="plot" data-id="${s.id}" title="${sName(s)}"><span class="plant g${S.grow[s.id] || 0}" style="animation-delay:${-(i % 5) * 0.7}s">${itemSVG(s.id, 52)}</span></div>`
       : '<div class="plot empty"><span class="sprout">🌱</span></div>';
   }
   $('#album').innerHTML = g;
   $('#walkers').innerHTML = walkers.map((s, i) =>
-    `<div class="walker" style="top:${12 + i * 20}%;animation-duration:${20 + i * 6}s;animation-delay:${-i * 7}s">${itemSVG(s.id, 54)}</div>`).join('');
+    `<div class="walker" style="top:${12 + i * 14}%;animation-duration:${20 + i * 6}s;animation-delay:${-i * 7}s">${itemSVG(s.id, 54)}</div>`).join('');
   $('#fxl').innerHTML = Array.from({ length: 10 }, (_, i) =>
     `<i class="p ${season}" style="left:${(i * 37) % 100}%;animation-delay:${-(i * 1.7)}s;animation-duration:${(season === 'summer' ? 7 : 9) + (i % 4) * 2}s"></i>`).join('');
   $('#gardenCount').textContent = T('gardenCount', { n: owned.length, total: STICKERS.length, season: T(season) });
@@ -1784,7 +1923,7 @@ const ROLE_TXT = {
     fox: 'Sometimes finds a hidden star', capybara: 'Reminds you to take a break', dragon: 'Waters the whole garden every day',
     unicorn: 'Every 10th correct = double ⭐ and a rainbow' },
 };
-const TIER_TXT = { sk: ['', 'Ozdoba', 'Pomocník', 'Stavba', 'Vzácne'], en: ['', 'Decor', 'Helper', 'Building', 'Rare'] };
+const TIER_TXT = { sk: ['', 'Rastlina', 'Zvieratko', 'Stavba', 'Nebo'], en: ['', 'Plant', 'Animal', 'Building', 'Sky'] };
 function renderShop() {
   $('#shopSub').textContent = T('haveStars', { n: S.stars });
   $('#shopGrid').innerHTML = [...STICKERS].sort((a, b) => a.price - b.price).map(s => {
@@ -1819,10 +1958,9 @@ $('#hint').addEventListener('click', e => {
     $('#hint').innerHTML = hintHTML(R.t, false);
     return;
   }
-  const ab = e.target.closest('.ab-bead');
-  const bw = e.target.closest('.ab-borrow');
-  if ((ab || bw) && R.cntOpen) {
-    if (ab) abTap(R.t, ab); else abBorrow(R.t);
+  const ct = e.target.closest('.ct-btn');
+  if (ct && R.cntOpen) {
+    ctPress(R.t, ct.dataset.op, ct.dataset.k);
     if (S.sound) SFX.tap();
     $('#hint').innerHTML = hintHTML(R.t, false);
     return;
