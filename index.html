@@ -43,7 +43,7 @@ body{
   font-family:system-ui,"Segoe UI",Roboto,sans-serif; overflow-x:hidden;
 }
 .hidden{display:none !important}
-.wrap{max-width:min(720px,100%);margin:0 auto;padding:4px 16px 40px;position:relative;z-index:1}
+.wrap{max-width:min(860px,100%);margin:0 auto;padding:4px 16px 40px;position:relative;z-index:1}
 .top{display:flex;align-items:center;justify-content:space-between;gap:8px;position:sticky;top:0;padding:10px 0;z-index:5}
 .icon{width:44px;height:44px;border-radius:50%;border:0;background:var(--card);box-shadow:var(--shadow);font-size:20px;cursor:pointer}
 .icon.txt{font-size:14px;font-weight:800;color:var(--ink)}
@@ -148,6 +148,8 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 .gscene.summer{--s1:#8fdcff;--s2:#fff7d6;--g1:#9be07a;--g2:#5fb24e;--hill:#7cc766;--sun:#ffc93c}
 .gscene.autumn{--s1:#ffd3a0;--s2:#fff1dc;--g1:#e2b66a;--g2:#b9864a;--hill:#d9a25a;--sun:#ffb347}
 .gscene.winter{--s1:#d6e6f7;--s2:#f5fbff;--g1:#f7fcff;--g2:#dbe9f6;--hill:#eef7ff;--sun:#fff3c4}
+/* záhrada je o kúsok širšia než text karty: používa aj okraj karty */
+#homeGarden,#doneGarden{margin:0 -18px}
 #land svg{position:absolute;inset:0;width:100%;height:100%;display:block}
 #decor{position:absolute;inset:0;z-index:1;pointer-events:none}
 #decor .bld{position:absolute}
@@ -156,24 +158,47 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 #album{position:absolute;inset:0;z-index:2;pointer-events:none}
 /* záhon: 112 × 82 jednotiek (celá záhrada je 1000 × 700) */
 .plot{position:absolute;width:11.2%;height:11.7%}
-.plant{position:absolute;left:0;right:0;bottom:6%;display:flex;justify-content:center;animation:sway 3.4s ease-in-out infinite;transform-origin:50% 100%}
-.plant svg{display:block;width:100%;height:auto;transition:transform .9s ease;transform-origin:50% 100%}
-.plant.g0 svg{transform:scale(.4)}
-.plant.g1 svg{transform:scale(.62)}
-.plant.g2 svg{transform:scale(.82)}
-.plant.g3 svg{transform:scale(1)}
+/* rastlina: semiačko (g0), potom výhonok (g1), rastlina (g2) a kvet (g3) */
+/* rastlina je polovica šírky záhona: aj kvet v plnom raste je nižší než lavička, stôl a studňa */
+.plant{position:absolute;left:25%;bottom:4%;width:50%;aspect-ratio:1;animation:sway 3.4s ease-in-out infinite;transform-origin:50% 100%}
+.plant .seedling,.plant .bloom{position:absolute;left:0;bottom:0;width:100%;transition:transform .8s ease,opacity .6s ease}
+.plant .seedling svg,.plant .bloom svg{display:block;width:100%;height:auto}
+.plant .bloom{transform-origin:50% 100%}
+.plant.g0 .seedling{opacity:1}
+.plant.g0 .bloom{opacity:0;transform:scale(.3)}
+.plant.g1 .seedling,.plant.g2 .seedling,.plant.g3 .seedling{opacity:0}
+.plant.g1 .bloom{opacity:1;transform:scale(.5)}
+.plant.g2 .bloom{opacity:1;transform:scale(.8)}
+.plant.g3 .bloom{opacity:1;transform:scale(1)}
+.plant.pop .bloom{animation:growPop .8s ease-out}
 @keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+/* zvieratká: nohy sa hýbu len pri chôdzi; v pokoji sa len pasú, kopú, mávajú chvostom alebo nakláňajú tykadlá */
 #walkers{position:absolute;inset:0;z-index:3;pointer-events:none}
-.walker{position:absolute;left:-16%;width:9%;animation:walk linear infinite}
-.walker svg{display:block;width:100%;height:auto;animation:bob .6s ease-in-out infinite alternate}
+.walker{position:absolute}
+.walker .flip{width:100%}
+.walker svg{display:block;width:100%;height:auto;overflow:visible}
+.walker.walking .la{animation:legA var(--gait,.6s) ease-in-out infinite alternate}
+.walker.walking .lb{animation:legB var(--gait,.6s) ease-in-out infinite alternate}
+.walker.walking .body{animation:bodyBob calc(var(--gait,.6s) * 2) ease-in-out infinite}
+.walker.walking .tail{animation:tailSway calc(var(--gait,.6s) * 2) ease-in-out infinite alternate}
+.walker.rest .head{animation:graze 3s ease-in-out infinite alternate}
+.walker.rest .stalks{animation:wobble 2.6s ease-in-out infinite alternate}
+.walker.rest .tail{animation:tailFlick 2.4s ease-in-out infinite}
+.walker.rest .pa{animation:dig .5s ease-in-out infinite alternate}
+@keyframes legA{from{transform:rotate(-24deg)}to{transform:rotate(24deg)}}
+@keyframes legB{from{transform:rotate(24deg)}to{transform:rotate(-24deg)}}
+@keyframes bodyBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.5px)}}
+@keyframes tailSway{from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}
+@keyframes tailFlick{0%,70%,100%{transform:rotate(0)}80%{transform:rotate(-16deg)}90%{transform:rotate(10deg)}}
+@keyframes graze{from{transform:rotate(0)}to{transform:rotate(16deg)}}
+@keyframes wobble{from{transform:rotate(-6deg)}to{transform:rotate(6deg)}}
+@keyframes dig{from{transform:rotate(-22deg)}to{transform:rotate(18deg)}}
 /* animácie v krajine: oblaky, slnko, vlajka, fontána, vlnky, lampáš, hojdačka, sova */
 .cl{animation:cdrift 26s ease-in-out infinite alternate}
 .cl.c2{animation-duration:34s;animation-delay:-8s}
 @keyframes cdrift{from{transform:translateX(-26px)}to{transform:translateX(26px)}}
 .rays{transform-origin:500px 40px;animation:sunspin 50s linear infinite}
 @keyframes sunspin{to{transform:rotate(360deg)}}
-.flag{transform-box:fill-box;transform-origin:0 50%;animation:flag 2.4s ease-in-out infinite alternate}
-@keyframes flag{from{transform:skewY(-5deg)}to{transform:skewY(6deg)}}
 .jet{transform-box:fill-box;transform-origin:50% 100%;animation:jet 2.2s ease-in-out infinite alternate}
 .jet.j2{animation-delay:-.7s}
 .jet.j3{animation-delay:-1.4s}
@@ -191,11 +216,17 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 .glint.b{animation-delay:-2s}
 @keyframes glint{0%,100%{opacity:.15}50%{opacity:.85}}
 /* spoločník zalieva kvet po správnej odpovedi */
-.waterer{position:absolute;z-index:5;pointer-events:none;transition:left 1.2s ease-in-out}
+.waterer{position:absolute;z-index:5;pointer-events:none;transition:left .8s ease-in-out}
 .waterer svg{display:block;width:46px;height:50px}
-.waterer .can{position:absolute;right:-8px;top:-6px;font-size:20px;animation:pour 1.4s ease-in-out 1.3s 1 both}
-@keyframes pour{0%,100%{transform:rotate(0)}50%{transform:rotate(-40deg)}}
-.plot.grow svg{animation:growPop .9s ease-out}
+.waterer .can{position:absolute;right:-8px;top:-6px;font-size:20px;transform-origin:80% 90%;transition:transform .35s ease}
+.waterer.pouring .can{transform:rotate(-50deg)}
+.drop{position:absolute;z-index:6;pointer-events:none;font-size:14px;animation:dropFall .9s ease-in forwards}
+@keyframes dropFall{0%{opacity:0;transform:translateY(-6px)}25%{opacity:1}100%{opacity:0;transform:translateY(34px)}}
+/* hlásenie nad záhradou: čo sa práve deje so zalievaním */
+.wchip{position:absolute;left:8px;top:8px;z-index:7;max-width:75%;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.92);font-size:14px;font-weight:800;color:var(--ink);box-shadow:0 2px 6px rgba(0,0,0,.12);pointer-events:none}
+.wchip:empty{display:none}
+.wchip.fade{animation:chipOut .8s ease 3s forwards}
+@keyframes chipOut{to{opacity:0}}
 .spark{position:absolute;z-index:6;pointer-events:none;font-size:18px;animation:sparkUp 1.6s ease-out forwards}
 @keyframes sparkUp{0%{opacity:0;transform:translateY(8px) scale(.6)}40%{opacity:1}100%{opacity:0;transform:translateY(-20px) scale(1.1)}}
 /* jazierko v strede: rybka, žabka, korytnačka a labuť plávajú v ňom */
@@ -215,7 +246,6 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 .hbtn:disabled{opacity:.35;cursor:default}
 .hands-done{font-size:18px;font-weight:800;color:#2fa36b;text-align:center}
 @keyframes growPop{0%{transform:scale(.7)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
-@keyframes walk{from{left:-16%}to{left:104%}}
 @keyframes bob{to{transform:translateY(-4px)}}
 .fxl{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:4}
 .p{position:absolute;top:-16px;width:10px;height:10px;animation:fallp linear infinite}
@@ -257,12 +287,15 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
         <div><b id="sStreak">0</b><span data-t="bestStreak"></span></div>
       </div>
       <div class="label" data-t="myGarden"></div>
-      <div class="gscene" id="scene">
-        <div id="land"></div>
-        <div id="decor"></div>
-        <div id="album"></div>
-        <div id="walkers"></div>
-        <div class="fxl" id="fxl"></div>
+      <div id="homeGarden">
+        <div class="gscene" id="scene">
+          <div class="wchip" id="wchip"></div>
+          <div id="land"></div>
+          <div id="decor"></div>
+          <div id="album"></div>
+          <div id="walkers"></div>
+          <div class="fxl" id="fxl"></div>
+        </div>
       </div>
       <div class="tip" id="gardenCount"></div>
       <div class="label" data-t="toPractice"></div>
@@ -352,6 +385,10 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
       </div>
       <p class="tip" id="doneHint"></p>
     </div>
+    <div class="card" style="text-align:center">
+      <p class="tip" id="doneWater"></p>
+      <div id="doneGarden"></div>
+    </div>
     <button class="bigbtn" id="againBtn" data-t="nextRound"></button>
     <button class="bigbtn alt" id="backHomeBtn" data-t="home"></button>
   </section>
@@ -403,7 +440,10 @@ const TX = {
     tapHint: 'Tap what goes away', tapCount: 'Taken away: {n}', tapLeft: '{n} left. Now type the answer!',
     helpBtn: 'Count on your hands', helpHide: 'Hide help',
     ctDone: 'Done! Now type the answer.',
-    waterNone: 'Buy a plant in the shop, then you can water it.', waterDone: 'You watered {n} times. The garden is growing!',
+    waterChip: '💧 Watering: {d} of {n}', waterFinished: '🌱 Done! The plants got {n} drops', waterNeedPlant: '💧 Drops are waiting. Buy a plant in the shop and we will water it.',
+    waterAllBloom: '🌸 All flowers are already blooming!', dragonWatered: '🐉 The dragon watered the whole garden today',
+    planted: '🌱 {name} is planted! We will water it with your correct answers.', dropsGot: '💧 Your correct answers are drops for the plants: {n}',
+    gardenLegend: '🌱 Seed → 🌿 sprout → 🌼 blooms · every correct answer is a 💧 drop',
     puppyBonus: 'Puppy brings a star!', foxStar: 'The fox found a hidden star!', unicornDouble: 'Unicorn magic: double stars!', capyBreak: 'Capybara says: time for a break!',
     backupTitle: 'Progress backup', backupShow: 'Show backup', backupCopyHint: 'Copy this code and keep it. It holds your stars and garden.', backupCopyBtn: 'Copy',
     backupRestoreHint: 'To restore, paste the code here.', backupRestoreBtn: 'Restore', backupDone: 'Restored ✓', backupBad: 'This code does not fit.', backupCopied: 'Copied ✓',
@@ -444,7 +484,10 @@ const TX = {
     tapHint: 'Ťukni na to, čo odíde', tapCount: 'Odobrali sme: {n}', tapLeft: 'Zostalo {n}. Teraz napíš odpoveď!',
     helpBtn: 'Pomôž si rukami', helpHide: 'Skry pomôcku',
     ctDone: 'Hotovo! Teraz napíš výsledok.',
-    waterNone: 'Kúp si v obchode rastlinu, potom ju budeš môcť zalievať.', waterDone: 'Zalial si {n}-krát. Záhrada rastie!',
+    waterChip: '💧 Zalievame: {d} z {n}', waterFinished: '🌱 Hotovo! Rastliny dostali {n} kvapiek', waterNeedPlant: '💧 Kvapky čakajú. Kúp si v obchode rastlinu a zalejeme ju.',
+    waterAllBloom: '🌸 Všetky kvety už kvitnú!', dragonWatered: '🐉 Dráčik dnes zalial celú záhradu',
+    planted: '🌱 {name} je zasadená! Zalievame ju tvojimi správnymi odpoveďami.', dropsGot: '💧 Tvoje správne odpovede sú kvapky pre rastliny: {n}',
+    gardenLegend: '🌱 Semiačko → 🌿 výhonok → 🌼 kvitne · každá správna odpoveď je 💧 kvapka',
     puppyBonus: 'Pejsko prináša hviezdičku!', foxStar: 'Líška našla skrytú hviezdičku!', unicornDouble: 'Čarovný jednorožec: dvojnásobné hviezdičky!', capyBreak: 'Kapybara hovorí: čas na prestávku!',
     backupTitle: 'Záloha postupu', backupShow: 'Zobraziť zálohu', backupCopyHint: 'Skopíruj tento kód a ulož si ho. Obsahuje tvoje hviezdičky a záhradu.', backupCopyBtn: 'Skopírovať',
     backupRestoreHint: 'Na obnovenie vlož kód sem.', backupRestoreBtn: 'Obnoviť', backupDone: 'Obnovené ✓', backupBad: 'Tento kód nepasuje.', backupCopied: 'Skopírované ✓',
@@ -492,11 +535,6 @@ const CHARS = {
     <ellipse cx="44" cy="30" rx="5" ry="19" fill="#ffc2da"/><ellipse cx="76" cy="30" rx="5" ry="19" fill="#ffc2da"/>
     <circle cx="60" cy="72" r="32" fill="#fff" stroke="#e3d3f0" stroke-width="2"/>
     ${face(70)}<ellipse cx="60" cy="80" rx="3" ry="2.2" fill="#ff8fbf"/>`,
-  cat: `<polygon points="28,54 32,18 56,42" fill="#ffc98a"/><polygon points="92,54 88,18 64,42" fill="#ffc98a"/>
-    <polygon points="35,46 36,30 47,42" fill="#ffb3c6"/><polygon points="85,46 84,30 73,42" fill="#ffb3c6"/>
-    <circle cx="60" cy="70" r="32" fill="#ffc98a"/>
-    <path d="M22 70 L40 74 M22 80 L40 79 M98 70 L80 74 M98 80 L80 79" stroke="#8a6a4a" stroke-width="1.6" stroke-linecap="round"/>
-    ${face(66)}`,
   bear: `<circle cx="34" cy="38" r="13" fill="#c9a27e"/><circle cx="86" cy="38" r="13" fill="#c9a27e"/>
     <circle cx="34" cy="38" r="6.5" fill="#f2dcc4"/><circle cx="86" cy="38" r="6.5" fill="#f2dcc4"/>
     <circle cx="60" cy="68" r="34" fill="#c9a27e"/>
@@ -523,7 +561,7 @@ const CHARS = {
     ${face(66)}`,
 };
 /* spoločníci majú ruky, nohy a labky (kreslené za hlavou); viewBox je o trochu vyšší */
-const LIMB_COLOR = { bunny: '#ffffff', puppy: '#f4cb92', bear: '#c9a27e', fox: '#ff9d5c', capybara: '#b98a5e', dragon: '#9ee6a8', unicorn: '#ffffff', cat: '#ffc98a' };
+const LIMB_COLOR = { bunny: '#ffffff', puppy: '#f4cb92', bear: '#c9a27e', fox: '#ff9d5c', capybara: '#b98a5e', dragon: '#9ee6a8', unicorn: '#ffffff' };
 function limbsSVG(id) {
   const c = LIMB_COLOR[id] || '#ffffff', e = 'stroke="#d8c6ea" stroke-width="1.5"';
   // zvieracie labky: krátke predné šľapky a zaoblené zadné nohy, bez ľudských rúk a nôh
@@ -694,37 +732,55 @@ const ITEM_ART = {
     <ellipse class="rip" cx="80" cy="52" rx="34" ry="14" fill="none" stroke="#ffffff" stroke-width="2" opacity=".7"/>
     <ellipse class="rip r2" cx="80" cy="52" rx="34" ry="14" fill="none" stroke="#ffffff" stroke-width="2" opacity=".7"/>
     <ellipse cx="50" cy="62" rx="9" ry="4" fill="#6cc98c"/><ellipse cx="112" cy="46" rx="8" ry="3.5" fill="#6cc98c"/>`,
-  // nové zvieratká v záhrade: chodia po chodníkoch a nelietajú
-  krtko: `<ellipse cx="60" cy="112" rx="40" ry="5" fill="#000" opacity=".1"/>
-    <ellipse cx="60" cy="80" rx="38" ry="30" fill="#8c6f62" stroke="#6e5448" stroke-width="2"/>
-    <ellipse cx="60" cy="50" rx="26" ry="23" fill="#9c7e70" stroke="#6e5448" stroke-width="2"/>
-    <g class="eyes"><circle cx="49" cy="46" r="2.6" fill="#3b2a5a"/><circle cx="71" cy="46" r="2.6" fill="#3b2a5a"/></g>
-    <ellipse cx="60" cy="63" rx="11" ry="8" fill="#ffb3c7" stroke="#e58aa5" stroke-width="1.5"/>
-    <circle cx="56" cy="63" r="1.6" fill="#e58aa5"/><circle cx="64" cy="63" r="1.6" fill="#e58aa5"/>
-    <ellipse cx="30" cy="102" rx="13" ry="9" fill="#ffb3c7" stroke="#e58aa5" stroke-width="1.5"/>
-    <ellipse cx="90" cy="102" rx="13" ry="9" fill="#ffb3c7" stroke="#e58aa5" stroke-width="1.5"/>`,
-  slimak: `<ellipse cx="60" cy="110" rx="52" ry="5" fill="#000" opacity=".1"/>
-    <path d="M30 98 Q26 84 44 82 L94 82 Q106 84 106 98 Z" fill="#f2e3b5" stroke="#d6bf8a" stroke-width="2" stroke-linejoin="round"/>
-    <line x1="92" y1="84" x2="98" y2="60" stroke="#d6bf8a" stroke-width="3" stroke-linecap="round"/>
-    <line x1="100" y1="84" x2="108" y2="62" stroke="#d6bf8a" stroke-width="3" stroke-linecap="round"/>
-    <circle cx="98" cy="58" r="5" fill="#fff" stroke="#d6bf8a" stroke-width="1.5"/>
-    <circle cx="108" cy="60" r="5" fill="#fff" stroke="#d6bf8a" stroke-width="1.5"/>
-    <circle cx="99" cy="59" r="2.2" fill="#3b2a5a"/><circle cx="109" cy="61" r="2.2" fill="#3b2a5a"/>
-    <path d="M98 92 Q104 96 110 92" stroke="#3b2a5a" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <circle cx="48" cy="66" r="26" fill="#d9a066" stroke="#a8703f" stroke-width="2.5"/>
-    <circle cx="48" cy="66" r="17" fill="none" stroke="#b97f4b" stroke-width="2.5"/>
-    <circle cx="48" cy="66" r="9" fill="none" stroke="#b97f4b" stroke-width="2.5"/>
-    <circle cx="48" cy="66" r="3" fill="#a8703f"/>`,
-  ovecka: `<ellipse cx="60" cy="116" rx="46" ry="4" fill="#000" opacity=".1"/>
-    <rect x="34" y="92" width="6" height="22" rx="3" fill="#6b5a6e"/><rect x="48" y="94" width="6" height="20" rx="3" fill="#6b5a6e"/>
-    <rect x="66" y="94" width="6" height="20" rx="3" fill="#6b5a6e"/><rect x="80" y="92" width="6" height="22" rx="3" fill="#6b5a6e"/>
-    <g fill="#ffffff" stroke="#e2dbe8" stroke-width="1.5">
-      <circle cx="38" cy="72" r="15"/><circle cx="58" cy="62" r="18"/><circle cx="78" cy="72" r="15"/>
-      <circle cx="56" cy="82" r="16"/><circle cx="34" cy="84" r="10"/><circle cx="74" cy="84" r="10"/>
-    </g>
-    <ellipse cx="96" cy="62" rx="14" ry="13" fill="#6b5a6e"/>
-    <ellipse cx="84" cy="54" rx="6" ry="3.5" fill="#6b5a6e" transform="rotate(-20 84 54)"/>
-    <g transform="translate(36 0)">${face(60, 6)}</g>`,
+  // zvieratká v záhrade: bočný pohľad (idú doprava); nohy sú v skupinách .la a .lb, aby chôdza vyzerala skutočne
+  krtko: `<ellipse cx="58" cy="93" rx="30" ry="3" fill="#000" opacity=".12"/>
+    <g class="leg lb" style="transform-origin:44px 76px"><path d="M44 76 V92" stroke="#5a4438" stroke-width="6" stroke-linecap="round"/></g>
+    <g class="leg la" style="transform-origin:58px 76px"><path d="M58 76 V92" stroke="#5a4438" stroke-width="6" stroke-linecap="round"/></g>
+    <g class="pa" style="transform-origin:76px 84px"><ellipse cx="82" cy="88" rx="9" ry="5" fill="#ffb3c7" stroke="#e58aa5" stroke-width="1.2"/></g>
+    <g class="body">
+      <ellipse cx="58" cy="70" rx="28" ry="19" fill="#7d6356" stroke="#5a4438" stroke-width="2"/>
+      <ellipse cx="82" cy="62" rx="17" ry="15" fill="#8d7063" stroke="#5a4438" stroke-width="2"/>
+      <circle cx="86" cy="60" r="1.6" fill="#2a2030"/>
+      <path d="M93 58 Q106 60 104 68 Q100 72 93 68 Z" fill="#ffb3c7" stroke="#e58aa5" stroke-width="1.2"/>
+      <circle cx="101" cy="64" r="1.2" fill="#e58aa5"/>
+    </g>`,
+  slimak: `<ellipse cx="60" cy="93" rx="48" ry="3" fill="#000" opacity=".12"/>
+    <g class="body">
+      <path d="M10 82 Q10 74 24 74 L84 74 Q98 74 102 82 Q104 90 94 92 L20 92 Q10 92 10 82Z" fill="#efe2bd" stroke="#c9b284" stroke-width="2"/>
+      <circle cx="44" cy="58" r="24" fill="#d9a066" stroke="#8f5a2a" stroke-width="2.5"/>
+      <circle cx="44" cy="58" r="16" fill="none" stroke="#b97f4b" stroke-width="2.5"/>
+      <circle cx="44" cy="58" r="8" fill="none" stroke="#b97f4b" stroke-width="2.5"/>
+      <circle cx="44" cy="58" r="2.5" fill="#8f5a2a"/>
+      <path d="M28 44 Q34 38 42 40" stroke="#fff" stroke-width="3" fill="none" opacity=".5" stroke-linecap="round"/>
+      <g class="stalks" style="transform-origin:90px 76px">
+        <path d="M90 76 Q92 66 94 58" stroke="#c9b284" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <path d="M98 76 Q101 66 104 58" stroke="#c9b284" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <circle cx="94" cy="55" r="4.5" fill="#fff" stroke="#c9b284" stroke-width="1.2"/>
+        <circle cx="104" cy="55" r="4.5" fill="#fff" stroke="#c9b284" stroke-width="1.2"/>
+        <circle cx="95" cy="55.5" r="1.8" fill="#2a2030"/><circle cx="105" cy="55.5" r="1.8" fill="#2a2030"/>
+      </g>
+      <path d="M97 84 Q101 88 105 84" stroke="#8f5a2a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    </g>`,
+  ovecka: `<ellipse cx="60" cy="93" rx="50" ry="3" fill="#000" opacity=".12"/>
+    <g class="leg lb" style="transform-origin:46px 70px"><path d="M46 70 V92" stroke="#4d4256" stroke-width="5.5" stroke-linecap="round"/></g>
+    <g class="leg la" style="transform-origin:34px 70px"><path d="M34 70 V92" stroke="#4d4256" stroke-width="5.5" stroke-linecap="round"/></g>
+    <g class="leg la" style="transform-origin:94px 70px"><path d="M94 70 V92" stroke="#4d4256" stroke-width="5.5" stroke-linecap="round"/></g>
+    <g class="leg lb" style="transform-origin:82px 70px"><path d="M82 70 V92" stroke="#4d4256" stroke-width="5.5" stroke-linecap="round"/></g>
+    <g class="body">
+      <g fill="#ffffff" stroke="#d9d6e2" stroke-width="1.5">
+        <circle cx="30" cy="58" r="12"/><circle cx="42" cy="50" r="15"/><circle cx="58" cy="46" r="17"/>
+        <circle cx="74" cy="50" r="15"/><circle cx="86" cy="60" r="11"/><circle cx="46" cy="66" r="14"/>
+        <circle cx="66" cy="66" r="14"/><circle cx="28" cy="70" r="9"/>
+      </g>
+      <circle cx="20" cy="56" r="5" fill="#ffffff" stroke="#d9d6e2" stroke-width="1"/>
+      <g class="head" style="transform-origin:92px 56px">
+        <path d="M94 46 Q88 40 90 34 Q96 38 98 44Z" fill="#4d4256"/>
+        <ellipse cx="102" cy="50" rx="11" ry="12" fill="#4d4256"/>
+        <circle cx="100" cy="38" r="4" fill="#ffffff" stroke="#d9d6e2" stroke-width="1"/>
+        <circle cx="105" cy="46" r="2.6" fill="#ffffff"/><circle cx="106" cy="46" r="1.2" fill="#2a2030"/>
+        <ellipse cx="111" cy="55" rx="3" ry="2.2" fill="#8a7a94"/>
+      </g>
+    </g>`,
   // nebo (na oblohe)
   kite: `<path d="M60 14 L84 42 L60 70 L36 42 Z" fill="#ff6b9d" stroke="#e0507a" stroke-width="2" stroke-linejoin="round"/>
     <path d="M60 14 L60 70 M36 42 L84 42" stroke="#fff" stroke-width="3"/>
@@ -736,31 +792,65 @@ const ITEM_ART = {
     <line x1="46" y1="72" x2="52" y2="96" stroke="#8a6a4a" stroke-width="2"/><line x1="74" y1="72" x2="68" y2="96" stroke="#8a6a4a" stroke-width="2"/>
     <rect x="50" y="96" width="20" height="14" rx="3" fill="#a6743a"/>`,
   // nové zvieratká do záhrady (nie sú medzi spoločníkmi)
-  hedgehog: `<path d="M16 84 Q14 42 60 36 Q106 42 104 84 Z" fill="#a9825b" stroke="#7f5d3c" stroke-width="2"/>
-    <polygon points="28,62 34,38 42,60" fill="#7f5d3c"/><polygon points="44,52 52,30 60,50" fill="#7f5d3c"/>
-    <polygon points="62,50 70,30 78,52" fill="#7f5d3c"/><polygon points="80,60 88,40 94,64" fill="#7f5d3c"/>
-    <ellipse cx="86" cy="82" rx="26" ry="20" fill="#f4d9b8" stroke="#d9b888" stroke-width="2"/>
-    <circle cx="84" cy="76" r="3.5" fill="#3b2a5a"/><ellipse cx="102" cy="80" rx="4" ry="3.5" fill="#3b2a5a"/>
-    <ellipse cx="94" cy="92" rx="3" ry="2" fill="#ff8fbf"/>
-    <ellipse cx="40" cy="100" rx="9" ry="6" fill="#7f5d3c"/><ellipse cx="66" cy="100" rx="9" ry="6" fill="#7f5d3c"/>`,
+  hedgehog: `<ellipse cx="58" cy="93" rx="32" ry="3" fill="#000" opacity=".12"/>
+    <g class="leg lb" style="transform-origin:44px 78px"><path d="M44 78 V92" stroke="#5c4030" stroke-width="6" stroke-linecap="round"/></g>
+    <g class="leg la" style="transform-origin:34px 78px"><path d="M34 78 V92" stroke="#5c4030" stroke-width="6" stroke-linecap="round"/></g>
+    <g class="leg la" style="transform-origin:72px 78px"><path d="M72 78 V92" stroke="#5c4030" stroke-width="6" stroke-linecap="round"/></g>
+    <g class="leg lb" style="transform-origin:84px 78px"><path d="M84 78 V92" stroke="#5c4030" stroke-width="6" stroke-linecap="round"/></g>
+    <g class="body">
+      <path d="M22 80 Q18 44 58 40 Q96 42 94 80 Z" fill="#8b6a4e" stroke="#5c4030" stroke-width="2"/>
+      <path d="M28 66 L20 60 M30 54 L22 46 M38 46 L32 37 M48 42 L45 32 M58 40 L58 30 M68 41 L71 31 M78 44 L84 35 M87 52 L95 46 M90 64 L99 60" stroke="#5c4030" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="84" cy="62" rx="3.5" ry="3" fill="#d8b48a"/>
+      <path d="M80 66 Q88 58 96 66 Q104 72 102 80 Q94 84 84 80 Z" fill="#e9c9a0" stroke="#5c4030" stroke-width="1.5"/>
+      <circle cx="91" cy="70" r="2" fill="#2a2030"/>
+      <circle cx="102" cy="77" r="2.2" fill="#2a2030"/>
+    </g>`,
+  squirrel: `<ellipse cx="60" cy="93" rx="34" ry="3" fill="#000" opacity=".12"/>
+    <path class="tail" d="M32 70 Q6 66 8 42 Q10 20 30 14 Q22 32 30 46 Q36 58 44 62 Z" fill="#c7833f" stroke="#9a5a25" stroke-width="2" stroke-linejoin="round" style="transform-origin:34px 68px"/>
+    <g class="leg lb" style="transform-origin:46px 76px"><path d="M46 76 V92" stroke="#9a5a25" stroke-width="5.5" stroke-linecap="round"/></g>
+    <g class="leg la" style="transform-origin:58px 76px"><path d="M58 76 V92" stroke="#9a5a25" stroke-width="5.5" stroke-linecap="round"/></g>
+    <g class="leg la" style="transform-origin:76px 76px"><path d="M76 76 V92" stroke="#9a5a25" stroke-width="5.5" stroke-linecap="round"/></g>
+    <g class="leg lb" style="transform-origin:86px 76px"><path d="M86 76 V92" stroke="#9a5a25" stroke-width="5.5" stroke-linecap="round"/></g>
+    <g class="body">
+      <ellipse cx="60" cy="66" rx="24" ry="14" fill="#c7833f" stroke="#9a5a25" stroke-width="2"/>
+      <ellipse cx="64" cy="72" rx="15" ry="6" fill="#f0d7b0"/>
+      <path d="M76 42 L74 28 L84 38Z" fill="#c7833f" stroke="#9a5a25" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M74 28 L71 22 L78 26Z" fill="#7a4a22"/>
+      <circle cx="84" cy="50" r="12" fill="#c7833f" stroke="#9a5a25" stroke-width="2"/>
+      <ellipse cx="88" cy="56" rx="5" ry="3.5" fill="#f0d7b0"/>
+      <circle cx="88" cy="47" r="2.4" fill="#2a2030"/>
+      <ellipse cx="95" cy="52" rx="2.4" ry="2" fill="#2a2030"/>
+    </g>`,
+  cat: `<ellipse cx="58" cy="93" rx="32" ry="3" fill="#000" opacity=".12"/>
+    <path class="tail" d="M28 64 Q8 62 12 44 Q14 34 22 32" stroke="#e39a4f" stroke-width="6" fill="none" stroke-linecap="round" style="transform-origin:28px 64px"/>
+    <g class="leg lb" style="transform-origin:38px 70px"><path d="M38 70 V92" stroke="#e39a4f" stroke-width="6" stroke-linecap="round"/></g>
+    <g class="leg la" style="transform-origin:48px 70px"><path d="M48 70 V92" stroke="#e39a4f" stroke-width="6" stroke-linecap="round"/></g>
+    <g class="leg la" style="transform-origin:74px 70px"><path d="M74 70 V92" stroke="#e39a4f" stroke-width="6" stroke-linecap="round"/></g>
+    <g class="leg lb" style="transform-origin:84px 70px"><path d="M84 70 V92" stroke="#e39a4f" stroke-width="6" stroke-linecap="round"/></g>
+    <g class="body">
+      <ellipse cx="58" cy="62" rx="28" ry="14" fill="#e39a4f" stroke="#b86a2e" stroke-width="2"/>
+      <path d="M42 52 q3 6 1 12 M52 50 q3 7 1 13 M62 50 q3 7 1 12" stroke="#b86a2e" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <path d="M78 40 L77 26 L88 36Z" fill="#e39a4f" stroke="#b86a2e" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M86 36 L95 26 L96 40Z" fill="#e39a4f" stroke="#b86a2e" stroke-width="1.5" stroke-linejoin="round"/>
+      <circle cx="86" cy="48" r="13" fill="#e39a4f" stroke="#b86a2e" stroke-width="2"/>
+      <ellipse cx="90" cy="46" rx="2.4" ry="3" fill="#8fd17a"/>
+      <circle cx="90" cy="46" r="1" fill="#2a2030"/>
+      <path d="M96 50 l3 1.5 l-3 1.5Z" fill="#f08aa6"/>
+      <path d="M96 52 L108 50 M96 54 L108 56" stroke="#b86a2e" stroke-width="1"/>
+    </g>`,
   frog: `<ellipse cx="60" cy="78" rx="42" ry="28" fill="#7ed37e" stroke="#4fae52" stroke-width="2"/>
     <circle cx="36" cy="46" r="17" fill="#7ed37e" stroke="#4fae52" stroke-width="2"/><circle cx="84" cy="46" r="17" fill="#7ed37e" stroke="#4fae52" stroke-width="2"/>
     <circle cx="36" cy="46" r="10" fill="#fff"/><circle cx="84" cy="46" r="10" fill="#fff"/>
     <circle cx="38" cy="48" r="5" fill="#3b2a5a"/><circle cx="82" cy="48" r="5" fill="#3b2a5a"/>
     <path d="M40 84 Q60 98 80 84" stroke="#3b2a5a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
     <ellipse cx="26" cy="104" rx="11" ry="7" fill="#7ed37e"/><ellipse cx="94" cy="104" rx="11" ry="7" fill="#7ed37e"/>`,
-  squirrel: `<path d="M84 84 Q118 74 106 42 Q98 22 82 40 Q96 58 74 78Z" fill="#c98a4b" stroke="#a86a33" stroke-width="2"/>
-    <polygon points="36,50 38,22 56,44" fill="#e09a5a"/><polygon points="84,50 82,22 64,44" fill="#e09a5a"/>
-    <circle cx="60" cy="72" r="30" fill="#e09a5a" stroke="#c07a3a" stroke-width="2"/>
-    <ellipse cx="60" cy="86" rx="15" ry="11" fill="#f8e0c4"/>
-    ${face(66)}<ellipse cx="60" cy="84" rx="3.5" ry="2.5" fill="#3b2a5a"/>`,
   parrot: `<path d="M62 30 Q98 26 96 66 Q94 96 62 100 Q40 98 40 70 Q40 34 62 30Z" fill="#5fd38d" stroke="#3fae6e" stroke-width="2"/>
     <path d="M40 60 Q14 56 22 84 Q34 90 42 80Z" fill="#ff6b6b" stroke="#d94a4a" stroke-width="1.5"/>
     <path d="M64 30 Q62 14 74 14 Q80 24 72 34Z" fill="#ffd23c"/>
     <circle cx="66" cy="50" r="8" fill="#fff"/><circle cx="68" cy="50" r="4" fill="#3b2a5a"/>
     <path d="M74 56 Q86 60 78 68 Q72 66 74 56Z" fill="#ffb347"/>
     <ellipse cx="60" cy="104" rx="3" ry="6" fill="#ffb347"/>`,
-  bunny: CHARS.bunny, cat: CHARS.cat, fox: CHARS.fox, unicorn: CHARS.unicorn,
+  bunny: CHARS.bunny, fox: CHARS.fox, unicorn: CHARS.unicorn,
   panda: `<circle cx="60" cy="68" r="34" fill="#fff" stroke="#d8c6ea" stroke-width="2"/>
     <circle cx="32" cy="40" r="13" fill="#3b2a5a"/><circle cx="88" cy="40" r="13" fill="#3b2a5a"/>
     <ellipse cx="44" cy="62" rx="11" ry="13" fill="#3b2a5a" transform="rotate(-20 44 62)"/>
@@ -1036,7 +1126,7 @@ const ITEM_ART = {
     ${face(46, 10)}`,
 };
 // obrázky, ktoré nie sú štvorcové (šírka × výška v jednotkách viewBox)
-const ITEM_VB = { windmill: '0 0 120 150', greenhouse: '0 0 160 110', pond: '0 0 160 96' };
+const ITEM_VB = { windmill: '0 0 120 150', greenhouse: '0 0 160 110', pond: '0 0 160 96', hedgehog: '0 0 120 96', squirrel: '0 0 120 96', cat: '0 0 120 96', ovecka: '0 0 120 96', slimak: '0 0 120 96', krtko: '0 0 120 96' };
 function itemSVG(id, size = 56) {
   if (LIMB_COLOR[id]) return mascotSVG(id, size);   // zvieratká chodiace po záhrade majú tiež ruky a nohy
   const vb = ITEM_VB[id] || '0 0 120 120';
@@ -1134,7 +1224,7 @@ const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 /* ====== ULOŽENIE (len v tomto prehliadači) ====== */
 function defaults() {
   return { name: 'Lara', mascot: 'bunny', stars: 0, sound: true, level: 10, types: 'mix', auto: true,
-           unlocked: [], stats: { right: 0, total: 0 }, bestStreak: 0, rounds: 0, miss: {}, season: 'auto', companions: ['bunny'] };
+           unlocked: [], stats: { right: 0, total: 0 }, bestStreak: 0, rounds: 0, miss: {}, season: 'auto', companions: ['bunny'], water: 0 };
 }
 // staré zvieratká v záhrade, ktoré sa nahradili novými (aby sa nikomu nestratili kúpené odmeny)
 const OLD_STICKER = {
@@ -1362,10 +1452,18 @@ function buildDeco() {
 }
 
 /* ====== OBRAZOVKY A HORNÝ PANEL ====== */
+let SHOW_TIMER = null;   // čakanie pred zalievaním; ak sa obrazovka zmení skôr, zruší sa
 function show(id) {
+  if (id !== 'done') flushWatering();   // zalievanie, ktoré ešte beží, sa dokončí hneď
+  clearTimeout(SHOW_TIMER);
   document.querySelectorAll('.screen').forEach(s => s.classList.toggle('hidden', s.id !== id));
   window.scrollTo(0, 0);
-  if (id === 'home' && WATER_N) setTimeout(runWatering, 600);   // po sade sa zaleje záhrada
+  // záhrada sa presunie na obrazovku, kde ju dieťa práve vidí: po sade na výsledok, inak na domovskú
+  if (id === 'done') { $('#doneGarden').appendChild($('#scene')); SHOW_TIMER = setTimeout(runWatering, 1000); }   // najprv výsledok, potom zalievanie
+  if (id === 'home') {
+    $('#homeGarden').appendChild($('#scene'));
+    if (S.water > 0) SHOW_TIMER = setTimeout(() => { $('#scene').scrollIntoView({ block: 'center', behavior: 'smooth' }); runWatering(); }, 900);
+  }
 }
 function applyStatic() {
   document.documentElement.lang = LANG;
@@ -1789,7 +1887,7 @@ function endRound() {
   }
 
   S.rounds++;
-  WATER_N = R.ok;   // na domovskej obrazovke sa zaleje toľkokrát, koľko správnych odpovedí bolo
+  S.water = (S.water || 0) + R.ok;   // každá správna odpoveď je jedna kvapka pre rastliny
   if (S.mascot === 'capybara' && S.rounds % 3 === 0) setTimeout(() => fb(T('capyBreak'), true), 1600);   // kapybara pripomína prestávku
   save();
   const cheapest = Math.min(...STICKERS.filter(s => !S.unlocked.includes(s.id)).map(s => s.price), Infinity);
@@ -1799,6 +1897,7 @@ function endRound() {
   $('#dOk').textContent = `${R.ok}/${CONFIG.ROUND_LENGTH}`;
   $('#dStars').textContent = `+${R.gained}`;
   $('#doneHint').textContent = [levelMsg, shopMsg].filter(Boolean).join(' ');
+  $('#doneWater').textContent = R.ok ? T('dropsGot', { n: R.ok }) : '';
   SFX.win(); confetti(25);
   playSeq([mk], msg);
   renderHome();
@@ -1818,17 +1917,26 @@ const BEDS = {
 };
 // stavby na pevných miestach (c = stred, b = zem, w = šírka); oblohu: c = stred, y = stred, w = šírka
 const SLOT = {
-  windmill: { c: 56, b: 300, w: 100 }, greenhouse: { c: 884, b: 318, w: 180 },
-  gazebo: { c: 84, b: 470, w: 150 }, birdhouse: { c: 84, b: 600, w: 90 }, bench: { c: 84, b: 690, w: 110 },
-  swing: { c: 905, b: 470, w: 130 }, well: { c: 880, b: 600, w: 90 }, table: { c: 920, b: 690, w: 110 },
-  statue: { c: 300, b: 352, w: 110 }, lamp: { c: 700, b: 352, w: 100 },
-  fountain: { c: 500, b: 690, w: 150 }, pond: { c: 500, b: 472, w: 170 },
+  windmill: { c: 66, b: 300, w: 116 }, greenhouse: { c: 884, b: 318, w: 210 },
+  gazebo: { c: 84, b: 470, w: 150 }, birdhouse: { c: 84, b: 600, w: 102 }, bench: { c: 84, b: 690, w: 150 },
+  swing: { c: 912, b: 470, w: 130 }, well: { c: 892, b: 600, w: 100 }, table: { c: 920, b: 690, w: 130 },
+  statue: { c: 300, b: 352, w: 150 }, lamp: { c: 700, b: 352, w: 116 },
+  fountain: { c: 500, b: 690, w: 170 }, pond: { c: 500, b: 472, w: 170 },
   jupiter: { c: 60, y: 60, w: 84 }, moon: { c: 175, y: 70, w: 74 }, kite: { c: 170, y: 190, w: 96 },
-  comet: { c: 900, y: 52, w: 96 }, hotair: { c: 800, y: 124, w: 84 }, galaxy: { c: 930, y: 140, w: 96 },
+  comet: { c: 900, y: 52, w: 96 }, hotair: { c: 800, y: 124, w: 84 }, galaxy: { c: 930, y: 120, w: 96 },
 };
-const OWL_SLOT = { c: 500, b: 152, w: 64 };   // sova sedí na balkóne centrálnej veže
-// chodci: pruh (výška zeme) a čas jedného prechodu; chodia po chodníkoch, nie vo vzduchu
-const WALKERS = { hedgehog: [380, 30], squirrel: [692, 24], cat: [692, 36], krtko: [380, 28], ovecka: [380, 44], slimak: [692, 110] };
+const OWL_SLOT = { c: 500, b: 131, w: 70 };   // sova sedí na balkóne centrálnej veže (po zväčšení zámku je balkón vyššie)
+/* zvieratká: lane = výška chodníka (y zeme), w = šírka v záhrade, speed = jednotky za sekundu,
+   rest = pauza v sekundách, calm = chuť zostať stáť, gait = dĺžka jedného kroku v sekundách.
+   Každé má iné tempo: slimák stojí skoro stále, ovečka sa pasie, veverička beháva. */
+const CRIT = {
+  ovecka:   { lane: 380, w: 70, speed: 8,   rest: [4, 9],  calm: .55, gait: .9 },
+  hedgehog: { lane: 380, w: 44, speed: 5,   rest: [3, 7],  calm: .5,  gait: .45 },
+  krtko:    { lane: 380, w: 34, speed: 3.5, rest: [4, 9],  calm: .6,  gait: .6 },
+  cat:      { lane: 688, w: 46, speed: 13,  rest: [5, 10], calm: .7,  gait: .4 },
+  squirrel: { lane: 688, w: 40, speed: 20,  rest: [1, 3],  calm: .3,  gait: .2 },
+  slimak:   { lane: 688, w: 40, speed: 1.6, rest: [8, 15], calm: .85, gait: 1.4 },
+};
 // zámok so terasou, balustrádou a schodmi; za ním kopce a les (objekty stoja v #decor)
 function castleSVG() {
   const box = (x, y, w, h) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#fff4e0" stroke="#e2c9a0" stroke-width="2"/>`;
@@ -1836,7 +1944,8 @@ function castleSVG() {
   const slate = pts => roof(pts, '#7b8fc4', '#5a6ea8'), purple = pts => roof(pts, '#b38cff', '#8c63d9');
   const win = (x, y, w, h) => `<path d="M${x} ${y + h}V${y + w / 2}Q${x} ${y} ${x + w / 2} ${y}Q${x + w} ${y} ${x + w} ${y + w / 2}V${y + h}Z" fill="#bfe9ff" stroke="#8fc8ea" stroke-width="1.5"/>`;
   const m = (x, w) => 1000 - x - w;   // zrkadlový posun cez stred zámku (x = 500)
-  return `
+  // celý zámok je o desatinu väčší (okolo stredu terasy); bez vlajky, aby sa nedostal mimo obrázka
+  return `<g transform="translate(500 352) scale(1.1) translate(-500 -352)">
     ${box(236, 190, 32, 110)}${purple('230,194 252,146 274,194')}${box(m(236, 32), 190, 32, 110)}${purple('726,194 748,146 770,194')}
     ${box(268, 232, 92, 108)}${slate('262,236 366,236 350,212 278,212')}${box(m(268, 92), 232, 92, 108)}${slate('634,236 738,236 722,212 650,212')}
     ${box(360, 146, 34, 150)}${purple('354,150 377,98 400,150')}${box(m(360, 34), 146, 34, 150)}${purple('600,150 623,98 646,150')}
@@ -1844,8 +1953,6 @@ function castleSVG() {
     ${box(455, 96, 90, 104)}${purple('448,100 500,36 552,100')}
     <rect x="440" y="150" width="120" height="6" rx="2" fill="#f7efe0" stroke="#d9c9a6" stroke-width="1.5"/>
     ${slate('374,200 626,200 598,166 402,166')}
-    <line x1="500" y1="36" x2="500" y2="8" stroke="#8a5a3c" stroke-width="2"/>
-    <polygon class="flag" points="500,8 530,16 500,25" fill="#ff8fbf"/>
     ${win(282, 252, 18, 26)}${win(326, 252, 18, 26)}${win(m(326, 18), 252, 18, 26)}${win(m(282, 18), 252, 18, 26)}
     ${win(370, 176, 14, 22)}${win(m(370, 14), 176, 14, 22)}
     ${win(244, 222, 16, 24)}${win(m(244, 16), 222, 16, 24)}
@@ -1858,7 +1965,8 @@ function castleSVG() {
     <rect x="538" y="314" width="222" height="22" fill="url(#gBalus)"/><rect x="538" y="311" width="222" height="5" rx="2" fill="#f7efe0" stroke="#d9c9a6"/>
     <rect x="468" y="338" width="64" height="5" fill="#f3e9d2" stroke="#cbb994"/>
     <rect x="461" y="343" width="78" height="5" fill="#f3e9d2" stroke="#cbb994"/>
-    <rect x="454" y="348" width="92" height="5" fill="#f3e9d2" stroke="#cbb994"/>`;
+    <rect x="454" y="348" width="92" height="5" fill="#f3e9d2" stroke="#cbb994"/>
+  </g>`;
 }
 // celá krajina: obloha so slnkom a oblakmi, kopce, zámok, trávnik, chodníky a 12 záhonov s živým plotom
 function landSVG() {
@@ -1911,21 +2019,99 @@ function landSVG() {
 function currentSeason() {
   return S.season !== 'auto' ? S.season : SEASON_KEYS[Math.floor(S.rounds / 3) % SEASON_KEYS.length];
 }
-let WATER_N = 0;   // koľko zalievaní čaká na domovskú obrazovku (= správne odpovede v sade)
-// spoločník zaleje kvet; po zalievaní sa kvet podľa fázy zväčší
-function waterOne(plot, scene, done) {
+/* ====== ZALIEVANIE: každá správna odpoveď je jedna kvapka; kvapky dostanú rastliny, ktoré ešte nekvitnú ====== */
+const GROW_NAME = { sk: ['Semiačko', 'Výhonok', 'Rastlina', 'Kvitne'], en: ['Seed', 'Sprout', 'Plant', 'Blooming'] };
+// semiačko: hrudka zeme a prvé lístky (rovnaké pre každú rastlinu)
+const SEED_SVG = `<svg viewBox="0 0 120 120" aria-hidden="true">
+  <ellipse cx="60" cy="110" rx="34" ry="8" fill="#a9764d"/>
+  <path d="M60 108 V84" stroke="#4fae52" stroke-width="4" stroke-linecap="round"/>
+  <ellipse cx="48" cy="82" rx="12" ry="6" fill="#6cc98c" transform="rotate(-25 48 82)"/>
+  <ellipse cx="72" cy="80" rx="12" ry="6" fill="#6cc98c" transform="rotate(25 72 80)"/>
+</svg>`;
+let POUR = null;   // zalievanie, ktoré práve beží: { total, timer }
+function plantsOwned() { return S.unlocked.map(id => STICKERS.find(s => s.id === id)).filter(s => s && s.tier === 1); }
+// kam ide ďalšia kvapka: najmenej vyrastená rastlina, ktorá ešte nekvitne (pri rovnosti podľa poradia na záhone)
+function dropTarget(plants, taken = []) {
+  const open = plants.filter(s => (S.grow[s.id] || 0) < 3 && !taken.includes(s.id));
+  return open.sort((a, b) => (S.grow[a.id] || 0) - (S.grow[b.id] || 0) || plants.indexOf(a) - plants.indexOf(b))[0] || null;
+}
+function setChip(text, fade = false) {
+  const c = $('#wchip');
+  c.textContent = text;
+  c.classList.toggle('fade', fade);
+}
+// fáza rastliny na obrazovke; pri zmene sa rastlina krátko zväčší
+function setPlantStage(plot, stage, pop = false) {
+  const p = plot.querySelector('.plant');
+  if (!p) return;
+  p.className = 'plant g' + stage + (pop ? ' pop' : '');
+  if (pop) setTimeout(() => p.classList.remove('pop'), 900);
+}
+function refreshStages() {
+  document.querySelectorAll('#album .plot[data-id]').forEach(p => setPlantStage(p, S.grow[p.dataset.id] || 0));
+}
+// kvapky padajú z konvičky na kvet
+function dropsFall(scene, cx, cy) {
+  for (let i = 0; i < 3; i++) {
+    const d = document.createElement('span');
+    d.className = 'drop';
+    d.textContent = '💧';
+    d.style.left = (cx - 12 + i * 12) + 'px';
+    d.style.top = (cy - 30) + 'px';
+    d.style.animationDelay = (i * 0.12) + 's';
+    scene.appendChild(d);
+    setTimeout(() => d.remove(), 1100);
+  }
+}
+// spoločník prejde ku kvetu; keď naklopí konvičku, kvapky padnú a rastlina sa ukáže o fázu vyššie
+function pourAt(s, scene) {
+  const plot = document.querySelector(`#album .plot[data-id="${s.id}"]`);
+  if (!plot) return;
   const sr = scene.getBoundingClientRect(), pr = plot.getBoundingClientRect();
-  const x = pr.left - sr.left + pr.width * 0.3;
+  const left = pr.left - sr.left, top = pr.top - sr.top;
   const w = document.createElement('div');
   w.className = 'waterer';
-  w.style.left = (pr.left - sr.left - 60) + 'px';
-  w.style.top = (pr.top - sr.top - 18) + 'px';
+  w.style.left = (left - 60) + 'px';
+  w.style.top = (top - 18) + 'px';
   w.innerHTML = mascotSVG(S.mascot, 46) + '<span class="can">💧</span>';
   scene.appendChild(w);
-  requestAnimationFrame(() => requestAnimationFrame(() => { w.style.left = x + 'px'; }));
-  setTimeout(done, 1300);
-  setTimeout(() => w.remove(), 2600);
+  requestAnimationFrame(() => requestAnimationFrame(() => { w.style.left = (left + pr.width * 0.3) + 'px'; }));
+  setTimeout(() => {
+    w.classList.add('pouring');
+    dropsFall(scene, left + pr.width / 2, top + pr.height * 0.5);
+    setPlantStage(plot, S.grow[s.id] || 0, true);
+  }, 850);
+  setTimeout(() => w.remove(), 1700);
 }
+// zalievanie po sade: kvapky sa rozdávajú jedna po druhej (medvedík zalieva dve naraz); stav sa ukladá po každej kvapke
+function runWatering() {
+  if (POUR || !S.water) return;
+  const plants = plantsOwned();
+  if (!plants.length) { setChip(T('waterNeedPlant')); return; }   // kvapky počkajú na prvú rastlinu
+  const scene = $('#scene');
+  const total = S.water;
+  const per = S.mascot === 'bear' ? 2 : 1;
+  const beat = total > 12 ? 900 : 1700;   // pri veľa kvapkách ide zalievanie rýchlejšie
+  POUR = { total, timer: null };
+  const step = () => {
+    if (!POUR) return;
+    if (S.water <= 0) { finishWatering(total); return; }
+    const taken = [];
+    for (let k = 0; k < per && S.water > 0; k++) {
+      S.water--;
+      const s = dropTarget(plants, taken);
+      if (s) { taken.push(s.id); S.grow[s.id] = (S.grow[s.id] || 0) + 1; pourAt(s, scene); }
+      else sparkles(scene);   // všetky kvety už kvitnú: kvapka sa len vsiakne
+    }
+    if (S.mascot === 'unicorn') sparkles(scene);   // jednorožec zanechá iskričky
+    save();
+    setChip(taken.length ? T('waterChip', { d: total - S.water, n: total }) : T('waterAllBloom'));
+    if (S.water <= 0) { POUR.timer = setTimeout(() => finishWatering(total), 1000); return; }   // posledná kvapka dopadne, potom správa o hotovo
+    POUR.timer = setTimeout(step, beat);
+  };
+  step();
+}
+// iskričky: jednorožec ich zanecháva a aj kvety, ktoré už kvitnú
 function sparkles(scene) {
   for (let i = 0; i < 6; i++) {
     const s = document.createElement('span');
@@ -1937,46 +2123,76 @@ function sparkles(scene) {
     setTimeout(() => s.remove(), 1800);
   }
 }
-// najmenej vyrastený kvet (pri rovnosti náhodne)
-function lowestPlant(plants) {
-  return plants.slice().sort((a, b) => (S.grow[a.id] || 0) - (S.grow[b.id] || 0) || Math.random() - 0.5)[0];
+function finishWatering(total) {
+  POUR = null;
+  refreshStages();
+  setChip(T('waterFinished', { n: total }), true);
 }
-function setPlantStage(plot, stage) {
-  const p = plot.querySelector('.plant');
-  if (p) p.className = 'plant g' + stage;
-}
-// zalievanie po sade: každá správna odpoveď = jedno zalievanie (medvedík zalieva dva kvety naraz)
-function runWatering() {
-  const n = WATER_N;
-  WATER_N = 0;
-  if (!n) return;
-  const plants = S.unlocked.map(id => STICKERS.find(s => s.id === id)).filter(s => s && s.tier === 1);
-  if (!plants.length) { fb(T('waterNone'), false); return; }
-  const scene = $('#scene');
-  let done = 0;
-  const step = () => {
-    if (done >= n) { fb(T('waterDone', { n }), true); save(); return; }
-    const per = S.mascot === 'bear' ? 2 : 1;
-    for (let k = 0; k < per && done < n; k++) {
-      done++;
-      const s = lowestPlant(plants);
-      S.grow[s.id] = Math.min(3, (S.grow[s.id] || 0) + 1);
-      const plot = document.querySelector(`#album .plot[data-id="${s.id}"]`);
-      if (plot) waterOne(plot, scene, () => setPlantStage(plot, S.grow[s.id]));
-    }
-    if (S.mascot === 'unicorn') sparkles(scene);   // jednorožec zanechá iskričky
-    setTimeout(step, 1500);
-  };
-  step();
+// zalievanie, ktoré ešte beží, sa dokončí hneď (napr. keď dieťa ide ďalej); kvapky sa rozdelia bez animácie
+function flushWatering() {
+  if (!POUR) return;
+  clearTimeout(POUR.timer);
+  const plants = plantsOwned();
+  while (S.water > 0) {
+    S.water--;
+    const s = dropTarget(plants);
+    if (s) S.grow[s.id] = (S.grow[s.id] || 0) + 1;
+  }
+  POUR = null;
+  save();
+  refreshStages();
+  document.querySelectorAll('#scene .waterer, #scene .drop').forEach(e => e.remove());
+  setChip('');
 }
 // dráčik zaleje celú záhradu (raz denne): každý kvet o jednu fázu
 function waterAll() {
-  S.unlocked.forEach(id => {
-    const s = STICKERS.find(x => x.id === id);
-    if (s && s.tier === 1) S.grow[id] = Math.min(3, (S.grow[id] || 0) + 1);
-  });
-  document.querySelectorAll('#album .plot[data-id]').forEach(p => setPlantStage(p, S.grow[p.dataset.id] || 0));
+  plantsOwned().forEach(s => { S.grow[s.id] = Math.min(3, (S.grow[s.id] || 0) + 1); });
+  refreshStages();
   save();
+  setChip(T('dragonWatered'), true);
+}
+
+/* ====== ZVIERATKÁ V ZÁHRADE: každé má svoje tempo; chodí po chodníku, zastaví sa, pasie sa alebo kope ====== */
+const critState = {};   // id -> { x, dir, moving, target, until }
+let critTimer = null;
+const frand = (a, b) => a + Math.random() * (b - a);
+function critInit(id) {
+  critState[id] = { x: frand(120, 880), dir: Math.random() < 0.5 ? 1 : -1, moving: false, target: 0, until: performance.now() + frand(0, 4000) };
+}
+// spodok obrázka tak, aby nohy stáli presne na chodníku (v %)
+function critBottom(id) {
+  const c = CRIT[id];
+  return ((GH - c.lane) - c.w / 30) / GH * 100;
+}
+// obrázok zvieraťa; kreslí sa doprava, otočenie doľava je prevrátenie
+function critFlip(id, dir) { return `<div class="flip" style="transform:${dir < 0 ? 'scaleX(-1)' : ''}">${itemSVG(id, 100)}</div>`; }
+function critTick() {
+  const now = performance.now();
+  Object.keys(critState).forEach(id => {
+    const c = CRIT[id], st = critState[id];
+    if (st.moving) {
+      st.x += st.dir * c.speed * 0.1;
+      if ((st.dir > 0 && st.x >= st.target) || (st.dir < 0 && st.x <= st.target)) {
+        st.x = st.target;
+        st.moving = false;
+        st.until = now + frand(c.rest[0], c.rest[1]) * 1000;
+      }
+    } else if (now >= st.until) {
+      if (Math.random() < c.calm) {          // zostane ešte chvíľu stáť
+        st.until = now + frand(c.rest[0], c.rest[1]) * 500;
+      } else {                                // vyrazí ďalej; niekedy sa otočí
+        if (Math.random() < 0.25) st.dir = -st.dir;
+        st.target = Math.min(960, Math.max(40, st.x + st.dir * frand(60, 260)));
+        st.moving = true;
+      }
+    }
+    const el = document.querySelector(`#walkers .walker[data-id="${id}"]`);
+    if (!el) return;
+    el.style.left = ((st.x - c.w / 2) / GW * 100) + '%';
+    el.classList.toggle('walking', st.moving);
+    el.classList.toggle('rest', !st.moving);
+    el.firstElementChild.style.transform = st.dir < 0 ? 'scaleX(-1)' : '';
+  });
 }
 function renderGarden(owned) {
   const season = currentSeason();
@@ -1999,20 +2215,26 @@ function renderGarden(owned) {
     return `<div class="sky" title="${sName(s)}" style="left:${(p.c - p.w / 2) / GW * 100}%;top:${(p.y - p.w / 2) / GH * 100}%;width:${p.w / GW * 100}%">${itemSVG(s.id, 100)}</div>`;
   }).join('');
   $('#decor').innerHTML = decor;
-  // záhony: každá rastlina rastie na svojom mieste; rastie podľa toho, koľkokrát ju Lara zalievala
+  // záhony: rastlina sa objaví na svojom mieste ako semiačko a podľa zálievania rastie
   $('#album').innerHTML = owned.filter(s => s.tier === 1 && BEDS[s.id]).map((s, i) => {
     const [cx, cy] = BEDS[s.id];
-    return `<div class="plot" data-id="${s.id}" title="${sName(s)}" style="left:${(cx - 56) / GW * 100}%;top:${(cy - 41) / GH * 100}%">` +
-      `<span class="plant g${S.grow[s.id] || 0}" style="animation-delay:${-(i % 5) * 0.7}s">${itemSVG(s.id, 110)}</span></div>`;
+    const g = S.grow[s.id] || 0;
+    return `<div class="plot" data-id="${s.id}" title="${sName(s)} · ${GROW_NAME[LANG][g]}" style="left:${(cx - 56) / GW * 100}%;top:${(cy - 41) / GH * 100}%">` +
+      `<span class="plant g${g}" style="animation-delay:${-(i % 5) * 0.7}s"><span class="seedling">${SEED_SVG}</span><span class="bloom">${itemSVG(s.id, 110)}</span></span></div>`;
   }).join('');
-  // chodci po chodníkoch: krtko, slimák, ovečka a ďalší
-  $('#walkers').innerHTML = owned.filter(s => WALKERS[s.id]).map((s, i) => {
-    const [lane, dur] = WALKERS[s.id];
-    return `<div class="walker" style="bottom:${(GH - lane) / GH * 100}%;animation-duration:${dur}s;animation-delay:${-(i * 9) % dur}s">${itemSVG(s.id, 90)}</div>`;
+  // zvieratká: ich stav sa drží aj pri prekreslení, takže sa nezaseknú; chodia po chodníkoch
+  const walkers = owned.filter(s => CRIT[s.id]);
+  Object.keys(critState).forEach(id => { if (!walkers.some(s => s.id === id)) delete critState[id]; });
+  $('#walkers').innerHTML = walkers.map(s => {
+    const c = CRIT[s.id];
+    if (!critState[s.id]) critInit(s.id);
+    const st = critState[s.id];
+    return `<div class="walker ${st.moving ? 'walking' : 'rest'}" data-id="${s.id}" style="width:${c.w / GW * 100}%;left:${(st.x - c.w / 2) / GW * 100}%;bottom:${critBottom(s.id)}%;--gait:${c.gait}s">${critFlip(s.id, st.dir)}</div>`;
   }).join('');
+  if (!critTimer) critTimer = setInterval(critTick, 100);
   $('#fxl').innerHTML = Array.from({ length: 10 }, (_, i) =>
     `<i class="p ${season}" style="left:${(i * 37) % 100}%;animation-delay:${-(i * 1.7)}s;animation-duration:${(season === 'summer' ? 7 : 9) + (i % 4) * 2}s"></i>`).join('');
-  $('#gardenCount').textContent = T('gardenCount', { n: owned.length, total: STICKERS.length, season: T(season) });
+  $('#gardenCount').textContent = T('gardenLegend');
 }
 
 /* ====== OBCHOD ====== */
@@ -2174,8 +2396,8 @@ $('#companionGrid').onclick = e => {
   S.companions.push(m.id);
   S.mascot = m.id;
   save(); SFX.ok(); confetti(12);
-  $('#shopMsg').textContent = T('bought', { name: mName(m) });
   renderShop(); renderTop();
+  $('#shopMsg').textContent = T('bought', { name: mName(m) });
 };
 $('#shopGrid').onclick = e => {
   const b = e.target.closest('[data-buy]');
@@ -2188,9 +2410,10 @@ $('#shopGrid').onclick = e => {
   }
   S.stars -= s.price;
   S.unlocked.push(s.id);
+  if (s.tier === 1) S.grow[s.id] = 0;   // nová rastlina je semiačko; zaleje sa po najbližšej sade
   save(); SFX.ok(); confetti(12);
-  $('#shopMsg').textContent = T('bought', { name: sName(s) });
-  renderShop(); renderTop();
+  renderShop(); renderTop();   // prekreslenie obchodu vymaže správu, preto sa nastaví až potom
+  $('#shopMsg').textContent = s.tier === 1 ? T('planted', { name: sName(s) }) : T('bought', { name: sName(s) });
 };
 
 /* ====== ŠTART ====== */
