@@ -1858,7 +1858,13 @@ function stepKeysOf(t) {
   if (t.op === '+') return SK ? ['zacni', N(t.a), 'pocitajdalej', N(t.b)] : ['startat', N(t.a), 'andcounton', N(t.b)];
   return SK ? ['zacni', N(t.a), 'odpocitaj', N(t.b)] : ['startat', N(t.a), 'andtakeaway', N(t.b)];
 }
-function answerKeys(ans) { return LANG === 'sk' ? ['vysledok', N(ans), 'nevadi'] : ['theanswer', N(ans), 'noworries']; }
+// porovnanie: odpoveď sa povie slovom (menšie, väčšie, rovné), na obrazovke ostáva znak
+const CMP_KEY = { '<': ['mensie', 'smaller'], '>': ['vacsie', 'bigger'], '=': ['rovne', 'equal'] };
+const CMP_TXT = { '<': ['menšie', 'smaller'], '>': ['väčšie', 'bigger'], '=': ['rovné', 'equal'] };
+function answerKeys(ans) {
+  if (CMP_KEY[ans]) return [LANG === 'sk' ? 'vysledok' : 'theanswer', CMP_KEY[ans][LANG === 'sk' ? 0 : 1], LANG === 'sk' ? 'nevadi' : 'noworries'];
+  return LANG === 'sk' ? ['vysledok', N(ans), 'nevadi'] : ['theanswer', N(ans), 'noworries'];
+}
 function streakKeys(n, b) { return LANG === 'sk' ? [N(n), 'zasebou', 'bonus', N(b)] : [N(n), 'inarow', 'bonus', N(b)]; }
 // nahrávky čísel sú len do 100: 101 až 199 povieme ako „sto …“, pri 200 a viac hovoríme bez čísla
 function needKeys(n) {
@@ -2021,9 +2027,10 @@ function lose() {
   bump($('#mascotP'), 'sad');
   R.input = String(R.t.ans); updateAns();
   gain(CONFIG.STARS_EFFORT);
-  const ansK = R.t.op === 'cmp' ? [] : answerKeys(R.t.ans);   // pri porovnaní je odpoveď znak (< > =) bez nahrávky
+  const ansK = answerKeys(R.t.ans);
+  const spoken = R.t.op === 'cmp' ? CMP_TXT[R.t.ans][LANG === 'sk' ? 0 : 1] : R.t.ans;   // pri porovnaní sa povie slovo, na obrazovke ostáva znak
   fbHTML(`${speakable(T('answerIs', { a: R.t.ans }), ansK)} ${speakable(T('effort', { n: CONFIG.STARS_EFFORT }), effortKeys())}`, false);
-  speakList([...(ansK.length ? [[ansK, T('answerIs', { a: R.t.ans })]] : []), [effortKeys(), T('effort', { n: CONFIG.STARS_EFFORT })]]);
+  speakList([[ansK, T('answerIs', { a: spoken })], [effortKeys(), T('effort', { n: CONFIG.STARS_EFFORT })]]);
   $('#hint').innerHTML = hintHTML(R.t, true);
   finishTask();
 }
