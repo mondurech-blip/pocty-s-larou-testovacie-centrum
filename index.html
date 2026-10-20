@@ -922,7 +922,6 @@ const STICKERS = [
   { id: 'parrot',    e: '🦜', name: 'Papagáj',     price: 10 },
   { id: 'squirrel',  e: '🐿️', name: 'Veverička',   price: 15 },
   { id: 'panda',     e: '🐼', name: 'Panda',       price: 15 },
-  { id: 'rainbow',   e: '🌈', name: 'Dúha',        price: 20 },
   { id: 'rocket',    e: '🚀', name: 'Raketa',      price: 20 },
   { id: 'butterfly', e: '🦋', name: 'Motýľ',       price: 25 },
   { id: 'flower',    e: '🌸', name: 'Kvetina',     price: 25 },
@@ -990,7 +989,7 @@ const TIER_OF = {
   icecream: 1, cake: 1, cupcake: 1, balloon: 1, gift: 1, palette: 1, guitar: 1, bike: 1, cup: 1, medal: 1, star: 1,
   cat: 2, parrot: 2, squirrel: 2, panda: 2, butterfly: 2, hedgehog: 2, frog: 2, koala: 2, turtle: 2, owl: 2,
   penguin: 2, bee: 2, ladybug: 2, fish: 2, swan: 2,
-  rainbow: 3, rocket: 3, castle: 3, dolphin: 3, whale: 3, trex: 3, elephant: 3, giraffe: 3, lion: 3, tiger: 3,
+  rocket: 3, castle: 3, dolphin: 3, whale: 3, trex: 3, elephant: 3, giraffe: 3, lion: 3, tiger: 3,
   flamingo: 3, moon: 3, sun: 3, helicopter: 3, circus: 3, island: 3, ufo: 3,
   crown: 4, fairy: 4, princess: 4, comet: 4, jupiter: 4, diamond: 4, galaxy: 4, ring: 4, dress: 4, shoes: 4, crystal: 4, mermaid: 4,
 };
@@ -1023,7 +1022,7 @@ function defaults() {
            unlocked: [], stats: { right: 0, total: 0 }, bestStreak: 0, rounds: 0, miss: {}, season: 'auto', companions: ['bunny'] };
 }
 // staré zvieratká v záhrade, ktoré sa nahradili novými (aby sa nikomu nestratili kúpené odmeny)
-const OLD_STICKER = { puppy: 'hedgehog', bunny: 'frog', fox: 'squirrel', unicorn: 'parrot', saturn: 'jupiter' };
+const OLD_STICKER = { puppy: 'hedgehog', bunny: 'frog', fox: 'squirrel', unicorn: 'parrot', saturn: 'jupiter', rainbow: 'castle' };
 function load() {
   try {
     const d = Object.assign(defaults(), JSON.parse(localStorage.getItem(KEY)) || {});
