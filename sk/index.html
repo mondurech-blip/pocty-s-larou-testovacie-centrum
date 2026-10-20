@@ -75,8 +75,6 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 .story{font-size:20px;font-weight:600;line-height:1.35;margin:4px 0 8px}
 .task{font-size:46px;font-weight:800;text-align:center;margin:8px 0 4px;letter-spacing:.02em}
 .q{display:inline-block;min-width:1.3em;padding:0 .2em;border-radius:14px;background:var(--yellow);color:#3b2a5a;text-align:center}
-.ans{font-size:40px;font-weight:800;text-align:center;min-height:66px;border:3px dashed var(--line);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:10px auto;max-width:220px}
-.ans.empty{color:var(--muted)}
 .hint{display:flex;flex-direction:column;align-items:center;gap:6px;margin:8px 0;min-height:24px}
 .frames{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
 .frame{display:grid;grid-template-columns:repeat(5,26px);gap:5px;padding:8px;border-radius:14px;background:rgba(255,255,255,.4)}
@@ -101,7 +99,6 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 .fl.gone{animation:fly .6s ease-in forwards;pointer-events:none}
 /* pomôcka pre dvojciferné čísla */
 .help-btn{display:block;margin:0 auto 8px}
-@keyframes abPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
 .st .role{display:block;font-style:normal;font-size:11px;line-height:1.25;color:var(--muted);font-weight:600;margin-top:2px}
 .fl.faded{opacity:.3}
 .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px;transition:opacity .2s}
@@ -205,21 +202,18 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 .pondb .pa{position:absolute;animation:swim 6s ease-in-out infinite alternate}
 .pondb .pa svg{display:block;width:100%!important;height:auto!important}
 @keyframes swim{0%{transform:translateX(-8px)}100%{transform:translateX(8px)}}
-/* počítadlo: kytice (10 kvetov) a kvety (1) */
-.ct{display:flex;flex-direction:column;align-items:center;gap:8px;margin:4px 0}
-.ct-task{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px;min-height:40px;font-size:30px;font-weight:800;color:var(--ink)}
-.ct-sign{font-size:30px;margin-right:4px}
-.ct-piece{display:inline-block;transition:opacity .3s,filter .3s}
-.ct-piece.used{opacity:.25;filter:grayscale(1)}
-.ct-board{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;min-height:62px;width:100%;max-width:320px;box-sizing:border-box;padding:8px;border-radius:16px;background:rgba(255,255,255,.7);border:2px dashed #d6c8f5}
-.ct-zero{font-size:28px;font-weight:800;color:var(--muted)}
-.ct-num{font-size:34px;font-weight:800;color:var(--ink)}
-.ct-btns{display:flex;gap:12px;justify-content:center}
-.ct-btn{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:120px;padding:8px 10px 6px;border-radius:16px;border:2px solid #d6c8f5;background:#fff;cursor:pointer;font:inherit;color:var(--ink)}
-.ct-btn b{font-size:22px}
-.ct-btn.hint{outline:3px solid #ff5fa2;outline-offset:2px;animation:abPulse 1s ease-in-out infinite}
-.ct-msg{font-size:15px;font-weight:700;color:#e0457b;text-align:center}
-.ct-done{font-size:18px;font-weight:800;color:#2fa36b;text-align:center}
+/* pomôcka rukami: desiatky sú plné páry rúk (10 prstov), jednotky sú prsty na jednom páre; bez blikania a vyskakovania */
+.hands{display:flex;flex-direction:column;align-items:center;gap:6px;margin:2px 0}
+.hands-num{font-size:34px;font-weight:800;color:var(--ink);line-height:1.1}
+.hands-tens{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;max-width:300px;min-height:34px}
+.hands-ones{display:flex;justify-content:center;min-height:44px}
+.hands-tens svg,.hands-ones svg,.hbtn svg{display:block}
+.hands-btns{display:flex;gap:12px;justify-content:center;margin-top:6px}
+.hbtn{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:120px;padding:8px 10px 6px;border-radius:16px;border:2px solid #d6c8f5;background:#fff;cursor:pointer;font:inherit;color:var(--ink)}
+.hbtn b{font-size:22px}
+.hbtn i{position:absolute;top:-10px;right:-8px;min-width:30px;padding:2px 6px;border-radius:999px;background:var(--ink);color:#fff;font-style:normal;font-size:14px;font-weight:800;text-align:center}
+.hbtn:disabled{opacity:.35;cursor:default}
+.hands-done{font-size:18px;font-weight:800;color:#2fa36b;text-align:center}
 @keyframes growPop{0%{transform:scale(.7)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
 @keyframes walk{from{left:-16%}to{left:104%}}
 @keyframes bob{to{transform:translateY(-4px)}}
@@ -332,7 +326,6 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
       <div class="task" id="task"></div>
       <button class="chip say" id="sayBtn" data-t="speakBtn"></button>
       <div class="hint" id="hint"></div>
-      <div class="ans empty" id="ans">?</div>
       <div class="feedback" id="fb"></div>
       <div class="pad" id="pad">
         <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
@@ -408,8 +401,8 @@ const TX = {
     gardenCount: '{n} / {total} items · {season}', weakNone: 'Nothing yet. Great! ✨',
     retry: '🔁 Let\'s review', streakBadge: '🔥 {n} in a row',
     tapHint: 'Tap what goes away', tapCount: 'Taken away: {n}', tapLeft: '{n} left. Now type the answer!',
-    helpBtn: 'Help me', helpHide: 'Hide help',
-    ctCarry: 'Ten flowers make one bouquet!', ctBorrow: 'The bouquet came apart into 10 flowers', ctDone: 'Done! Now type the answer.',
+    helpBtn: 'Count on your hands', helpHide: 'Hide help',
+    ctDone: 'Done! Now type the answer.',
     waterNone: 'Buy a plant in the shop, then you can water it.', waterDone: 'You watered {n} times. The garden is growing!',
     puppyBonus: 'Puppy brings a star!', foxStar: 'The fox found a hidden star!', unicornDouble: 'Unicorn magic: double stars!', capyBreak: 'Capybara says: time for a break!',
     backupTitle: 'Progress backup', backupShow: 'Show backup', backupCopyHint: 'Copy this code and keep it. It holds your stars and garden.', backupCopyBtn: 'Copy',
@@ -449,8 +442,8 @@ const TX = {
     gardenCount: '{n} / {total} kúskov · {season}', weakNone: 'Zatiaľ nič. Super! ✨',
     retry: '🔁 Zopakujeme', streakBadge: '🔥 {n} v rade',
     tapHint: 'Ťukni na to, čo odíde', tapCount: 'Odobrali sme: {n}', tapLeft: 'Zostalo {n}. Teraz napíš odpoveď!',
-    helpBtn: 'Pomôž si', helpHide: 'Skry pomôcku',
-    ctCarry: 'Desať kvetov je jedna kytica!', ctBorrow: 'Kytica sa rozviazala na 10 kvetov', ctDone: 'Hotovo! Teraz napíš výsledok.',
+    helpBtn: 'Pomôž si rukami', helpHide: 'Skry pomôcku',
+    ctDone: 'Hotovo! Teraz napíš výsledok.',
     waterNone: 'Kúp si v obchode rastlinu, potom ju budeš môcť zalievať.', waterDone: 'Zalial si {n}-krát. Záhrada rastie!',
     puppyBonus: 'Pejsko prináša hviezdičku!', foxStar: 'Líška našla skrytú hviezdičku!', unicornDouble: 'Čarovný jednorožec: dvojnásobné hviezdičky!', capyBreak: 'Kapybara hovorí: čas na prestávku!',
     backupTitle: 'Záloha postupu', backupShow: 'Zobraziť zálohu', backupCopyHint: 'Skopíruj tento kód a ulož si ho. Obsahuje tvoje hviezdičky a záhradu.', backupCopyBtn: 'Skopírovať',
@@ -1512,67 +1505,79 @@ function makeTask() {
   lastKey = key;
   return t;
 }
-/* pomôcka pre dvojciferné čísla: kytice (10 kvetov) a kvety (1).
-   Dieťa stláča tlačidlá +10 / +1 (alebo −10 / −1) podľa obrázkov druhého čísla.
-   Keď je 10 kvetov, zviažu sa do kytice; pri odčítaní sa kytica rozviaže na 10 kvetov. */
+/* pomôcka rukami pre dvojciferné čísla: desiatky sú plné páry rúk (10 prstov), jednotky sú prsty na jednom páre.
+   Dieťa stlačí +10 / +1 (alebo −10 / −1) toľkokrát, koľko ukazuje odznak; tlačidlo, ktoré už netreba, je zašedené.
+   Keď je na jednotkách 10 prstov, pár sa presunie medzi desiatky; pri odčítaní sa pár rozpadne na 10 prstov. */
+const HAND_UP = [12, 18, 22, 20, 14];     // dĺžky zdvihnutých prstov: palec, ukazovák, prostredník, prstenník, malíček
+const HAND_X = [0, -13, -4.5, 4.5, 13];   // vodorovné miesta prstov (palec je vonku a kreslí sa šikmo)
+// jedna ruka s dlaňou: zdvihnutý prst je ružový a dlhý, sklopený je sivý a krátky; pravá ruka je zrkadlovo
+function handSVG(cx, right, up) {
+  const s = right ? -1 : 1;
+  const skin = '#ffe0d0', skinE = '#f0c4a8', pink = '#ff8fbf', pinkE = '#e0609a', down = '#e9e4f2', downE = '#c4bad9';
+  const finger = i => {
+    const on = up[i];
+    const len = on ? HAND_UP[i] : 6;
+    const fill = on ? pink : down, stroke = on ? pinkE : downE;
+    if (i === 0) {   // palec: šikmo von od dlane
+      const px = cx - s * 15, py = 40;
+      return `<rect x="${px - 4.5}" y="${py - len}" width="9" height="${len}" rx="4.5" fill="${fill}" stroke="${stroke}" stroke-width="1.5" transform="rotate(${-40 * s} ${px} ${py})"/>`;
+    }
+    const x = cx + s * HAND_X[i];
+    return `<rect x="${x - 4.5}" y="${26 - len}" width="9" height="${len + 2}" rx="4.5" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/>`;
+  };
+  return `<rect x="${cx - 16}" y="24" width="32" height="32" rx="12" fill="${skin}" stroke="${skinE}" stroke-width="1.5"/>` +
+    [0, 1, 2, 3, 4].map(finger).join('');
+}
+// pár rúk: ľavá ruka má prsty 0–4, pravá 5–9; n = koľko prstov je zdvihnutých (10 = plný pár)
+function handsSVG(n, w = 64) {
+  const left = [0, 1, 2, 3, 4].map(i => i < n);
+  const right = [0, 1, 2, 3, 4].map(i => i + 5 < n);
+  return `<svg viewBox="0 0 120 60" width="${w}" height="${Math.round(w / 2)}" aria-hidden="true">${handSVG(34, false, left)}${handSVG(86, true, right)}</svg>`;
+}
 function cntState(t) {
   if (!R.cnt || R.cnt.key !== t.key) {
-    R.cnt = { key: t.key, T: Math.floor(t.a / 10), O: t.a % 10, pT: 0, pO: 0, msg: '' };   // pT, pO: koľko kúskov druhého čísla je už stlačených
+    R.cnt = { key: t.key, T: Math.floor(t.a / 10), O: t.a % 10, pT: 0, pO: 0 };   // pT, pO: koľko kúskov druhého čísla je už použitých
   }
   return R.cnt;
 }
-function bouquetSVG(size = 40) {
-  const heads = [[20, 18], [30, 12], [40, 18], [15, 28], [25, 24], [35, 24], [45, 28], [20, 36], [30, 32], [40, 36]];
-  return `<svg viewBox="0 0 60 60" width="${size}" height="${size}" aria-hidden="true">
-    <path d="M30 36 L22 58 M30 36 L38 58 M30 36 L30 58" stroke="#4fae52" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    ${heads.map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="5.5" fill="${i % 2 ? '#ffd23c' : '#ff8fbf'}" stroke="#ffffff" stroke-width="1"/>`).join('')}
-    <rect x="22" y="44" width="16" height="6" rx="3" fill="#ff5fa2"/></svg>`;
-}
-function flowerSVG(size = 24) {
-  return `<svg viewBox="0 0 40 40" width="${size}" height="${size}" aria-hidden="true">${petals('#ff8fbf', 20, 20, 5, 14, 6)}<circle cx="20" cy="20" r="5" fill="#ffd23c"/></svg>`;
-}
-// obrázky a tlačidlá počítadla: pri každom stlačení sa kytica alebo kvet pridá (odoberie) a odškrtne sa kúsok úlohy
-function cntHTML(t) {
+// vnútro pomôcky: veľké číslo, desiatky, jednotky a dve tlačidlá s odznakom zostávajúcich stlačení
+function cntInner(t) {
   const st = cntState(t);
-  const plus = t.op === '+';
-  const sign = plus ? '+' : '−';
+  const add = t.op === '+';
+  const sign = add ? '+' : '−';
   const bT = Math.floor(t.b / 10), bO = t.b % 10;
-  const remT = Math.max(0, bT - st.pT), remO = Math.max(0, bO - st.pO);
-  // druhé číslo ako obrázky: odškrtnuté kúsky zblednú
-  const task = Array.from({ length: bT }, (_, i) => `<span class="ct-piece${i < st.pT ? ' used' : ''}">${bouquetSVG(34)}</span>`).join('') +
-    Array.from({ length: bO }, (_, i) => `<span class="ct-piece${i < st.pO ? ' used' : ''}">${flowerSVG(22)}</span>`).join('');
-  // čo stlačiť ďalej: najprv kytice, potom kvety (podľa obrázkov, nie podľa výsledku)
-  const hi = remT > 0 ? 't' : (remO > 0 ? 'o' : '');
-  const board = Array.from({ length: st.T }, () => bouquetSVG(38)).join('') + Array.from({ length: st.O }, () => flowerSVG(24)).join('');
-  const done = !remT && !remO;
-  const op = plus ? 'add' : 'sub';
-  return `<div class="ct">
-    <div class="ct-task"><span class="ct-sign">${sign}</span>${task}</div>
-    <div class="ct-board">${board || '<span class="ct-zero">0</span>'}</div>
-    <div class="ct-num">${st.T * 10 + st.O}</div>
-    <div class="ct-btns">
-      <button class="ct-btn${hi === 't' ? ' hint' : ''}" data-op="${op}" data-k="t" type="button">${bouquetSVG(40)}<b>${sign}10</b></button>
-      <button class="ct-btn${hi === 'o' ? ' hint' : ''}" data-op="${op}" data-k="o" type="button">${flowerSVG(30)}<b>${sign}1</b></button>
+  const remT = bT - st.pT, remO = bO - st.pO;
+  const canT = remT > 0 && (add ? st.T < 10 : st.T > 0);
+  const canO = remO > 0 && (add || st.O > 0 || st.T > 0);
+  const op = add ? 'add' : 'sub';
+  const badge = n => (n > 0 ? `<i>×${n}</i>` : '');
+  return `<div class="hands-num">${st.T * 10 + st.O}</div>
+    <div class="hands-tens">${Array.from({ length: st.T }, () => handsSVG(10, 70)).join('')}</div>
+    <div class="hands-ones">${handsSVG(st.O, 96)}</div>
+    <div class="hands-btns">
+      <button class="hbtn" type="button" data-op="${op}" data-k="t"${canT ? '' : ' disabled'}>${handsSVG(10, 56)}<b>${sign}10</b>${badge(remT)}</button>
+      <button class="hbtn" type="button" data-op="${op}" data-k="o"${canO ? '' : ' disabled'}>${handsSVG(1, 56)}<b>${sign}1</b>${badge(remO)}</button>
     </div>
-    ${st.msg ? `<div class="ct-msg">${st.msg}</div>` : ''}
-    ${done ? `<div class="ct-done">${T('ctDone')}</div>` : ''}
-  </div>`;
+    ${remT === 0 && remO === 0 ? `<div class="hands-done">${T('ctDone')}</div>` : ''}`;
 }
-// stlačenie tlačidla: pribudne alebo ubudne kytica (10) alebo kvet (1);
-// 10 kvetov sa samo zviaže do kytice, a pri odčítaní bez kvetov sa kytica rozviaže
+function cntHTML(t) {
+  return `<div class="hands" id="cnt">${cntInner(t)}</div>`;
+}
+// stlačenie tlačidla: pribudne alebo ubudne pár rúk (10) alebo jeden prst (1)
 function ctPress(t, op, k) {
   const st = cntState(t);
-  st.msg = '';
+  const add = op === 'add';
   if (k === 't') {
-    if (op === 'add') { if (st.T >= 9) return; st.T++; st.pT++; }
-    else { if (st.T <= 0) return; st.T--; st.pT++; }
-  } else if (op === 'add') {
-    st.O++; st.pO++;
-    if (st.O === 10) { st.O = 0; st.T = Math.min(9, st.T + 1); st.msg = T('ctCarry'); }
-  } else if (st.O > 0) {
-    st.O--; st.pO++;
-  } else if (st.T > 0) {
-    st.T--; st.O = 9; st.pO++; st.msg = T('ctBorrow');
+    if (st.pT >= Math.floor(t.b / 10)) return;
+    if (add) { if (st.T >= 10) return; st.T++; } else { if (st.T <= 0) return; st.T--; }
+    st.pT++;
+  } else {
+    if (st.pO >= t.b % 10) return;
+    if (add) { st.O++; if (st.O === 10) { st.O = 0; st.T++; } }   // 10 prstov sa presunie do desiatok
+    else if (st.O > 0) st.O--;
+    else if (st.T > 0) { st.T--; st.O = 9; }                        // pár sa rozpadne na 10 prstov, jeden sklopíme
+    else return;
+    st.pO++;
   }
 }
 // pomôcka: desiatkový rámik pre čísla do 20, inak len text kroku
@@ -1658,9 +1663,9 @@ function renderProgress() {
   renderRider();
 }
 function updateAns() {
-  const el = $('#ans');
-  el.textContent = R.input || '?';
-  el.classList.toggle('empty', !R.input);
+  // odpoveď sa píše priamo do príkladu, na miesto otáznika
+  const q = document.querySelector('#task .q');
+  if (q) { q.textContent = R.input || '?'; q.classList.toggle('empty', !R.input); }
 }
 function fb(text, good) {
   const el = $('#fb');
@@ -1688,7 +1693,7 @@ function chooseCmp(sym) {
   check();
 }
 function check() {
-  if (R.input === '') { bump($('#ans'), 'shake'); return; }
+  if (R.input === '') { bump(document.querySelector('#task .q') || $('#task'), 'shake'); return; }
   const given = R.t.op === 'cmp' ? R.input : parseInt(R.input, 10);
   R.tries++;
   if (given === R.t.ans) win();
@@ -2055,11 +2060,11 @@ $('#hint').addEventListener('click', e => {
     $('#hint').innerHTML = hintHTML(R.t, false);
     return;
   }
-  const ct = e.target.closest('.ct-btn');
-  if (ct && R.cntOpen) {
+  const ct = e.target.closest('.hbtn');
+  if (ct && R.cntOpen && !ct.disabled) {
     ctPress(R.t, ct.dataset.op, ct.dataset.k);
     if (S.sound) SFX.tap();
-    $('#hint').innerHTML = hintHTML(R.t, false);
+    $('#cnt').innerHTML = cntInner(R.t);   // prekreslí sa len pomôcka, nie celý riadok
     return;
   }
   const c = e.target.closest('.tap');
