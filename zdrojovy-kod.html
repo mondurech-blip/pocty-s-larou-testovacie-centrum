@@ -175,7 +175,7 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 .plot::before{content:'';position:absolute;left:6%;right:6%;bottom:0;height:24px;border-radius:50%;background:#c98f5a;box-shadow:inset 0 -5px 0 #a8703f}
 .plot.empty::before{background:#b98252;opacity:.5;box-shadow:none}
 .plant{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;animation:sway 3.4s ease-in-out infinite;transform-origin:50% 100%}
-.plant svg{width:52px;height:52px}
+.plant svg{width:64px;height:64px}
 .sprout{position:absolute;left:0;right:0;bottom:16px;text-align:center;font-size:22px;opacity:.75}
 @keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
 .pond-cell{grid-column:span 2;position:relative;height:84px}
@@ -1902,7 +1902,7 @@ function renderGarden(owned) {
   for (let i = 0; i < cells; i++) {
     const s = plants[i];
     g += s
-      ? `<div class="plot" data-id="${s.id}" title="${sName(s)}"><span class="plant g${S.grow[s.id] || 0}" style="animation-delay:${-(i % 5) * 0.7}s">${itemSVG(s.id, 52)}</span></div>`
+      ? `<div class="plot" data-id="${s.id}" title="${sName(s)}"><span class="plant g${S.grow[s.id] || 0}" style="animation-delay:${-(i % 5) * 0.7}s">${itemSVG(s.id, 64)}</span></div>`
       : '<div class="plot empty"><span class="sprout">🌱</span></div>';
   }
   $('#album').innerHTML = g;
