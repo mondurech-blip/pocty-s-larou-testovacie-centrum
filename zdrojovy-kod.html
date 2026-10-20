@@ -398,6 +398,7 @@ const TX = {
     perfect: 'Perfect! All on the first try 🏆', veryGood: 'Great work! 🌟', good: 'Good job, every round takes you further 💪',
     shopHint: 'You have enough stars for a new reward in the garden! 🛍️', needMore: '{n} ⭐ more needed. Keep playing! 🎮', bought: 'New reward: {name}!',
     praise1: 'Great job, {name}!', praise2: 'Well done, {name}!', praise3: 'You did it, {name}!',
+    praise4: 'Nice work, {name}!', praise5: "You're a star, {name}!", praise6: 'Brilliant, {name}!',
     mascotHi: "Hi, {name}! I'm {mascot}.",
     hintSame: 'The numbers are the same.', hintBigger: 'The bigger number is {n}.',
     stepPlus: 'Start at {a} and count on {b}.', stepMinus: 'Start at {a} and take away {b}.',
@@ -408,7 +409,7 @@ const TX = {
     speakPlus: 'What is {a} plus {b}?', speakMinus: 'What is {a} minus {b}?',
     speakFillPlusFront: 'What plus {k} is {c}?', speakFillPlusBack: '{k} plus what is {c}?', speakFillMinus: '{a} minus what is {c}?',
     speakCmp: 'Compare {a} and {b}. Is it more, less, or the same?',
-    speakTry: 'Try again', speakGreat: 'Great', speakRight: 'Correct',
+    speakTry: 'Almost! Let\'s look again.', speakGreat: 'Great', speakRight: 'Correct',
     mascotTap: 'Tap me',
     // zvieratká a odmeny sú v EN_NAME a MASCOTS
   },
@@ -1461,7 +1462,8 @@ function check() {
     bump($('#mascotP'), 'sad');
     S.miss[R.t.txt] = (S.miss[R.t.txt] || 0) + 1;
     fb(T('tryAgain'), false);
-    playSeq(['tryagain'], T('speakTry'));
+    // v angličtine striedame viac jemných formulácií; v slovenčine je len jedna nahrávka
+    playSeq([pick(LANG === 'en' ? ['tryagain', 'tryagain2', 'tryagain3'] : ['tryagain'])], T('speakTry'));
     R.input = ''; updateAns();
     $('#hint').innerHTML = hintHTML(R.t, false);
   } else lose();
@@ -1485,8 +1487,9 @@ function win() {
   fb(msg, true);
   bump($('#mascotP'), 'happy');
   bump($('#rider'), 'happy');
-  const pk = 'praise' + rnd(1, 3);
-  if (first) playSeq([pk], T(pk, { name: S.name }));
+  // pochvala nie pri každej správnej odpovedi, a keď áno, z viacerých variant
+  const pk = pick(LANG === 'en' ? ['praise1', 'praise2', 'praise3', 'praise4', 'praise5', 'praise6'] : ['praise1', 'praise2', 'praise3']);
+  if (first && Math.random() < 0.5) playSeq([pk], T(pk, { name: S.name }));
   else playSeq(['correct'], T('speakRight'));
   $('#hint').innerHTML = '';   // po správnej odpovedi pomôcku nezobrazujeme
   finishTask();
