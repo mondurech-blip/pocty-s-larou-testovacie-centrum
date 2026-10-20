@@ -1,0 +1,1972 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Lara Math">
+<meta name="theme-color" content="#b38cff">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Math with Lara</title>
+<script>
+// diagnostika: ak sa niečo pokazí, chyba sa zobrazí dole na stránke
+window.addEventListener('error', function (e) {
+  var d = document.createElement('div');
+  d.style.cssText = 'position:fixed;left:0;right:0;bottom:0;background:#ffdede;color:#600;padding:10px;font:13px sans-serif;z-index:99999;word-break:break-all';
+  d.textContent = 'CHYBA: ' + (e.message || 'neznáma') + ' (riadok ' + (e.lineno || '?') + ')';
+  (document.body || document.documentElement).appendChild(d);
+});
+</script>
+<style>
+:root{
+  --bg1:#fdf0ff; --bg2:#e2f3ff; --card:#ffffff; --ink:#3b2a5a; --muted:#8c7fa8;
+  --pink:#ff7eb6; --purple:#b38cff; --blue:#6cb8ff; --yellow:#ffc83d; --green:#44c48a; --red:#ff7a6b;
+  --line:#e6dcf5; --shadow:0 10px 30px rgba(90,60,150,.15);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg1:#2a1d44; --bg2:#15283f; --card:#35295c; --ink:#f4eeff; --muted:#b7a8d6;
+    --line:#4a3c75; --shadow:0 10px 30px rgba(0,0,0,.45);
+  }
+}
+:root[data-theme="dark"]{
+  --bg1:#2a1d44; --bg2:#15283f; --card:#35295c; --ink:#f4eeff; --muted:#b7a8d6;
+  --line:#4a3c75; --shadow:0 10px 30px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+html,body{margin:0;-webkit-text-size-adjust:100%}
+button{touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+body{
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  min-height:100vh; background:linear-gradient(160deg,var(--bg1),var(--bg2)) fixed; color:var(--ink);
+  font-family:system-ui,"Segoe UI",Roboto,sans-serif; overflow-x:hidden;
+}
+.hidden{display:none !important}
+.wrap{max-width:min(720px,100%);margin:0 auto;padding:4px 16px 40px;position:relative;z-index:1}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px;position:sticky;top:0;padding:10px 0;z-index:5}
+.icon{width:44px;height:44px;border-radius:50%;border:0;background:var(--card);box-shadow:var(--shadow);font-size:20px;cursor:pointer}
+.icon.txt{font-size:14px;font-weight:800;color:var(--ink)}
+.stars{background:var(--card);box-shadow:var(--shadow);border-radius:999px;padding:8px 16px;font-weight:700;font-size:18px}
+.card{background:var(--card);border-radius:22px;box-shadow:var(--shadow);padding:18px;margin:12px 0}
+h1{font-size:28px;margin:6px 0 4px;text-align:center}
+.sub{color:var(--muted);text-align:center;margin:0 0 10px}
+.mascot{font-size:88px;text-align:center;line-height:1.1;margin:6px 0;display:block;cursor:pointer;user-select:none}
+.bigbtn{width:100%;border:0;border-radius:18px;padding:16px;font-size:20px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--pink),var(--purple));box-shadow:var(--shadow);cursor:pointer;margin-top:8px}
+.bigbtn.alt{background:linear-gradient(135deg,var(--blue),#5ee0c1)}
+.label{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:16px 0 8px;font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:2px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:8px 14px;font-size:15px;font-weight:600;cursor:pointer}
+.chip.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.mchip{padding:4px 8px !important;line-height:0}
+.mchip svg{width:40px;height:40px;display:block;margin:0 auto}
+.stats{display:flex;justify-content:space-around;text-align:center}
+.stats b{display:block;font-size:24px}
+.stats span{font-size:13px;color:var(--muted)}
+.tip{color:var(--muted);font-size:16px;text-align:center;margin:4px 0}
+
+/* hra */
+.progress{display:flex;justify-content:center;gap:8px;margin:4px 0 8px;flex-wrap:wrap}
+.pd{width:14px;height:14px;border-radius:50%;background:var(--line);transition:transform .2s}
+.pd.ok{background:var(--green)} .pd.bad{background:var(--red)}
+.pd.cur{background:var(--pink);transform:scale(1.35)}
+.rowtop{display:flex;justify-content:space-between;align-items:center;min-height:64px}
+.mascotP svg{width:64px;height:64px}
+.story{font-size:20px;font-weight:600;line-height:1.35;margin:4px 0 8px}
+.task{font-size:46px;font-weight:800;text-align:center;margin:8px 0 4px;letter-spacing:.02em}
+.q{display:inline-block;min-width:1.3em;padding:0 .2em;border-radius:14px;background:var(--yellow);color:#3b2a5a;text-align:center}
+.ans{font-size:40px;font-weight:800;text-align:center;min-height:66px;border:3px dashed var(--line);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:10px auto;max-width:220px}
+.ans.empty{color:var(--muted)}
+.hint{display:flex;flex-direction:column;align-items:center;gap:6px;margin:8px 0;min-height:24px}
+.frames{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.frame{display:grid;grid-template-columns:repeat(5,26px);gap:5px;padding:8px;border-radius:14px;background:rgba(255,255,255,.4)}
+.cell{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);position:relative;display:inline-block}
+.cell.empty{border-color:transparent;background:transparent}
+.cell.blue{background:var(--blue);border-color:var(--blue)}
+.cell.yellow{background:var(--yellow);border-color:var(--yellow)}
+.cell.gold{background:var(--yellow);border-color:var(--yellow);box-shadow:0 0 8px var(--yellow)}
+.cell.ghost{border:2px dashed var(--muted)}
+.cell.out{border-color:var(--red);background:transparent}
+.cell.out::after{content:'';position:absolute;left:-3px;right:-3px;top:50%;height:2px;background:var(--red);transform:rotate(-45deg)}
+.feedback{min-height:30px;text-align:center;font-size:20px;font-weight:700;margin-top:6px}
+.cell.tap{cursor:pointer;animation:pulse 1.6s ease-in-out infinite}
+.cell.gone{animation:fly .6s ease-in forwards;pointer-events:none}
+@keyframes pulse{50%{transform:scale(1.12)}}
+@keyframes fly{to{transform:translateY(-70px) scale(.4);opacity:0}}
+.tapmsg{color:var(--pink);font-weight:700}
+.flrow{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:260px;margin:4px auto}
+.fl{display:inline-block;width:34px;height:34px;transition:opacity .4s}
+.fl svg{width:34px;height:34px;display:block}
+.fl.tap{cursor:pointer;animation:pulse 1.6s ease-in-out infinite}
+.fl.gone{animation:fly .6s ease-in forwards;pointer-events:none}
+/* pomôcka pre dvojciferné čísla: počítadlo s dvoma radmi (desiatky, jednotky) */
+.help-btn{display:block;margin:0 auto 8px}
+.ab-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;margin:4px 0;width:100%}
+.ab-row{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px;border-radius:14px;background:#fff;border:2px solid #e6dcf7;max-width:100%}
+.ab-lab{font-size:15px;font-weight:700;color:var(--muted)}
+.ab-lab b{color:var(--ink);font-size:18px}
+.ab-beads{display:grid;grid-template-columns:repeat(10,24px);gap:4px}
+.ab-bead{width:24px;height:24px;border-radius:50%;border:2px solid #c9b8ea;background:#fff;cursor:pointer;box-sizing:border-box}
+.ab-bead.t{border-color:#4f8ef7}
+.ab-bead.o{border-color:#d98e00}
+.ab-bead.on.t{background:#4f8ef7}
+.ab-bead.on.o{background:#ffb703}
+.ab-now{font-size:22px;font-weight:800;color:var(--ink)}
+.ab-step{font-size:17px;font-weight:700;color:var(--ink);text-align:center}
+.ab-val{display:inline-block;min-width:30px;padding:1px 6px;border-radius:8px;background:#eef4ff;color:#2d6fd6;font-size:17px;font-weight:800;text-align:center}
+.ab-bead.hint,.ab-borrow.hint{outline:3px solid #ff5fa2;outline-offset:2px;animation:abPulse 1s ease-in-out infinite}
+@keyframes abPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+.ab-done{font-size:18px;font-weight:800;color:#2fa36b;text-align:center}
+.st .role{display:block;font-style:normal;font-size:11px;line-height:1.25;color:var(--muted);font-weight:600;margin-top:2px}
+.cnt-msg{font-size:15px;font-weight:700;color:#e0457b;text-align:center}
+.fl.faded{opacity:.3}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px;transition:opacity .2s}
+.pad.off,.cmp.off{opacity:.4;pointer-events:none}
+.pad button,.cmp button{font-size:26px;font-weight:700;padding:14px 0;border-radius:16px;border:0;background:var(--card);color:var(--ink);box-shadow:0 4px 0 var(--line);cursor:pointer}
+.pad button:active,.cmp button:active{transform:translateY(3px);box-shadow:none}
+.pad .ok{background:var(--green);color:#fff;box-shadow:0 4px 0 #2f9e6b}
+.pad .del{color:var(--muted)}
+.cmp{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px;transition:opacity .2s}
+.cmp button{font-size:40px;font-weight:800}
+.chip.say{margin-bottom:4px}
+
+/* animácie */
+.happy{animation:bounce .6s}
+.sad{animation:shake .5s}
+.shake{animation:shake .4s}
+@keyframes bounce{30%{transform:translateY(-22px) scale(1.1)}60%{transform:translateY(0)}}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.plus{position:fixed;right:70px;top:64px;font-weight:800;font-size:22px;color:#e0a100;pointer-events:none;animation:up 1.2s forwards;z-index:20}
+@keyframes up{to{opacity:0;transform:translateY(-60px)}}
+.conf{position:fixed;top:-40px;pointer-events:none;animation:fall 2.2s ease-in forwards;z-index:20}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+.deco{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.deco span{position:absolute;bottom:-60px;opacity:.15;animation:float linear infinite}
+@keyframes float{to{transform:translateY(-120vh)}}
+.idle{animation:idle 3s ease-in-out infinite}
+@keyframes idle{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+/* obchod */
+.shop{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.st{border:2px solid var(--line);border-radius:18px;padding:12px 8px;background:transparent;color:var(--ink);cursor:pointer;text-align:center;font-size:15px;font-weight:700}
+.st .se svg{display:block;margin:0 auto;width:56px;height:56px}
+.st.owned{border-color:var(--green)}
+.st small{display:block;color:var(--muted);margin-top:4px;font-weight:600}
+#shopMsg{min-height:24px;font-weight:700}
+
+/* Lara a spoločník */
+.duo{display:flex;justify-content:center;align-items:flex-end;gap:4px;margin:6px 0}
+.duo svg,.lara svg{display:block}
+.track{position:relative;padding-top:58px}
+.rider{position:absolute;bottom:22px;left:0;transform:translateX(-50%);transition:left .5s ease;pointer-events:none}
+.rider svg{width:48px;height:48px;display:block}
+.mascotP svg{width:64px;height:64px}
+/* záhrada – scéna */
+.gscene{position:relative;border-radius:22px;overflow:hidden;--s1:#b9e6ff;--s2:#eefcff;--g1:#8fd490;--g2:#68bd6e;--hill:#86cf86;--sun:#ffd36e;background:linear-gradient(180deg,var(--s1) 0,var(--s2) 190px,var(--g1) 190px,var(--g2) 100%);box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+.gscene.spring{--s1:#c4eeff;--s2:#f3fff0;--g1:#a7e89a;--g2:#72c86f;--hill:#9ad994;--sun:#ffe07a}
+.gscene.summer{--s1:#8fdcff;--s2:#fff7d6;--g1:#9be07a;--g2:#5fb24e;--hill:#7cc766;--sun:#ffc93c}
+.gscene.autumn{--s1:#ffd3a0;--s2:#fff1dc;--g1:#e2b66a;--g2:#b9864a;--hill:#d9a25a;--sun:#ffb347}
+.gscene.winter{--s1:#d6e6f7;--s2:#f5fbff;--g1:#f7fcff;--g2:#dbe9f6;--hill:#eef7ff;--sun:#fff3c4}
+.gtop{position:relative;height:190px}
+.sun{position:absolute;top:14px;right:18px;width:44px;height:44px;border-radius:50%;background:var(--sun);box-shadow:0 0 0 8px rgba(255,211,110,.28),0 0 26px rgba(255,211,110,.85)}
+.gscene.summer .sun{width:60px;height:60px;top:8px;right:14px;box-shadow:0 0 0 10px rgba(255,201,60,.25),0 0 30px rgba(255,201,60,.85)}
+.cloud{position:absolute;height:22px;width:74px;border-radius:20px;background:#fff;opacity:.95;animation:drift 22s ease-in-out infinite alternate}
+.cloud::before{content:'';position:absolute;width:30px;height:30px;border-radius:50%;background:#fff;left:12px;top:-14px}
+.cloud::after{content:'';position:absolute;width:24px;height:24px;border-radius:50%;background:#fff;left:38px;top:-10px}
+.cloud.c1{top:20px;left:12px}
+.cloud.c2{top:50px;left:150px;width:56px;animation-duration:30s}
+@keyframes drift{to{transform:translateX(18px)}}
+.hills{position:absolute;left:0;right:0;bottom:0;height:64px;background:radial-gradient(ellipse 150px 60px at 22% 100%,var(--hill) 97%,transparent 100%),radial-gradient(ellipse 170px 70px at 82% 100%,var(--hill) 97%,transparent 100%)}
+.fence{position:absolute;left:0;right:0;bottom:18px;height:34px;background:repeating-linear-gradient(90deg,#fff 0 12px,transparent 12px 26px)}
+.fence::before{content:'';position:absolute;left:0;right:0;top:9px;height:6px;background:#f2dcc4;box-shadow:0 12px 0 #f2dcc4}
+.house{position:absolute;right:12px;top:30px;width:132px;z-index:2}
+.lamp{position:absolute;left:43%;bottom:-6px;width:28px;z-index:2}
+.house svg,.lamp svg{display:block;width:100%;height:auto}
+.gbot{position:relative;min-height:150px;padding:8px 12px 18px}
+.path{position:absolute;left:50%;top:0;bottom:0;width:70px;margin-left:-35px;background:#f0d9a8;opacity:.55;clip-path:polygon(30% 0,70% 0,100% 100%,0 100%)}
+.plots{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.plot{position:relative;height:80px}
+.plot::before{content:'';position:absolute;left:6%;right:6%;bottom:0;height:24px;border-radius:50%;background:#c98f5a;box-shadow:inset 0 -5px 0 #a8703f}
+.plot.empty::before{background:#b98252;opacity:.5;box-shadow:none}
+.plant{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;animation:sway 3.4s ease-in-out infinite;transform-origin:50% 100%}
+.plant svg{width:52px;height:52px}
+.sprout{position:absolute;left:0;right:0;bottom:16px;text-align:center;font-size:22px;opacity:.75}
+@keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+.pond-cell{grid-column:span 2;position:relative;height:84px}
+.water{position:absolute;left:2%;right:2%;top:6px;bottom:4px;border-radius:50%;background:radial-gradient(ellipse at 35% 35%,#d4f5ff 0%,#8fd8f7 50%,#5fb8e6 100%);box-shadow:0 0 0 6px #d9c3a0,0 0 0 8px #b8956a,0 8px 10px rgba(60,40,20,.2)}
+.water .lily{position:absolute;width:26px;height:12px;border-radius:50%;background:#6cc98c;box-shadow:inset 0 -2px 0 #4fa878}
+.water .l1{left:16%;top:46%}
+.water .l2{right:18%;top:28%;width:20px;height:10px;transform:rotate(15deg)}
+.water .ripple{position:absolute;left:30%;right:30%;top:36%;height:40%;border:2px solid rgba(255,255,255,.75);border-radius:50%;animation:ripple 3s ease-out infinite}
+@keyframes ripple{0%{transform:scale(.4);opacity:.9}100%{transform:scale(1.4);opacity:0}}
+#walkers{position:absolute;inset:0;pointer-events:none;z-index:2}
+.walker{position:absolute;left:-16%;animation:walk linear infinite}
+.walker svg{width:54px;height:54px;display:block;animation:bob .6s ease-in-out infinite alternate}
+/* spoločník zalieva kvet po správnej odpovedi */
+.waterer{position:absolute;z-index:4;pointer-events:none;transition:left 1.2s ease-in-out}
+.waterer svg{display:block;width:46px;height:50px}
+.waterer .can{position:absolute;right:-8px;top:-6px;font-size:20px;animation:pour 1.4s ease-in-out 1.3s 1 both}
+@keyframes pour{0%,100%{transform:rotate(0)}50%{transform:rotate(-40deg)}}
+.plot.grow svg{animation:growPop .9s ease-out}
+.spark{position:absolute;z-index:5;pointer-events:none;font-size:18px;animation:sparkUp 1.6s ease-out forwards}
+@keyframes sparkUp{0%{opacity:0;transform:translateY(8px) scale(.6)}40%{opacity:1}100%{opacity:0;transform:translateY(-20px) scale(1.1)}}
+/* stavby za záhonom a vzácne veci na oblohe */
+#sky{position:absolute;left:8px;top:-186px;width:150px;display:flex;flex-wrap:wrap;align-items:flex-start;gap:2px;z-index:1;pointer-events:none}
+#sky .rainbow{width:150px;height:80px;display:block}
+.skyi{animation:bob 3s ease-in-out infinite alternate}
+#builds{position:absolute;left:10px;right:150px;top:-74px;display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;gap:2px;z-index:1;pointer-events:none}
+.bld{animation:sway 3.6s ease-in-out infinite;transform-origin:50% 100%}
+@keyframes growPop{0%{transform:scale(.7)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes walk{from{left:-16%}to{left:104%}}
+@keyframes bob{to{transform:translateY(-4px)}}
+.fxl{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:3}
+.p{position:absolute;top:-16px;width:10px;height:10px;animation:fallp linear infinite}
+.p.autumn{background:#e8873a;border-radius:0 60% 0 60%}
+.p.winter{background:#fff;border-radius:50%;box-shadow:0 0 4px #bfe6ff}
+.p.spring{background:#ff9ec8;border-radius:50% 0 50% 0}
+.p.summer{width:6px;height:6px;top:auto;bottom:-10px;background:#ffe066;border-radius:50%;animation-name:rise}
+@keyframes fallp{to{transform:translate(30px,420px) rotate(360deg)}}
+@keyframes rise{to{transform:translateY(-420px)}}
+
+@media (max-width:340px){ .task{font-size:36px} .shop{grid-template-columns:1fr} .frame{grid-template-columns:repeat(5,22px)} .cell{width:22px;height:22px} }
+</style>
+</head>
+<body>
+<div class="deco" id="deco"></div>
+<div id="fx"></div>
+
+<div class="wrap">
+  <header class="top">
+    <button class="icon" id="homeBtn" aria-label="Home">🏠</button>
+    <div class="stars">⭐ <b id="starsTop">0</b></div>
+    <button class="icon txt" id="langBtn" aria-label="Language"></button>
+    <button class="icon" id="soundBtn" aria-label="Sound">🔊</button>
+  </header>
+
+  <!-- DOMOV -->
+  <section id="home" class="screen">
+    <h1 id="hello">Hi!</h1>
+    <p class="sub" data-t="sub"></p>
+    <div class="duo"><span class="lara" id="laraBig"></span><span class="mascot" id="mascotBig" title="Tap me">🦄</span></div>
+    <button class="bigbtn" id="startBtn" data-t="play"></button>
+    <button class="bigbtn alt" id="shopBtn" data-t="shop"></button>
+
+    <div class="card">
+      <div class="stats">
+        <div><b id="sRight">0</b><span data-t="correct"></span></div>
+        <div><b id="sAcc">–</b><span data-t="accuracy"></span></div>
+        <div><b id="sRounds">0</b><span data-t="rounds"></span></div>
+        <div><b id="sStreak">0</b><span data-t="bestStreak"></span></div>
+      </div>
+      <div class="label" data-t="myGarden"></div>
+      <div class="gscene" id="scene">
+        <div class="gtop">
+          <div class="sun"></div><div class="cloud c1"></div><div class="cloud c2"></div>
+          <div class="hills"></div>
+          <div class="fence"></div>
+          <div id="decor"></div>
+        </div>
+        <div class="gbot">
+          <div class="path"></div>
+          <div class="plots" id="album"></div>
+          <div id="sky"></div>
+          <div id="builds"></div>
+          <div id="walkers"></div>
+        </div>
+        <div class="fxl" id="fxl"></div>
+      </div>
+      <div class="tip" id="gardenCount"></div>
+      <div class="label" data-t="toPractice"></div>
+      <div class="tip" id="weak"></div>
+    </div>
+
+    <div class="card">
+      <div class="label" data-t="myPet"></div>
+      <div class="chips" id="mascots"></div>
+      <div class="label" data-t="whatWeCount"></div>
+      <div class="chips" id="types">
+        <button class="chip" data-type="pm">X ± Y = ?</button>
+        <button class="chip" data-type="fill">X ± ? = Y</button>
+        <button class="chip" data-type="cmp">&gt; &lt; =</button>
+        <button class="chip" data-type="mix" data-t="typesAll"></button>
+      </div>
+      <div class="label" data-t="upToLabel"></div>
+      <div class="chips" id="levels">
+        <button class="chip" data-level="10"></button>
+        <button class="chip" data-level="20"></button>
+        <button class="chip" data-level="50"></button>
+        <button class="chip" data-level="100"></button>
+        <button class="chip" id="autoBtn"></button>
+      </div>
+      <div class="label" data-t="seasonLabel"></div>
+      <div class="chips" id="seasons">
+        <button class="chip" data-season="auto" data-t="seasonAuto"></button>
+        <button class="chip" data-season="spring" data-t="spring"></button>
+        <button class="chip" data-season="summer" data-t="summer"></button>
+        <button class="chip" data-season="autumn" data-t="autumn"></button>
+        <button class="chip" data-season="winter" data-t="winter"></button>
+      </div>
+      <div style="text-align:center;margin-top:18px">
+        <button class="chip" id="resetBtn" data-t="reset"></button>
+      </div>
+    </div>
+    <div class="card" id="backupCard">
+      <div class="label" data-t="backupTitle"></div>
+      <div style="text-align:center"><button class="chip" id="backupBtn" data-t="backupShow"></button></div>
+      <div id="backupBox" class="hidden">
+        <p class="tip" data-t="backupCopyHint"></p>
+        <textarea id="backupOut" readonly rows="4" style="width:100%;font-size:12px"></textarea>
+        <div style="text-align:center;margin-top:8px"><button class="chip" id="backupCopy" data-t="backupCopyBtn"></button></div>
+        <p class="tip" data-t="backupRestoreHint"></p>
+        <textarea id="backupIn" rows="3" style="width:100%;font-size:12px"></textarea>
+        <div style="text-align:center;margin-top:8px"><button class="chip" id="backupRestore" data-t="backupRestoreBtn"></button></div>
+        <p class="tip" id="backupMsg"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HRA -->
+  <section id="play" class="screen hidden">
+    <div class="card" style="text-align:center">
+      <div class="track"><div class="progress" id="progress"></div><span class="rider" id="rider"></span></div>
+      <div class="rowtop">
+        <span class="mascotP" id="mascotP">🦄</span>
+        <span class="tip" id="streakTxt"></span>
+      </div>
+      <div class="story hidden" id="story"></div>
+      <div class="task" id="task"></div>
+      <button class="chip say" id="sayBtn" data-t="speakBtn"></button>
+      <div class="hint" id="hint"></div>
+      <div class="ans empty" id="ans">?</div>
+      <div class="feedback" id="fb"></div>
+      <div class="pad" id="pad">
+        <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
+        <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button>
+        <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
+        <button data-k="del" class="del">⌫</button><button data-k="0">0</button><button data-k="ok" class="ok">✓</button>
+      </div>
+      <div class="cmp hidden" id="cmpBtns">
+        <button data-s="&lt;">&lt;</button><button data-s="=">=</button><button data-s="&gt;">&gt;</button>
+      </div>
+      <button class="bigbtn hidden" id="nextBtn"></button>
+    </div>
+  </section>
+
+  <!-- VÝSLEDOK KOLA -->
+  <section id="done" class="screen hidden">
+    <div class="card" style="text-align:center">
+      <span class="mascot" id="doneMascot">🏆</span>
+      <h1 data-t="roundDone"></h1>
+      <p class="sub" id="doneMsg"></p>
+      <div class="stats" style="margin-top:14px">
+        <div><b id="dOk">0</b><span data-t="correct"></span></div>
+        <div><b id="dStars">+0</b><span data-t="stars"></span></div>
+      </div>
+      <p class="tip" id="doneHint"></p>
+    </div>
+    <button class="bigbtn" id="againBtn" data-t="nextRound"></button>
+    <button class="bigbtn alt" id="backHomeBtn" data-t="home"></button>
+  </section>
+
+  <!-- OBCHOD -->
+  <section id="shop" class="screen hidden">
+    <h1 data-t="shopTitle"></h1>
+    <p class="sub" id="shopSub"></p>
+    <div class="label" data-t="shopCompanions"></div>
+    <div class="card"><div class="shop" id="companionGrid"></div></div>
+    <div class="label" data-t="shopRewards"></div>
+    <div class="card"><div class="shop" id="shopGrid"></div></div>
+    <p class="tip" id="shopMsg"></p>
+    <button class="bigbtn alt" id="shopBack" data-t="back"></button>
+  </section>
+</div>
+
+<script>
+/* ====== NASTAVENIA BODOV (môžeš ľubovoľne upraviť) ====== */
+const CONFIG = {
+  ROUND_LENGTH: 10,         // príkladov v jednom kole
+  STARS_FIRST_TRY: 2,       // správne na prvý pokus
+  STARS_SECOND_TRY: 1,      // správne na druhý pokus
+  STARS_EFFORT: 1,          // za snahu, keď sa úloha nevyrieši
+  STREAK_EVERY: 5,          // každých X správnych za sebou ...
+  STREAK_BONUS: 5,          // ... dostane bonus
+  ROUND_BONUS_GOOD: 5,      // kolo s aspoň 8 správnymi
+  ROUND_BONUS_PERFECT: 10,  // kolo: všetko na prvý pokus
+};
+const LEVELS = [10, 20, 50, 100];
+
+/* ====== JAZYK: / = angličtina (primárna), /sk/ = slovenčina ====== */
+const LANG = (/\/sk(\/|\/index\.html)?$/.test(location.pathname) || /[?&]lang=sk/.test(location.search)) ? 'sk' : 'en';
+const ROOT = /\/sk(\/|\/index\.html)?$/.test(location.pathname) ? '../' : '';   // cesta ku koreňu (sk/ je podpriečinok)
+const TX = {
+  en: {
+    title: 'Math with Lara', otherLang: 'SK',
+    sub: "Let's count and collect stars", play: 'Play ▶', shop: 'Shop & garden 🛍️', shopCompanions: 'Companions', shopRewards: 'Garden rewards',
+    correct: 'correct', accuracy: 'accuracy', rounds: 'rounds', bestStreak: 'best streak', stars: 'stars',
+    myGarden: 'My garden', toPractice: 'To practice', myPet: 'My companion', whatWeCount: 'What we count',
+    typesAll: 'All', upToLabel: 'How high', upTo: 'up to {n}', autoLevel: 'Auto level', on: 'on', off: 'off',
+    seasonLabel: 'Season in the garden', seasonAuto: 'Automatic', spring: 'Spring', summer: 'Summer', autumn: 'Autumn', winter: 'Winter',
+    reset: 'Reset progress', resetConfirm: 'Really reset stars, garden and stats?',
+    speakBtn: '🔊 Read it to me', next: 'Next ▶', results: 'Results 🏆',
+    roundDone: 'Round complete!', nextRound: 'Next round ▶', home: 'Home', shopTitle: 'Shop', back: '← Back',
+    hi: 'Hi, {name}! 👋', haveStars: 'You have {n} ⭐',
+    gardenCount: '{n} / {total} items · {season}', weakNone: 'Nothing yet. Great! ✨',
+    retry: '🔁 Let\'s review', streakBadge: '🔥 {n} in a row',
+    tapHint: 'Tap what goes away', tapCount: 'Taken away: {n}', tapLeft: '{n} left. Now type the answer!',
+    helpBtn: 'Help me', helpHide: 'Hide help',
+    abTens: 'Tens', abOnes: 'Ones', abNow: 'On the abacus: {n}', abAdd: 'Add {x}', abSub: 'Take away {x}', abBorrow: 'Swap a ten', abCarry: '10 ones make 1 ten', abBorrowMsg: 'We swapped 1 ten for 10 ones', abDone: 'Great! Now type the answer.',
+    puppyBonus: 'Puppy brings a star!', foxStar: 'The fox found a hidden star!', unicornDouble: 'Unicorn magic: double stars!', capyBreak: 'Capybara says: time for a break!',
+    backupTitle: 'Progress backup', backupShow: 'Show backup', backupCopyHint: 'Copy this code and keep it. It holds your stars and garden.', backupCopyBtn: 'Copy',
+    backupRestoreHint: 'To restore, paste the code here.', backupRestoreBtn: 'Restore', backupDone: 'Restored ✓', backupBad: 'This code does not fit.', backupCopied: 'Copied ✓',
+    great: 'Great! 🎉', correctSecond: 'Correct, nice! ⭐', tryAgain: 'Try again! 💪',
+    streakMsg: '🔥 {n} in a row! Bonus +{b} ⭐', answerIs: 'The answer is {a}. No worries, let\'s go on.', effort: 'For trying: +{n} ⭐ 💛',
+    levelUp: 'Amazing! Now we count up to {n} 🚀', levelDown: "Let's go a bit slower, counting up to {n} 🐢",
+    perfect: 'Perfect! All on the first try 🏆', veryGood: 'Great work! 🌟', good: 'Good job, every round takes you further 💪',
+    shopHint: 'You have enough stars for a new reward in the garden! 🛍️', needMore: '{n} ⭐ more needed. Keep playing! 🎮', bought: 'New reward: {name}!',
+    praise1: 'Great job, {name}!', praise2: 'Well done, {name}!', praise3: 'You did it, {name}!',
+    praise4: 'Nice work, {name}!', praise5: "You're a star, {name}!", praise6: 'Brilliant, {name}!',
+    mascotHi: "Hi, {name}! I'm {mascot}.",
+    hintSame: 'The numbers are the same.', hintBigger: 'The bigger number is {n}.',
+    stepPlus: 'Start at {a} and count on {b}.', stepMinus: 'Start at {a} and take away {b}.',
+    stepFillPlusFront: 'How much do we add to {k} to make {c}?', stepFillPlusBack: 'Start at {k} and count on until you reach {c}.',
+    stepFillMinus: 'Start at {a} and take away until you reach {c}.',
+    storyPlus: 'The fairy had {a} flowers and got {b} more. How many flowers does she have now?',
+    storyMinus: 'The garden had {a} flowers. The princess picked {b} of them. How many are left?',
+    speakPlus: 'What is {a} plus {b}?', speakMinus: 'What is {a} minus {b}?',
+    speakFillPlusFront: 'What plus {k} is {c}?', speakFillPlusBack: '{k} plus what is {c}?', speakFillMinus: '{a} minus what is {c}?',
+    speakCmp: 'Compare {a} and {b}. Is it more, less, or the same?',
+    speakTry: 'Almost! Let\'s look again.', speakGreat: 'Great', speakRight: 'Correct',
+    mascotTap: 'Tap me',
+    // zvieratká a odmeny sú v EN_NAME a MASCOTS
+  },
+  sk: {
+    title: 'Počty s Larou', otherLang: 'EN',
+    sub: 'Poďme počítať a zbierať hviezdičky', play: 'Hrať ▶', shop: 'Obchod a záhrada 🛍️', shopCompanions: 'Spoločníci', shopRewards: 'Odmeny do záhrady',
+    correct: 'správne', accuracy: 'úspešnosť', rounds: 'kôl', bestStreak: 'najlepšia séria', stars: 'hviezdičiek',
+    myGarden: 'Moja záhrada', toPractice: 'Na precvičenie', myPet: 'Môj spoločník', whatWeCount: 'Čo počítame',
+    typesAll: 'Všetko', upToLabel: 'Do akého čísla', upTo: 'do {n}', autoLevel: 'Sama zvyšovať', on: 'zap', off: 'vyp',
+    seasonLabel: 'Ročné obdobie v záhrade', seasonAuto: 'Automaticky', spring: 'Jar', summer: 'Leto', autumn: 'Jeseň', winter: 'Zima',
+    reset: 'Vynulovať pokrok', resetConfirm: 'Naozaj vynulovať hviezdičky, záhradu a štatistiky?',
+    speakBtn: '🔊 Povedz mi to', next: 'Ďalej ▶', results: 'Výsledok 🏆',
+    roundDone: 'Kolo hotové!', nextRound: 'Ďalšie kolo ▶', home: 'Domov', shopTitle: 'Obchod', back: '← Späť',
+    hi: 'Ahoj, {name}! 👋', haveStars: 'Máš {n} ⭐',
+    gardenCount: '{n} / {total} kúskov · {season}', weakNone: 'Zatiaľ nič. Super! ✨',
+    retry: '🔁 Zopakujeme', streakBadge: '🔥 {n} v rade',
+    tapHint: 'Ťukni na to, čo odíde', tapCount: 'Odobrali sme: {n}', tapLeft: 'Zostalo {n}. Teraz napíš odpoveď!',
+    helpBtn: 'Pomôž si', helpHide: 'Skry pomôcku',
+    abTens: 'Desiatky', abOnes: 'Jednotky', abNow: 'Na počítadle: {n}', abAdd: 'Pridaj {x}', abSub: 'Odober {x}', abBorrow: 'Rozmeň desiatku', abCarry: 'Desať jednotiek je jedna desiatka', abBorrowMsg: 'Jednu desiatku sme rozmenili na 10 jednotiek', abDone: 'Výborne! Teraz napíš výsledok.',
+    puppyBonus: 'Pejsko prináša hviezdičku!', foxStar: 'Líška našla skrytú hviezdičku!', unicornDouble: 'Čarovný jednorožec: dvojnásobné hviezdičky!', capyBreak: 'Kapybara hovorí: čas na prestávku!',
+    backupTitle: 'Záloha postupu', backupShow: 'Zobraziť zálohu', backupCopyHint: 'Skopíruj tento kód a ulož si ho. Obsahuje tvoje hviezdičky a záhradu.', backupCopyBtn: 'Skopírovať',
+    backupRestoreHint: 'Na obnovenie vlož kód sem.', backupRestoreBtn: 'Obnoviť', backupDone: 'Obnovené ✓', backupBad: 'Tento kód nepasuje.', backupCopied: 'Skopírované ✓',
+    great: 'Výborne! 🎉', correctSecond: 'Správne, super! ⭐', tryAgain: 'Skús to ešte raz! 💪',
+    streakMsg: '🔥 {n} za sebou! Bonus +{b} ⭐', answerIs: 'Správne je {a}. Nevadí, ideme ďalej.', effort: 'Za snahu máš +{n} ⭐ 💛',
+    levelUp: 'Tak dobre! Teraz počítame do {n} 🚀', levelDown: 'Ideme trochu pomalšie, počítame do {n} 🐢',
+    perfect: 'Perfektné! Všetko na prvý pokus 🏆', veryGood: 'Skvelá práca! 🌟', good: 'Dobrá práca, každé kolo ťa posúva ďalej 💪',
+    shopHint: 'Máš dosť hviezdičiek na novú odmenu v záhrade! 🛍️', needMore: 'Ešte {n} ⭐ chýba. Hraj ďalej! 🎮', bought: 'Máš novú odmenu: {name}!',
+    praise1: 'Výborne, {name}!', praise2: 'Šikovná si, {name}!', praise3: 'Skvele, {name}!',
+    mascotHi: 'Ahoj, {name}! Ja som {mascot}.',
+    hintSame: 'Čísla sú rovnaké.', hintBigger: 'Väčšie číslo je {n}.',
+    stepPlus: 'Začni na {a} a počítaj ďalej {b}.', stepMinus: 'Začni na {a} a odpočítaj {b}.',
+    stepFillPlusFront: 'Koľko treba pridať k {k}, aby to bolo {c}?', stepFillPlusBack: 'Začni na {k} a počítaj ďalej, kým nebudeš na {c}.',
+    stepFillMinus: 'Od {a} uberaj, kým nebudeš na {c}.',
+    storyPlus: 'Víla mala {a} {kvet} a dostala ešte {b}. Koľko kvetov má teraz?',
+    storyMinus: 'V záhrade {bolo} {a} {kvet}. Princezná {b} z nich natrhala. Koľko ich zostalo?',
+    speakPlus: 'Koľko je {a} plus {b}?', speakMinus: 'Koľko je {a} mínus {b}?',
+    speakFillPlusFront: 'Koľko plus {k} je {c}?', speakFillPlusBack: '{k} plus koľko je {c}?', speakFillMinus: '{a} mínus koľko je {c}?',
+    speakCmp: 'Porovnaj {a} a {b}. Je väčšie, menšie, alebo rovnaké?',
+    speakTry: 'Skús to ešte raz', speakGreat: 'Výborne', speakRight: 'Správne',
+    mascotTap: 'Klikni na mňa',
+  },
+};
+function T(key, v = {}) {
+  const s = (TX[LANG] && TX[LANG][key]) || TX.sk[key] || key;
+  return s.replace(/\{(\w+)\}/g, (_, n) => (v[n] !== undefined ? v[n] : ''));
+}
+
+/* ====== ZVIERATKÁ A ODMENY – jednotný kawaii štýl (viewBox 0 0 120 120) ====== */
+function face(ey = 64, dx = 13) {
+  return `<ellipse cx="${60 - dx}" cy="${ey}" rx="4.5" ry="5.5" fill="#3b2a5a"/>
+    <ellipse cx="${60 + dx}" cy="${ey}" rx="4.5" ry="5.5" fill="#3b2a5a"/>
+    <circle cx="${61 - dx}" cy="${ey - 2}" r="1.7" fill="#fff"/>
+    <circle cx="${61 + dx}" cy="${ey - 2}" r="1.7" fill="#fff"/>
+    <ellipse cx="${60 - dx - 8}" cy="${ey + 9}" rx="5" ry="3" fill="#ff8fbf" opacity=".6"/>
+    <ellipse cx="${60 + dx + 8}" cy="${ey + 9}" rx="5" ry="3" fill="#ff8fbf" opacity=".6"/>
+    <path d="M55 ${ey + 12} Q60 ${ey + 16} 65 ${ey + 12}" stroke="#3b2a5a" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+}
+const CHARS = {
+  puppy: `<ellipse cx="30" cy="54" rx="13" ry="24" fill="#c98f5a"/><ellipse cx="90" cy="54" rx="13" ry="24" fill="#c98f5a"/>
+    <circle cx="60" cy="68" r="32" fill="#f4cb92" stroke="#e0b070" stroke-width="2"/>
+    ${face(62)}<ellipse cx="60" cy="72" rx="6" ry="4" fill="#3b2a5a"/>`,
+  bunny: `<ellipse cx="44" cy="28" rx="10" ry="28" fill="#fff" stroke="#e3d3f0" stroke-width="2"/>
+    <ellipse cx="76" cy="28" rx="10" ry="28" fill="#fff" stroke="#e3d3f0" stroke-width="2"/>
+    <ellipse cx="44" cy="30" rx="5" ry="19" fill="#ffc2da"/><ellipse cx="76" cy="30" rx="5" ry="19" fill="#ffc2da"/>
+    <circle cx="60" cy="72" r="32" fill="#fff" stroke="#e3d3f0" stroke-width="2"/>
+    ${face(70)}<ellipse cx="60" cy="80" rx="3" ry="2.2" fill="#ff8fbf"/>`,
+  cat: `<polygon points="28,54 32,18 56,42" fill="#ffc98a"/><polygon points="92,54 88,18 64,42" fill="#ffc98a"/>
+    <polygon points="35,46 36,30 47,42" fill="#ffb3c6"/><polygon points="85,46 84,30 73,42" fill="#ffb3c6"/>
+    <circle cx="60" cy="70" r="32" fill="#ffc98a"/>
+    <path d="M22 70 L40 74 M22 80 L40 79 M98 70 L80 74 M98 80 L80 79" stroke="#8a6a4a" stroke-width="1.6" stroke-linecap="round"/>
+    ${face(66)}`,
+  bear: `<circle cx="34" cy="38" r="13" fill="#c9a27e"/><circle cx="86" cy="38" r="13" fill="#c9a27e"/>
+    <circle cx="34" cy="38" r="6.5" fill="#f2dcc4"/><circle cx="86" cy="38" r="6.5" fill="#f2dcc4"/>
+    <circle cx="60" cy="68" r="34" fill="#c9a27e"/>
+    <ellipse cx="60" cy="82" rx="16" ry="12" fill="#f2dcc4"/>
+    ${face(60)}<ellipse cx="60" cy="78" rx="4.5" ry="3.2" fill="#3b2a5a"/>`,
+  fox: `<polygon points="26,62 30,16 58,42" fill="#ff9d5c"/><polygon points="94,62 90,16 62,42" fill="#ff9d5c"/>
+    <polygon points="33,54 35,30 49,44" fill="#fff1e0"/><polygon points="87,54 85,30 71,44" fill="#fff1e0"/>
+    <circle cx="60" cy="70" r="32" fill="#ff9d5c"/>
+    <path d="M28 74 Q60 110 92 74 Q60 90 28 74Z" fill="#fff4e8"/>
+    ${face(62)}<circle cx="60" cy="81" r="3" fill="#3b2a5a"/>`,
+  capybara: `<circle cx="34" cy="44" r="6" fill="#8a6042"/><circle cx="86" cy="44" r="6" fill="#8a6042"/>
+    <ellipse cx="60" cy="68" rx="40" ry="30" fill="#b98a5e"/>
+    ${face(60, 12)}<ellipse cx="60" cy="82" rx="11" ry="6" fill="#8a6042"/>`,
+  dragon: `<polygon points="38,48 32,18 54,40" fill="#ffd36e"/><polygon points="82,48 88,18 66,40" fill="#ffd36e"/>
+    <circle cx="60" cy="68" r="30" fill="#9ee6a8"/>
+    <circle cx="53" cy="48" r="1.8" fill="#5fb874"/><circle cx="67" cy="48" r="1.8" fill="#5fb874"/>
+    ${face(64)}`,
+  unicorn: `<path d="M26 66 Q28 26 60 26 Q92 26 94 66" fill="none" stroke="#c9a7ff" stroke-width="11" stroke-linecap="round"/>
+    <path d="M30 66 Q34 34 60 34 Q86 34 90 66" fill="none" stroke="#ff9ed6" stroke-width="5" stroke-linecap="round"/>
+    <polygon points="60,4 52,38 68,38" fill="#ffd36e" stroke="#e8b84a" stroke-width="1.5"/>
+    <polygon points="32,50 30,22 52,40" fill="#fff" stroke="#e3d3f0" stroke-width="1.5"/>
+    <polygon points="88,50 90,22 68,40" fill="#fff" stroke="#e3d3f0" stroke-width="1.5"/>
+    <circle cx="60" cy="70" r="30" fill="#fff" stroke="#e3d3f0" stroke-width="2"/>
+    ${face(66)}`,
+};
+/* spoločníci majú ruky, nohy a labky (kreslené za hlavou); viewBox je o trochu vyšší */
+const LIMB_COLOR = { bunny: '#ffffff', puppy: '#f4cb92', bear: '#c9a27e', fox: '#ff9d5c', capybara: '#b98a5e', dragon: '#9ee6a8', unicorn: '#ffffff', cat: '#ffc98a' };
+function limbsSVG(id) {
+  const c = LIMB_COLOR[id] || '#ffffff', e = 'stroke="#d8c6ea" stroke-width="1.5"';
+  // zvieracie labky: krátke predné šľapky a zaoblené zadné nohy, bez ľudských rúk a nôh
+  return `<ellipse cx="32" cy="94" rx="8" ry="7" fill="${c}" ${e}/><ellipse cx="88" cy="94" rx="8" ry="7" fill="${c}" ${e}/>
+    <ellipse cx="46" cy="110" rx="11" ry="7" fill="${c}" ${e}/><ellipse cx="74" cy="110" rx="11" ry="7" fill="${c}" ${e}/>`;
+}
+// doplnky spoločníkov: každý má jeden výrazný znak (šatka, obojok, kvet, krídla, iskra)
+const DECO = {
+  bunny: `<path d="M50 104 L60 110 L50 116Z M70 104 L60 110 L70 116Z" fill="#ff8fbf"/><circle cx="60" cy="110" r="4" fill="#ff5fa2"/>`,
+  puppy: `<path d="M34 92 Q60 108 86 92" stroke="#e5484d" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="60" cy="104" r="5" fill="#ffd23c" stroke="#e8b400" stroke-width="1.5"/>`,
+  bear: `<path d="M34 96 Q60 110 86 96 L88 104 Q60 118 32 104Z" fill="#5fa8ff" stroke="#3f86e0" stroke-width="1.5"/><path d="M66 110 L72 124 L62 120Z" fill="#5fa8ff"/>`,
+  fox: `<path d="M16 26 L30 14 L42 28 L28 40Z" fill="#ff6b9d"/><circle cx="28" cy="28" r="4" fill="#ff8fbf"/>`,
+  capybara: `<circle cx="68" cy="40" r="5" fill="#ffb3d1"/><circle cx="80" cy="40" r="5" fill="#ffb3d1"/><circle cx="74" cy="34" r="5" fill="#ffb3d1"/><circle cx="74" cy="46" r="5" fill="#ffb3d1"/><circle cx="74" cy="40" r="4" fill="#ffd23c"/>`,
+  dragon: `<path d="M18 64 Q2 46 10 30 Q24 40 28 58Z" fill="#c9f2b8" stroke="#8bd08a" stroke-width="1.5"/><path d="M102 64 Q118 46 110 30 Q96 40 92 58Z" fill="#c9f2b8" stroke="#8bd08a" stroke-width="1.5"/>`,
+  unicorn: `<path d="M92 14 L94 24 L104 26 L94 28 L92 40 L90 28 L80 26 L90 24Z" fill="#ffd36e" stroke="#e8b84a" stroke-width="1"/>`,
+};
+function mascotSVG(id, size = 120, cls = '') {
+  const art = CHARS[id] || CHARS.bunny;
+  const limbs = LIMB_COLOR[id] ? limbsSVG(id) : '';
+  const shadow = `<ellipse cx="60" cy="126" rx="30" ry="4" fill="#3b2a5a" opacity=".12"/>`;   // tieň pod nohami
+  return `<svg viewBox="0 0 120 130" width="${size}" height="${Math.round(size * 130 / 120)}" class="${cls}" aria-hidden="true">${shadow}${limbs}${art}${DECO[id] || ''}</svg>`;
+}
+function petals(color, cx, cy, n, len, w = 10) {
+  let s = '';
+  for (let i = 0; i < n; i++) {
+    s += `<ellipse cx="${cx}" cy="${cy - len / 2}" rx="${w}" ry="${len / 2}" fill="${color}" transform="rotate(${i * 360 / n} ${cx} ${cy})"/>`;
+  }
+  return s;
+}
+function rays(cx, cy, r1, r2, n, color) {
+  let s = '';
+  for (let i = 0; i < n; i++) {
+    const a = i * 2 * Math.PI / n;
+    s += `<line x1="${(cx + r1 * Math.cos(a)).toFixed(1)}" y1="${(cy + r1 * Math.sin(a)).toFixed(1)}" x2="${(cx + r2 * Math.cos(a)).toFixed(1)}" y2="${(cy + r2 * Math.sin(a)).toFixed(1)}" stroke="${color}" stroke-width="6" stroke-linecap="round"/>`;
+  }
+  return s;
+}
+const ITEM_ART = {
+  // nové zvieratká do záhrady (nie sú medzi spoločníkmi)
+  hedgehog: `<path d="M16 84 Q14 42 60 36 Q106 42 104 84 Z" fill="#a9825b" stroke="#7f5d3c" stroke-width="2"/>
+    <polygon points="28,62 34,38 42,60" fill="#7f5d3c"/><polygon points="44,52 52,30 60,50" fill="#7f5d3c"/>
+    <polygon points="62,50 70,30 78,52" fill="#7f5d3c"/><polygon points="80,60 88,40 94,64" fill="#7f5d3c"/>
+    <ellipse cx="86" cy="82" rx="26" ry="20" fill="#f4d9b8" stroke="#d9b888" stroke-width="2"/>
+    <circle cx="84" cy="76" r="3.5" fill="#3b2a5a"/><ellipse cx="102" cy="80" rx="4" ry="3.5" fill="#3b2a5a"/>
+    <ellipse cx="94" cy="92" rx="3" ry="2" fill="#ff8fbf"/>
+    <ellipse cx="40" cy="100" rx="9" ry="6" fill="#7f5d3c"/><ellipse cx="66" cy="100" rx="9" ry="6" fill="#7f5d3c"/>`,
+  frog: `<ellipse cx="60" cy="78" rx="42" ry="28" fill="#7ed37e" stroke="#4fae52" stroke-width="2"/>
+    <circle cx="36" cy="46" r="17" fill="#7ed37e" stroke="#4fae52" stroke-width="2"/><circle cx="84" cy="46" r="17" fill="#7ed37e" stroke="#4fae52" stroke-width="2"/>
+    <circle cx="36" cy="46" r="10" fill="#fff"/><circle cx="84" cy="46" r="10" fill="#fff"/>
+    <circle cx="38" cy="48" r="5" fill="#3b2a5a"/><circle cx="82" cy="48" r="5" fill="#3b2a5a"/>
+    <path d="M40 84 Q60 98 80 84" stroke="#3b2a5a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="26" cy="104" rx="11" ry="7" fill="#7ed37e"/><ellipse cx="94" cy="104" rx="11" ry="7" fill="#7ed37e"/>`,
+  squirrel: `<path d="M84 84 Q118 74 106 42 Q98 22 82 40 Q96 58 74 78Z" fill="#c98a4b" stroke="#a86a33" stroke-width="2"/>
+    <polygon points="36,50 38,22 56,44" fill="#e09a5a"/><polygon points="84,50 82,22 64,44" fill="#e09a5a"/>
+    <circle cx="60" cy="72" r="30" fill="#e09a5a" stroke="#c07a3a" stroke-width="2"/>
+    <ellipse cx="60" cy="86" rx="15" ry="11" fill="#f8e0c4"/>
+    ${face(66)}<ellipse cx="60" cy="84" rx="3.5" ry="2.5" fill="#3b2a5a"/>`,
+  parrot: `<path d="M62 30 Q98 26 96 66 Q94 96 62 100 Q40 98 40 70 Q40 34 62 30Z" fill="#5fd38d" stroke="#3fae6e" stroke-width="2"/>
+    <path d="M40 60 Q14 56 22 84 Q34 90 42 80Z" fill="#ff6b6b" stroke="#d94a4a" stroke-width="1.5"/>
+    <path d="M64 30 Q62 14 74 14 Q80 24 72 34Z" fill="#ffd23c"/>
+    <circle cx="66" cy="50" r="8" fill="#fff"/><circle cx="68" cy="50" r="4" fill="#3b2a5a"/>
+    <path d="M74 56 Q86 60 78 68 Q72 66 74 56Z" fill="#ffb347"/>
+    <ellipse cx="60" cy="104" rx="3" ry="6" fill="#ffb347"/>`,
+  bunny: CHARS.bunny, cat: CHARS.cat, fox: CHARS.fox, unicorn: CHARS.unicorn,
+  panda: `<circle cx="60" cy="68" r="34" fill="#fff" stroke="#d8c6ea" stroke-width="2"/>
+    <circle cx="32" cy="40" r="13" fill="#3b2a5a"/><circle cx="88" cy="40" r="13" fill="#3b2a5a"/>
+    <ellipse cx="44" cy="62" rx="11" ry="13" fill="#3b2a5a" transform="rotate(-20 44 62)"/>
+    <ellipse cx="76" cy="62" rx="11" ry="13" fill="#3b2a5a" transform="rotate(20 76 62)"/>
+    <circle cx="44" cy="62" r="3.5" fill="#fff"/><circle cx="76" cy="62" r="3.5" fill="#fff"/>
+    <ellipse cx="60" cy="82" rx="6" ry="4" fill="#3b2a5a"/>
+    <path d="M55 88 Q60 92 65 88" stroke="#3b2a5a" stroke-width="2" fill="none" stroke-linecap="round"/>`,
+  puppy: `<ellipse cx="30" cy="54" rx="13" ry="24" fill="#c98f5a"/><ellipse cx="90" cy="54" rx="13" ry="24" fill="#c98f5a"/>
+    <circle cx="60" cy="68" r="32" fill="#f4cb92" stroke="#e0b070" stroke-width="2"/>
+    ${face(62)}<ellipse cx="60" cy="72" rx="6" ry="4" fill="#3b2a5a"/>`,
+  koala: `<circle cx="28" cy="46" r="17" fill="#c4c8d2"/><circle cx="92" cy="46" r="17" fill="#c4c8d2"/>
+    <circle cx="28" cy="48" r="9" fill="#e4e6ec"/><circle cx="92" cy="48" r="9" fill="#e4e6ec"/>
+    <circle cx="60" cy="70" r="34" fill="#c4c8d2" stroke="#aab0bd" stroke-width="2"/>
+    ${face(60)}<ellipse cx="60" cy="72" rx="11" ry="7" fill="#3b2a5a"/>`,
+  turtle: `<ellipse cx="60" cy="78" rx="38" ry="24" fill="#6cc98c" stroke="#4fa878" stroke-width="2"/>
+    <circle cx="46" cy="78" r="8" fill="#8ed9a8"/><circle cx="74" cy="78" r="8" fill="#8ed9a8"/><circle cx="60" cy="68" r="8" fill="#8ed9a8"/>
+    <circle cx="60" cy="40" r="18" fill="#a6e6b5" stroke="#8ccc9c" stroke-width="2"/>
+    <circle cx="54" cy="38" r="2.4" fill="#3b2a5a"/><circle cx="66" cy="38" r="2.4" fill="#3b2a5a"/>
+    <path d="M55 46 Q60 50 65 46" stroke="#3b2a5a" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <ellipse cx="34" cy="98" rx="7" ry="5" fill="#a6e6b5"/><ellipse cx="86" cy="98" rx="7" ry="5" fill="#a6e6b5"/>`,
+  dolphin: `<path d="M18 70 Q30 40 70 46 Q96 50 104 36 Q100 64 84 70 Q96 92 62 90 Q30 92 18 70Z" fill="#7ec8ff" stroke="#5aaee8" stroke-width="2"/>
+    <path d="M30 76 Q60 92 92 72 Q70 84 30 76Z" fill="#e6f5ff"/>
+    <polygon points="58,48 64,34 70,50" fill="#7ec8ff" stroke="#5aaee8" stroke-width="2"/>
+    <circle cx="40" cy="62" r="4" fill="#3b2a5a"/><circle cx="41" cy="60" r="1.3" fill="#fff"/>
+    <path d="M28 74 Q34 78 40 74" stroke="#3b2a5a" stroke-width="2" fill="none" stroke-linecap="round"/>`,
+  whale: `<path d="M92 66 L114 46 L114 86Z" fill="#8fb8ff" stroke="#6f9ce8" stroke-width="2"/>
+    <ellipse cx="54" cy="66" rx="42" ry="26" fill="#8fb8ff" stroke="#6f9ce8" stroke-width="2"/>
+    <ellipse cx="50" cy="80" rx="28" ry="9" fill="#d8ebff"/>
+    ${face(60, 12)}`,
+  trex: `<path d="M22 60 Q24 30 60 28 Q98 30 98 62 Q98 92 60 96 Q22 92 22 60Z" fill="#9bd66a" stroke="#74b84c" stroke-width="2"/>
+    <polygon points="40,84 46,96 52,84" fill="#fff"/><polygon points="58,84 64,96 70,84" fill="#fff"/><polygon points="76,84 82,94 86,82" fill="#fff"/>
+    <circle cx="46" cy="56" r="7" fill="#fff"/><circle cx="72" cy="56" r="7" fill="#fff"/>
+    <circle cx="47" cy="57" r="3.5" fill="#3b2a5a"/><circle cx="73" cy="57" r="3.5" fill="#3b2a5a"/>
+    <circle cx="60" cy="72" r="3" fill="#74b84c"/><circle cx="40" cy="72" r="3" fill="#74b84c"/>`,
+  elephant: `<circle cx="28" cy="56" r="20" fill="#c6cdd9"/><circle cx="92" cy="56" r="20" fill="#c6cdd9"/>
+    <circle cx="28" cy="58" r="11" fill="#e8b8c4"/><circle cx="92" cy="58" r="11" fill="#e8b8c4"/>
+    <circle cx="60" cy="58" r="32" fill="#d6dde8" stroke="#b9c3d2" stroke-width="2"/>
+    <path d="M60 66 Q74 74 66 90 Q60 100 68 104" stroke="#d6dde8" stroke-width="10" fill="none" stroke-linecap="round"/>
+    ${face(56)}`,
+  giraffe: `<rect x="48" y="66" width="24" height="46" rx="8" fill="#ffd27a" stroke="#e8b84a" stroke-width="2"/>
+    <rect x="46" y="18" width="5" height="16" rx="2" fill="#a6743a"/><rect x="69" y="18" width="5" height="16" rx="2" fill="#a6743a"/>
+    <circle cx="48" cy="18" r="4" fill="#a6743a"/><circle cx="72" cy="18" r="4" fill="#a6743a"/>
+    <ellipse cx="60" cy="56" rx="30" ry="28" fill="#ffd27a" stroke="#e8b84a" stroke-width="2"/>
+    <circle cx="44" cy="52" r="4" fill="#d99a3e"/><circle cx="72" cy="46" r="3.5" fill="#d99a3e"/><circle cx="66" cy="68" r="3" fill="#d99a3e"/><circle cx="50" cy="72" r="2.5" fill="#d99a3e"/>
+    ${face(58)}`,
+  lion: `<circle cx="60" cy="66" r="46" fill="#ffb347"/>
+    <circle cx="60" cy="66" r="34" fill="#ffd27a"/>
+    <circle cx="60" cy="66" r="30" fill="#ffe2a6" stroke="#f0c070" stroke-width="2"/>
+    ${face(60)}<path d="M55 65 L65 65 L60 70Z" fill="#c9824a"/>`,
+  tiger: `<circle cx="28" cy="46" r="11" fill="#ff9e4a"/><circle cx="92" cy="46" r="11" fill="#ff9e4a"/>
+    <circle cx="60" cy="68" r="32" fill="#ff9e4a" stroke="#e8792a" stroke-width="2"/>
+    <path d="M50 38 L54 50 M60 36 L60 50 M70 38 L66 50" stroke="#3b2a5a" stroke-width="3.5" stroke-linecap="round"/>
+    <ellipse cx="60" cy="82" rx="18" ry="11" fill="#fff4e8"/>
+    ${face(60)}<path d="M55 65 L65 65 L60 70Z" fill="#3b2a5a"/>`,
+  owl: `<polygon points="36,40 40,18 52,36" fill="#b98a5e"/><polygon points="84,40 80,18 68,36" fill="#b98a5e"/>
+    <ellipse cx="60" cy="70" rx="34" ry="38" fill="#b98a5e" stroke="#9a6e46" stroke-width="2"/>
+    <ellipse cx="60" cy="84" rx="22" ry="22" fill="#f2dcc4"/>
+    <circle cx="46" cy="56" r="13" fill="#fff" stroke="#9a6e46" stroke-width="2"/><circle cx="74" cy="56" r="13" fill="#fff" stroke="#9a6e46" stroke-width="2"/>
+    <circle cx="48" cy="57" r="6" fill="#3b2a5a"/><circle cx="72" cy="57" r="6" fill="#3b2a5a"/>
+    <circle cx="50" cy="55" r="2" fill="#fff"/><circle cx="74" cy="55" r="2" fill="#fff"/>
+    <polygon points="56,66 64,66 60,74" fill="#ffb347"/>`,
+  penguin: `<ellipse cx="60" cy="72" rx="34" ry="38" fill="#3b3f5c"/>
+    <ellipse cx="60" cy="80" rx="22" ry="26" fill="#fff"/>
+    <circle cx="48" cy="54" r="7" fill="#fff"/><circle cx="72" cy="54" r="7" fill="#fff"/>
+    <circle cx="49" cy="55" r="3.5" fill="#3b2a5a"/><circle cx="73" cy="55" r="3.5" fill="#3b2a5a"/>
+    <polygon points="54,64 66,64 60,72" fill="#ffb347"/>
+    <ellipse cx="46" cy="108" rx="9" ry="5" fill="#ffb347"/><ellipse cx="74" cy="108" rx="9" ry="5" fill="#ffb347"/>`,
+  flamingo: `<path d="M62 92 Q70 64 66 44" stroke="#ffb8d9" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <path d="M52 96 L50 110 M62 96 L64 110" stroke="#ff8fbf" stroke-width="3"/>
+    <ellipse cx="50" cy="78" rx="28" ry="18" fill="#ffb8d9" stroke="#f08fbb" stroke-width="2"/>
+    <path d="M30 80 Q18 74 14 66 Q28 68 38 76Z" fill="#ff8fbf"/>
+    <circle cx="70" cy="38" r="12" fill="#ffb8d9" stroke="#f08fbb" stroke-width="2"/>
+    <path d="M80 40 L100 46 L80 48Z" fill="#ff7a9c"/>
+    <circle cx="74" cy="36" r="2.5" fill="#3b2a5a"/>`,
+  bee: `<ellipse cx="46" cy="36" rx="14" ry="10" fill="#e6f7ff" stroke="#bfe0f5" stroke-width="1.5"/>
+    <ellipse cx="74" cy="36" rx="14" ry="10" fill="#e6f7ff" stroke="#bfe0f5" stroke-width="1.5"/>
+    <ellipse cx="60" cy="72" rx="34" ry="26" fill="#ffd23c" stroke="#e8b400" stroke-width="2"/>
+    <path d="M44 54 L44 90 M60 50 L60 94 M76 54 L76 90" stroke="#3b2a5a" stroke-width="6" opacity=".7"/>
+    ${face(66, 12)}`,
+  ladybug: `<circle cx="60" cy="74" r="32" fill="#ff6b6b" stroke="#d94a4a" stroke-width="2"/>
+    <path d="M60 42 L60 106" stroke="#3b2a5a" stroke-width="3"/>
+    <circle cx="48" cy="64" r="6" fill="#3b2a5a"/><circle cx="74" cy="64" r="6" fill="#3b2a5a"/>
+    <circle cx="46" cy="88" r="5" fill="#3b2a5a"/><circle cx="76" cy="90" r="5" fill="#3b2a5a"/>
+    <circle cx="60" cy="40" r="14" fill="#3b2a5a"/>
+    <circle cx="55" cy="38" r="3" fill="#fff"/><circle cx="65" cy="38" r="3" fill="#fff"/>
+    <path d="M52 46 Q60 50 68 46" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>`,
+  fish: `<polygon points="88,64 112,44 112,84" fill="#ff9e8f" stroke="#e87a6a" stroke-width="2"/>
+    <ellipse cx="56" cy="64" rx="36" ry="26" fill="#ff9e8f" stroke="#e87a6a" stroke-width="2"/>
+    <polygon points="50,40 58,26 66,42" fill="#ff9e8f" stroke="#e87a6a" stroke-width="2"/>
+    <ellipse cx="50" cy="72" rx="16" ry="8" fill="#ffd0c8"/>
+    <circle cx="36" cy="58" r="5" fill="#3b2a5a"/><circle cx="37" cy="56" r="1.6" fill="#fff"/>
+    <path d="M28 72 Q32 76 36 72" stroke="#3b2a5a" stroke-width="2" fill="none" stroke-linecap="round"/>`,
+  sunflower: `${petals('#ffd23c', 60, 52, 10, 26, 8)}<circle cx="60" cy="52" r="15" fill="#8a5a2b"/>
+    <path d="M60 70 L60 116" stroke="#4fa878" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="46" cy="96" rx="12" ry="6" fill="#6cc98c" transform="rotate(-25 46 96)"/>
+    <ellipse cx="74" cy="90" rx="12" ry="6" fill="#6cc98c" transform="rotate(25 74 90)"/>`,
+  flower: `${petals('#ffb3d1', 60, 58, 5, 30, 14)}<circle cx="60" cy="58" r="11" fill="#ffd23c"/>
+    <path d="M60 84 L60 116" stroke="#4fa878" stroke-width="5" stroke-linecap="round"/>`,
+  tulip: `<path d="M38 36 Q40 78 60 84 Q80 78 82 36 Q70 54 60 54 Q50 54 38 36Z" fill="#ff7aa2" stroke="#e05a80" stroke-width="2"/>
+    <path d="M60 84 L60 116" stroke="#4fa878" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="46" cy="98" rx="12" ry="6" fill="#6cc98c" transform="rotate(-30 46 98)"/>
+    <ellipse cx="74" cy="98" rx="12" ry="6" fill="#6cc98c" transform="rotate(30 74 98)"/>`,
+  clover: `<circle cx="48" cy="44" r="18" fill="#6cc98c"/><circle cx="72" cy="44" r="18" fill="#6cc98c"/>
+    <circle cx="48" cy="68" r="18" fill="#7fd69c"/><circle cx="72" cy="68" r="18" fill="#7fd69c"/>
+    <path d="M60 80 L60 116" stroke="#4fa878" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="60" cy="56" r="5" fill="#ff8fbf" opacity=".6"/>`,
+  cactus: `<rect x="48" y="36" width="24" height="72" rx="12" fill="#6cc98c" stroke="#4fa878" stroke-width="2"/>
+    <path d="M48 70 L32 70 Q24 70 24 62 L24 54 Q24 48 30 48 Q36 48 36 54 L36 62 L48 62Z" fill="#6cc98c" stroke="#4fa878" stroke-width="2"/>
+    <path d="M72 80 L88 80 Q96 80 96 72 L96 64 Q96 58 90 58 Q84 58 84 64 L84 72 L72 72Z" fill="#6cc98c" stroke="#4fa878" stroke-width="2"/>
+    <circle cx="60" cy="30" r="8" fill="#ff8fbf"/>
+    <circle cx="54" cy="58" r="3" fill="#3b2a5a"/><circle cx="66" cy="58" r="3" fill="#3b2a5a"/>
+    <path d="M55 68 Q60 72 65 68" stroke="#3b2a5a" stroke-width="2" fill="none" stroke-linecap="round"/>`,
+  mushroom: `<rect x="50" y="62" width="20" height="44" rx="9" fill="#fff1e0" stroke="#e0cfb8" stroke-width="2"/>
+    <ellipse cx="60" cy="58" rx="42" ry="30" fill="#ff7a7a" stroke="#d95a5a" stroke-width="2"/>
+    <circle cx="44" cy="48" r="7" fill="#fff"/><circle cx="72" cy="44" r="6" fill="#fff"/><circle cx="62" cy="66" r="5" fill="#fff"/>
+    <circle cx="54" cy="82" r="3" fill="#3b2a5a"/><circle cx="66" cy="82" r="3" fill="#3b2a5a"/>`,
+  tree: `<rect x="52" y="72" width="16" height="40" rx="5" fill="#a6743a"/>
+    <circle cx="60" cy="46" r="30" fill="#7ed08c" stroke="#5fb870" stroke-width="2"/>
+    <circle cx="40" cy="64" r="18" fill="#7ed08c" stroke="#5fb870" stroke-width="2"/>
+    <circle cx="80" cy="64" r="18" fill="#7ed08c" stroke="#5fb870" stroke-width="2"/>
+    <circle cx="48" cy="40" r="4" fill="#ff8fbf"/><circle cx="72" cy="56" r="4" fill="#ff8fbf"/><circle cx="54" cy="66" r="4" fill="#ffd23c"/>`,
+  strawberry: `<path d="M60 110 C30 92 28 58 60 44 C92 58 90 92 60 110Z" fill="#ff6b7e" stroke="#d94a5f" stroke-width="2"/>
+    <polygon points="44,46 52,38 60,48 68,38 76,46 60,54" fill="#6cc98c"/>
+    <ellipse cx="48" cy="78" rx="2.5" ry="4" fill="#ffe0a6"/><ellipse cx="72" cy="78" rx="2.5" ry="4" fill="#ffe0a6"/>
+    <ellipse cx="60" cy="90" rx="2.5" ry="4" fill="#ffe0a6"/><ellipse cx="54" cy="100" rx="2.5" ry="4" fill="#ffe0a6"/><ellipse cx="66" cy="100" rx="2.5" ry="4" fill="#ffe0a6"/>
+    <circle cx="50" cy="66" r="2.5" fill="#3b2a5a"/><circle cx="70" cy="66" r="2.5" fill="#3b2a5a"/>`,
+  icecream: `<polygon points="38,62 82,62 60,116" fill="#f2c28a" stroke="#d9a060" stroke-width="2"/>
+    <path d="M30 62 Q30 26 60 26 Q90 26 90 62Z" fill="#ffc2e0" stroke="#f0a0c8" stroke-width="2"/>
+    <circle cx="44" cy="58" r="11" fill="#ffc2e0"/><circle cx="76" cy="58" r="11" fill="#ffc2e0"/>
+    <circle cx="60" cy="20" r="7" fill="#ff6b7e"/>`,
+  cake: `<ellipse cx="60" cy="100" rx="46" ry="8" fill="#f2dcc4"/>
+    <rect x="22" y="72" width="76" height="28" rx="6" fill="#ffd1a6" stroke="#e8b080" stroke-width="2"/>
+    <rect x="32" y="50" width="56" height="24" rx="6" fill="#ffb3d1" stroke="#f090b8" stroke-width="2"/>
+    <path d="M32 58 Q40 66 48 58 Q56 66 64 58 Q72 66 80 58 Q88 66 88 58" stroke="#fff" stroke-width="3" fill="none"/>
+    <rect x="57" y="30" width="6" height="18" rx="2" fill="#7fd0ff"/>
+    <ellipse cx="60" cy="27" rx="4" ry="6" fill="#ffd23c"/>`,
+  cupcake: `<polygon points="36,80 84,80 77,110 43,110" fill="#7fd0ff" stroke="#5fb8ef" stroke-width="2"/>
+    <circle cx="44" cy="66" r="14" fill="#ffc2e0"/><circle cx="76" cy="66" r="14" fill="#ffc2e0"/>
+    <circle cx="60" cy="56" r="18" fill="#ffc2e0"/>
+    <circle cx="60" cy="38" r="7" fill="#ff5c7a"/>`,
+  moon: `<path d="M74 18 A44 44 0 1 0 104 84 A36 36 0 0 1 74 18Z" fill="#ffd86b" stroke="#e8b84a" stroke-width="2"/>
+    <circle cx="50" cy="60" r="4" fill="#e8b84a"/><circle cx="62" cy="86" r="3" fill="#e8b84a"/>`,
+  sun: `${rays(60, 60, 34, 50, 8, '#ffb300')}<circle cx="60" cy="60" r="26" fill="#ffd23c" stroke="#e8b400" stroke-width="2"/>${face(58, 11)}`,
+  comet: `<polygon points="72,30 8,80 14,90 80,50" fill="#a9ddff" opacity=".85"/>
+    <polygon points="70,34 40,58 52,68 78,44" fill="#d2f0ff" opacity=".9"/>
+    <circle cx="82" cy="44" r="18" fill="#bfe9ff" stroke="#7fc8f0" stroke-width="2"/>
+    <circle cx="76" cy="40" r="4" fill="#fff"/><circle cx="86" cy="50" r="2.5" fill="#fff"/>`,
+  jupiter: `<circle cx="60" cy="62" r="40" fill="#f2c28a" stroke="#d9a060" stroke-width="2"/>
+    <path d="M24 46 Q60 40 96 46" stroke="#d98a4a" stroke-width="5" fill="none"/>
+    <path d="M22 62 Q60 56 98 62" stroke="#c9733a" stroke-width="6" fill="none"/>
+    <path d="M26 80 Q60 74 94 80" stroke="#d98a4a" stroke-width="5" fill="none"/>
+    <ellipse cx="88" cy="78" rx="8" ry="5" fill="#e0654a"/>
+    ${face(60, 12)}`,
+  balloon: `<path d="M60 84 Q52 100 62 116" stroke="#8a6a8a" stroke-width="2" fill="none"/>
+    <ellipse cx="60" cy="46" rx="26" ry="32" fill="#ff8fb6" stroke="#e86a98" stroke-width="2"/>
+    <ellipse cx="50" cy="34" rx="6" ry="10" fill="#fff" opacity=".6" transform="rotate(-20 50 34)"/>
+    <polygon points="56,78 64,78 60,84" fill="#e86a98"/>`,
+  gift: `<rect x="30" y="56" width="60" height="44" rx="4" fill="#7fd0ff" stroke="#5fb8ef" stroke-width="2"/>
+    <rect x="26" y="44" width="68" height="14" rx="4" fill="#5fb8ef"/>
+    <rect x="56" y="44" width="8" height="56" fill="#ff8fb6"/>
+    <circle cx="48" cy="36" r="9" fill="#ff8fb6"/><circle cx="72" cy="36" r="9" fill="#ff8fb6"/>`,
+  palette: `<path d="M60 22 C92 22 104 44 102 62 C100 80 88 92 72 90 C64 89 62 96 66 104 C70 112 56 116 40 108 C24 100 16 84 18 66 C20 40 36 22 60 22Z" fill="#f2dcc4" stroke="#d9b888" stroke-width="2"/>
+    <circle cx="38" cy="52" r="8" fill="#ff6b6b"/><circle cx="56" cy="40" r="8" fill="#ffd23c"/><circle cx="78" cy="44" r="8" fill="#6cc98c"/><circle cx="88" cy="66" r="8" fill="#6cb8ff"/><circle cx="40" cy="78" r="8" fill="#b38cff"/>`,
+  guitar: `<rect x="60" y="14" width="9" height="56" rx="3" fill="#8a5a2b"/>
+    <rect x="56" y="10" width="18" height="10" rx="3" fill="#5a3a1b"/>
+    <circle cx="48" cy="84" r="24" fill="#ff9ec8" stroke="#e874a8" stroke-width="2"/>
+    <circle cx="74" cy="72" r="19" fill="#ff9ec8" stroke="#e874a8" stroke-width="2"/>
+    <circle cx="48" cy="84" r="6" fill="#3b2a5a"/>`,
+  bike: `<circle cx="30" cy="84" r="22" fill="none" stroke="#3b2a5a" stroke-width="5"/>
+    <circle cx="90" cy="84" r="22" fill="none" stroke="#3b2a5a" stroke-width="5"/>
+    <path d="M30 84 L52 56 L76 56 L90 84 M52 56 L64 84 L30 84" fill="none" stroke="#ff6b9a" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M76 56 L82 40 L94 40" fill="none" stroke="#3b2a5a" stroke-width="4" stroke-linecap="round"/>
+    <path d="M44 50 L56 50" stroke="#3b2a5a" stroke-width="5" stroke-linecap="round"/>`,
+  helicopter: `<path d="M84 60 L110 56 L110 66 L84 68Z" fill="#5fb8ef"/>
+    <ellipse cx="56" cy="70" rx="32" ry="22" fill="#7fd0ff" stroke="#5fb8ef" stroke-width="2"/>
+    <circle cx="46" cy="66" r="11" fill="#e6f7ff"/>
+    <rect x="54" y="42" width="6" height="12" fill="#3b2a5a"/>
+    <path d="M18 42 L102 42" stroke="#3b2a5a" stroke-width="4" stroke-linecap="round"/>
+    <path d="M34 98 L84 98" stroke="#3b2a5a" stroke-width="4" stroke-linecap="round"/>`,
+  cup: `<path d="M38 26 H82 V50 Q82 78 60 80 Q38 78 38 50Z" fill="#ffd23c" stroke="#e8b400" stroke-width="2"/>
+    <path d="M38 34 Q22 34 24 48 Q26 60 40 60" fill="none" stroke="#ffd23c" stroke-width="6"/>
+    <path d="M82 34 Q98 34 96 48 Q94 60 80 60" fill="none" stroke="#ffd23c" stroke-width="6"/>
+    <rect x="54" y="80" width="12" height="12" fill="#e8b400"/>
+    <rect x="40" y="90" width="40" height="12" rx="4" fill="#b38cff"/>
+    <polygon points="60,36 63,44 72,44 65,49 67,58 60,53 53,58 55,49 48,44 57,44" fill="#fff6c9"/>`,
+  medal: `<polygon points="40,12 56,12 62,50 46,50" fill="#ff6b6b"/>
+    <polygon points="64,12 80,12 74,50 58,50" fill="#6cb8ff"/>
+    <circle cx="60" cy="76" r="28" fill="#ffd23c" stroke="#e8b400" stroke-width="3"/>
+    <circle cx="60" cy="76" r="18" fill="none" stroke="#fff6c9" stroke-width="3"/>
+    <polygon points="60,66 63,72 70,72 64,76 66,83 60,79 54,83 56,76 50,72 57,72" fill="#fff6c9"/>`,
+  diamond: `<polygon points="36,44 84,44 104,58 60,108 16,58" fill="#7fe0ff" stroke="#3ab0d8" stroke-width="2.5" stroke-linejoin="round"/>
+    <polygon points="36,44 46,58 16,58" fill="#bff3ff"/><polygon points="84,44 74,58 104,58" fill="#5fcdf0"/>
+    <polygon points="46,58 60,108 74,58" fill="#a6eeff"/>
+    <line x1="46" y1="58" x2="60" y2="44" stroke="#3ab0d8" stroke-width="1.5"/>
+    <line x1="74" y1="58" x2="60" y2="44" stroke="#3ab0d8" stroke-width="1.5"/>`,
+  circus: `<polygon points="60,14 14,100 106,100" fill="#ff6b6b" stroke="#d94a4a" stroke-width="2"/>
+    <path d="M60 14 L84 100 M60 14 L36 100" stroke="#fff" stroke-width="10" fill="none"/>
+    <rect x="10" y="100" width="100" height="8" rx="4" fill="#ffd23c"/>
+    <polygon points="60,14 72,6 68,22" fill="#ffd23c"/>`,
+  island: `<ellipse cx="60" cy="98" rx="52" ry="12" fill="#7fd0ff"/>
+    <ellipse cx="60" cy="84" rx="42" ry="18" fill="#f2dcc4" stroke="#d9b888" stroke-width="2"/>
+    <path d="M58 76 Q56 52 62 30" stroke="#a6743a" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="50" cy="28" rx="18" ry="6" fill="#6cc98c" transform="rotate(-20 50 28)"/>
+    <ellipse cx="74" cy="28" rx="18" ry="6" fill="#6cc98c" transform="rotate(20 74 28)"/>
+    <circle cx="96" cy="26" r="8" fill="#ffd23c"/>`,
+  galaxy: `<circle cx="60" cy="60" r="46" fill="#5b3fa0"/>
+    <ellipse cx="60" cy="60" rx="44" ry="16" fill="#b38cff" opacity=".5" transform="rotate(-30 60 60)"/>
+    <ellipse cx="60" cy="60" rx="34" ry="12" fill="#ff9ed6" opacity=".4" transform="rotate(30 60 60)"/>
+    <circle cx="60" cy="60" r="9" fill="#fff"/>
+    <circle cx="30" cy="36" r="2" fill="#fff"/><circle cx="92" cy="30" r="2.5" fill="#fff"/><circle cx="96" cy="84" r="2" fill="#fff"/><circle cx="26" cy="90" r="2.5" fill="#fff"/><circle cx="60" cy="18" r="1.8" fill="#fff"/>`,
+  ufo: `<ellipse cx="60" cy="50" rx="24" ry="20" fill="#bfe9ff" stroke="#7fc8f0" stroke-width="2"/>
+    <ellipse cx="60" cy="70" rx="46" ry="13" fill="#9aa3ff" stroke="#7a84e8" stroke-width="2"/>
+    <circle cx="42" cy="72" r="4" fill="#ffd23c"/><circle cx="60" cy="78" r="4" fill="#ffd23c"/><circle cx="78" cy="72" r="4" fill="#ffd23c"/>
+    <circle cx="52" cy="48" r="3" fill="#3b2a5a"/><circle cx="68" cy="48" r="3" fill="#3b2a5a"/>
+    <path d="M55 56 Q60 60 65 56" stroke="#3b2a5a" stroke-width="2" fill="none" stroke-linecap="round"/>`,
+  ring: `<ellipse cx="60" cy="76" rx="26" ry="26" fill="none" stroke="#d6b8ff" stroke-width="8"/>
+    <polygon points="46,34 74,34 82,48 60,60 38,48" fill="#7fe0ff" stroke="#3ab0d8" stroke-width="2" stroke-linejoin="round"/>
+    <polygon points="46,34 60,60 38,48" fill="#bff3ff"/>
+    <polygon points="74,34 60,60 82,48" fill="#5fcdf0"/>
+    <path d="M100 26 L102 32 L108 34 L102 36 L100 42 L98 36 L92 34 L98 32Z" fill="#fff6c9"/>`,
+  dress: `<path d="M48 26 L72 26 L76 48 L94 106 L26 106 L44 48 Z" fill="#ff9ec8" stroke="#e874a8" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M48 26 L72 26 L70 40 Q60 46 50 40Z" fill="#ffd23c"/>
+    <path d="M44 48 Q60 56 76 48" stroke="#b38cff" stroke-width="5" fill="none"/>
+    <path d="M40 106 L80 106" stroke="#e874a8" stroke-width="3"/>
+    <polygon points="92,20 94,26 100,28 94,30 92,36 90,30 84,28 90,26" fill="#fff6c9"/>`,
+  shoes: `<path d="M22 74 Q24 60 40 62 L56 70 Q66 76 84 78 L96 78 L96 88 L30 92 Q20 90 22 74Z" fill="#ff6b9a" stroke="#d94a7a" stroke-width="2" stroke-linejoin="round"/>
+    <rect x="86" y="88" width="8" height="26" rx="3" fill="#d94a7a"/>
+    <path d="M44 74 L66 82" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".6"/>`,
+  swan: `<ellipse cx="58" cy="82" rx="38" ry="18" fill="#fff" stroke="#d8c6ea" stroke-width="2"/>
+    <path d="M66 70 Q72 46 74 30" stroke="#fff" stroke-width="13" fill="none" stroke-linecap="round"/>
+    <path d="M66 70 Q72 46 74 30" stroke="#d8c6ea" stroke-width="1" fill="none"/>
+    <circle cx="80" cy="26" r="11" fill="#fff" stroke="#d8c6ea" stroke-width="2"/>
+    <polygon points="88,24 102,27 88,30" fill="#ffb347"/>
+    <circle cx="82" cy="23" r="2.2" fill="#3b2a5a"/>`,
+  crystal: `<circle cx="60" cy="62" r="38" fill="#c9a7ff" stroke="#9a78e0" stroke-width="2"/>
+    <ellipse cx="46" cy="46" rx="12" ry="7" fill="#fff" opacity=".7" transform="rotate(-30 46 46)"/>
+    <rect x="44" y="90" width="32" height="10" fill="#ffd23c"/>
+    <rect x="34" y="98" width="52" height="10" rx="4" fill="#ffd23c" stroke="#e8b400" stroke-width="2"/>
+    <path d="M84 30 l3 7 l7 3 l-7 3 l-3 7 l-3 -7 l-7 -3 l7 -3z" fill="#fff6c9"/>`,
+  mermaid: `<path d="M40 40 Q36 20 60 18 Q84 20 80 40 Q82 58 76 62 L44 62 Q38 58 40 40Z" fill="#c9a7ff"/>
+    <path d="M48 66 Q60 60 72 66 Q76 84 86 102 Q72 96 60 106 Q48 96 34 102 Q44 84 48 66Z" fill="#55d6c2" stroke="#2fb3a0" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="60" cy="46" r="15" fill="#ffe0d0"/>
+    <circle cx="54" cy="44" r="2.5" fill="#3b2a5a"/><circle cx="66" cy="44" r="2.5" fill="#3b2a5a"/>
+    <path d="M55 52 Q60 56 65 52" stroke="#3b2a5a" stroke-width="2" fill="none" stroke-linecap="round"/>`,
+  castle: `<rect x="26" y="56" width="68" height="50" fill="#fff1d6" stroke="#e0c49a" stroke-width="2"/>
+    <rect x="14" y="40" width="22" height="66" fill="#ffd1e0" stroke="#e8a0b8" stroke-width="2"/>
+    <rect x="84" y="40" width="22" height="66" fill="#ffd1e0" stroke="#e8a0b8" stroke-width="2"/>
+    <polygon points="12,40 25,20 38,40" fill="#b38cff"/><polygon points="82,40 95,20 108,40" fill="#b38cff"/>
+    <rect x="52" y="30" width="16" height="26" fill="#fff1d6" stroke="#e0c49a" stroke-width="2"/>
+    <polygon points="44,30 60,6 76,30" fill="#ff8fbf"/>
+    <path d="M52 86 Q52 70 60 70 Q68 70 68 86Z" fill="#8a5a3c"/>
+    <rect x="30" y="66" width="12" height="12" rx="3" fill="#bfe9ff"/><rect x="78" y="66" width="12" height="12" rx="3" fill="#bfe9ff"/>`,
+  crown: `<polygon points="20,88 24,40 44,64 60,30 76,64 96,40 100,88" fill="#ffd23c" stroke="#e8b400" stroke-width="3" stroke-linejoin="round"/>
+    <rect x="20" y="86" width="80" height="14" rx="4" fill="#ffd23c" stroke="#e8b400" stroke-width="3"/>
+    <circle cx="24" cy="40" r="5" fill="#ff6b9a"/><circle cx="60" cy="30" r="6" fill="#6cb8ff"/><circle cx="96" cy="40" r="5" fill="#6cc98c"/>`,
+  rainbow: `<path d="M16 88 A44 44 0 0 1 104 88" fill="none" stroke="#ff6b6b" stroke-width="10"/>
+    <path d="M24 88 A36 36 0 0 1 96 88" fill="none" stroke="#ffd23c" stroke-width="10"/>
+    <path d="M32 88 A28 28 0 0 1 88 88" fill="none" stroke="#6cc98c" stroke-width="10"/>
+    <path d="M40 88 A20 20 0 0 1 80 88" fill="none" stroke="#6cb8ff" stroke-width="10"/>
+    <ellipse cx="22" cy="94" rx="14" ry="9" fill="#fff"/><ellipse cx="98" cy="94" rx="14" ry="9" fill="#fff"/>`,
+  rocket: `<path d="M60 10 C76 30 80 60 76 84 L44 84 C40 60 44 30 60 10Z" fill="#fff" stroke="#c9d3e0" stroke-width="2"/>
+    <circle cx="60" cy="52" r="10" fill="#7fd0ff" stroke="#5fb8ef" stroke-width="3"/>
+    <polygon points="44,64 30,84 44,84" fill="#ff6b9a"/><polygon points="76,64 90,84 76,84" fill="#ff6b9a"/>
+    <path d="M50 84 Q60 112 70 84Z" fill="#ffb347"/>
+    <path d="M55 84 Q60 102 65 84Z" fill="#ffd23c"/>`,
+  butterfly: `<ellipse cx="36" cy="46" rx="26" ry="22" fill="#ff8fbf" stroke="#e86a98" stroke-width="2"/>
+    <ellipse cx="84" cy="46" rx="26" ry="22" fill="#ff8fbf" stroke="#e86a98" stroke-width="2"/>
+    <ellipse cx="40" cy="82" rx="18" ry="14" fill="#b38cff" stroke="#8a5ad8" stroke-width="2"/>
+    <ellipse cx="80" cy="82" rx="18" ry="14" fill="#b38cff" stroke="#8a5ad8" stroke-width="2"/>
+    <ellipse cx="60" cy="66" rx="6" ry="30" fill="#3b2a5a"/>
+    <circle cx="36" cy="46" r="6" fill="#fff6c9"/><circle cx="84" cy="46" r="6" fill="#fff6c9"/>
+    <path d="M56 36 Q52 24 46 22 M64 36 Q68 24 74 22" stroke="#3b2a5a" stroke-width="2.5" fill="none" stroke-linecap="round"/>`,
+  star: `<polygon points="60,8 72,42 108,44 80,64 90,100 60,80 30,100 40,64 12,44 48,42" fill="#ffd23c" stroke="#e8b400" stroke-width="3" stroke-linejoin="round"/>${face(58, 9)}`,
+  rose: `<path d="M60 116 L60 76" stroke="#4fa878" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="46" cy="98" rx="11" ry="5" fill="#6cc98c" transform="rotate(-25 46 98)"/>
+    <circle cx="60" cy="50" r="30" fill="#ff5c7a"/>
+    <path d="M60 30 Q76 40 70 56 Q62 66 48 58 Q40 46 52 40 Q60 38 62 48" stroke="#d93a5c" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M44 44 Q60 30 76 44" stroke="#ff8fa3" stroke-width="5" fill="none" opacity=".7"/>`,
+  fairy: `<ellipse cx="30" cy="46" rx="22" ry="30" fill="#e6f7ff" opacity=".85" stroke="#bfe0f5" stroke-width="1.5" transform="rotate(-20 30 46)"/>
+    <ellipse cx="90" cy="46" rx="22" ry="30" fill="#e6f7ff" opacity=".85" stroke="#bfe0f5" stroke-width="1.5" transform="rotate(20 90 46)"/>
+    <path d="M44 78 L76 78 L84 110 L36 110Z" fill="#b38cff"/>
+    <circle cx="60" cy="54" r="24" fill="#ffe0d0"/>
+    <path d="M36 50 Q60 14 84 50 Q72 38 60 40 Q48 38 36 50Z" fill="#ffb3d1"/>
+    ${face(56, 10)}
+    <polygon points="78,88 96,70 100,74 84,92" fill="#ffd23c"/>
+    <circle cx="98" cy="68" r="4" fill="#ffd23c"/>`,
+  princess: `<path d="M34 60 Q28 100 20 112 L100 112 Q92 100 86 60Z" fill="#ff9ec8" stroke="#e874a8" stroke-width="2"/>
+    <circle cx="60" cy="44" r="26" fill="#ffe0d0"/>
+    <path d="M32 46 Q26 14 60 16 Q94 14 88 46 Q86 30 60 28 Q34 30 32 46Z" fill="#ffd23c"/>
+    <polygon points="40,26 46,8 54,22 60,4 66,22 74,8 80,26" fill="#ffd23c" stroke="#e8b400" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="60" cy="16" r="3" fill="#ff6b9a"/>
+    ${face(46, 10)}`,
+};
+function itemSVG(id, size = 56) {
+  if (LIMB_COLOR[id]) return mascotSVG(id, size);   // zvieratká chodiace po záhrade majú tiež ruky a nohy
+  return `<svg viewBox="0 0 120 120" width="${size}" height="${size}" aria-hidden="true">${ITEM_ART[id] || ''}</svg>`;
+}
+
+/* zvieratká – meno v oboch jazykoch */
+/* spoločníci: zadarmo je len Zajko, ostatní sa kupujú v obchode */
+function laraSVG(size = 120, cls = '') {
+  return `<svg viewBox="0 0 120 120" width="${size}" height="${size}" class="${cls}" aria-hidden="true">
+    <path d="M36 90 Q60 82 84 90 L94 118 L26 118Z" fill="#ff9ec8" stroke="#e874a8" stroke-width="2" stroke-linejoin="round"/>
+    <ellipse cx="92" cy="62" rx="9" ry="20" fill="#8a5a3c"/>
+    <circle cx="60" cy="60" r="30" fill="#ffe0d0" stroke="#f0c4a8" stroke-width="2"/>
+    <path d="M29 58 Q27 24 60 24 Q93 24 91 58 Q84 40 60 40 Q36 40 29 58Z" fill="#8a5a3c"/>
+    <circle cx="82" cy="36" r="6" fill="#ff8fbf"/>
+    ${face(62)}
+  </svg>`;
+}
+const MASCOTS = [
+  { id: 'bunny', sk: 'Zajko', en: 'Bunny', price: 0 }, { id: 'puppy', sk: 'Pejsko', en: 'Puppy', price: 40 },
+  { id: 'bear', sk: 'Medvedík', en: 'Bear', price: 60 }, { id: 'fox', sk: 'Líška', en: 'Fox', price: 90 },
+  { id: 'capybara', sk: 'Kapybara', en: 'Capybara', price: 120 }, { id: 'dragon', sk: 'Dráčik', en: 'Dragon', price: 160 },
+  { id: 'unicorn', sk: 'Jednorožec', en: 'Unicorn', price: 200 },
+];
+const mName = m => (LANG === 'en' ? m.en : m.sk);
+
+/* odmeny – slovenský názov a cena; anglický názov je v EN_NAME */
+const STICKERS = [
+  { id: 'cat',       e: '🐱', name: 'Mačka',       price: 10 },
+  { id: 'parrot',    e: '🦜', name: 'Papagáj',     price: 10 },
+  { id: 'squirrel',  e: '🐿️', name: 'Veverička',   price: 15 },
+  { id: 'panda',     e: '🐼', name: 'Panda',       price: 15 },
+  { id: 'rocket',    e: '🚀', name: 'Raketa',      price: 20 },
+  { id: 'butterfly', e: '🦋', name: 'Motýľ',       price: 25 },
+  { id: 'flower',    e: '🌸', name: 'Kvetina',     price: 25 },
+  { id: 'star',      e: '🌟', name: 'Hviezdička',  price: 30 },
+  { id: 'crown',     e: '👑', name: 'Korunka',     price: 40 },
+  { id: 'fairy',     e: '🧚', name: 'Víla',        price: 20 },
+  { id: 'rose',      e: '🌹', name: 'Ruža',        price: 15 },
+  { id: 'castle',    e: '🏰', name: 'Zámok',       price: 35 },
+  { id: 'princess',  e: '👸', name: 'Princezná',   price: 45 },
+  { id: 'hedgehog',   e: '🦔', name: 'Ježko',           price: 10 },
+  { id: 'frog',       e: '🐸', name: 'Žabka',           price: 10 },
+  { id: 'koala',      e: '🐨', name: 'Koala',           price: 15 },
+  { id: 'turtle',     e: '🐢', name: 'Korytnačka',      price: 15 },
+  { id: 'dolphin',    e: '🐬', name: 'Delfín',          price: 25 },
+  { id: 'whale',      e: '🐳', name: 'Veľryba',         price: 40 },
+  { id: 'trex',       e: '🦖', name: 'Tyranosaurus',    price: 30 },
+  { id: 'elephant',   e: '🐘', name: 'Slon',            price: 25 },
+  { id: 'giraffe',    e: '🦒', name: 'Žirafa',          price: 25 },
+  { id: 'lion',       e: '🦁', name: 'Lev',             price: 35 },
+  { id: 'tiger',      e: '🐯', name: 'Tiger',           price: 35 },
+  { id: 'owl',        e: '🦉', name: 'Sova',            price: 20 },
+  { id: 'penguin',    e: '🐧', name: 'Tučniak',         price: 25 },
+  { id: 'flamingo',   e: '🦩', name: 'Plameniak',       price: 30 },
+  { id: 'bee',        e: '🐝', name: 'Včielka',         price: 15 },
+  { id: 'ladybug',    e: '🐞', name: 'Lienka',          price: 10 },
+  { id: 'fish',       e: '🐠', name: 'Rybka',           price: 10 },
+  { id: 'sunflower',  e: '🌻', name: 'Slnečnica',       price: 15 },
+  { id: 'tulip',      e: '🌷', name: 'Tulipán',         price: 15 },
+  { id: 'clover',     e: '🍀', name: 'Štvorlístok',     price: 20 },
+  { id: 'cactus',     e: '🌵', name: 'Kaktus',          price: 15 },
+  { id: 'mushroom',   e: '🍄', name: 'Hríb',            price: 15 },
+  { id: 'tree',       e: '🌳', name: 'Strom',           price: 20 },
+  { id: 'strawberry', e: '🍓', name: 'Jahoda',          price: 10 },
+  { id: 'icecream',   e: '🍦', name: 'Zmrzlina',        price: 15 },
+  { id: 'cake',       e: '🎂', name: 'Torta',           price: 25 },
+  { id: 'cupcake',    e: '🧁', name: 'Mafinka',         price: 20 },
+  { id: 'moon',       e: '🌙', name: 'Mesiačik',        price: 25 },
+  { id: 'sun',        e: '☀️', name: 'Slniečko',        price: 25 },
+  { id: 'comet',      e: '☄️', name: 'Kométa',          price: 60 },
+  { id: 'jupiter',    e: '🪐', name: 'Jupiter',         price: 200 },
+  { id: 'balloon',    e: '🎈', name: 'Balónik',         price: 10 },
+  { id: 'gift',       e: '🎁', name: 'Darček',          price: 30 },
+  { id: 'palette',    e: '🎨', name: 'Paleta',          price: 20 },
+  { id: 'guitar',     e: '🎸', name: 'Gitara',          price: 40 },
+  { id: 'bike',       e: '🚲', name: 'Bicykel',         price: 30 },
+  { id: 'helicopter', e: '🚁', name: 'Helikoptéra',     price: 50 },
+  { id: 'cup',        e: '🏆', name: 'Pohár',           price: 100 },
+  { id: 'medal',      e: '🥇', name: 'Zlatá medaila',   price: 150 },
+  { id: 'diamond',    e: '💎', name: 'Diamant',         price: 200 },
+  { id: 'circus',     e: '🎪', name: 'Cirkus',          price: 120 },
+  { id: 'island',     e: '🏝️', name: 'Ostrov',          price: 150 },
+  { id: 'galaxy',     e: '🌌', name: 'Galaxia',         price: 250 },
+  { id: 'ufo',        e: '🛸', name: 'Lietajúci tanier', price: 300 },
+  { id: 'ring',       e: '💍', name: 'Prsteň',          price: 90 },
+  { id: 'dress',      e: '👗', name: 'Šaty',            price: 80 },
+  { id: 'shoes',      e: '👠', name: 'Topánky',         price: 70 },
+  { id: 'swan',       e: '🦢', name: 'Labuť',           price: 60 },
+  { id: 'crystal',    e: '🔮', name: 'Krištáľová guľa', price: 150 },
+  { id: 'mermaid',    e: '🧜', name: 'Morská víla',     price: 120 },
+];
+/* úrovne odmien: 1 ozdoby, 2 pomocníci, 3 stavby (kreslia sa v záhrade), 4 vzácne (na oblohe);
+   cena rastie s úrovňou: po 1 dni ~30–40, po 4 dňoch ~190–200 ⭐ */
+const TIER_OF = {
+  flower: 1, tulip: 1, sunflower: 1, rose: 1, clover: 1, cactus: 1, mushroom: 1, tree: 1, strawberry: 1,
+  icecream: 1, cake: 1, cupcake: 1, balloon: 1, gift: 1, palette: 1, guitar: 1, bike: 1, cup: 1, medal: 1, star: 1,
+  cat: 2, parrot: 2, squirrel: 2, panda: 2, butterfly: 2, hedgehog: 2, frog: 2, koala: 2, turtle: 2, owl: 2,
+  penguin: 2, bee: 2, ladybug: 2, fish: 2, swan: 2,
+  rocket: 3, castle: 3, dolphin: 3, whale: 3, trex: 3, elephant: 3, giraffe: 3, lion: 3, tiger: 3,
+  flamingo: 3, moon: 3, sun: 3, helicopter: 3, circus: 3, island: 3, ufo: 3,
+  crown: 4, fairy: 4, princess: 4, comet: 4, jupiter: 4, diamond: 4, galaxy: 4, ring: 4, dress: 4, shoes: 4, crystal: 4, mermaid: 4,
+};
+const TIER_PRICE = { 1: 30, 2: 90, 3: 140, 4: 190 };
+STICKERS.forEach((s, i) => { s.tier = TIER_OF[s.id] || 1; s.price = TIER_PRICE[s.tier] + (i % 3) * 5; });
+const EN_NAME = {
+  parrot: 'Parrot', squirrel: 'Squirrel', hedgehog: 'Hedgehog', frog: 'Frog',
+  cat: 'Cat', unicorn: 'Unicorn', fox: 'Fox', panda: 'Panda', rainbow: 'Rainbow', rocket: 'Rocket',
+  butterfly: 'Butterfly', flower: 'Flower', star: 'Star', crown: 'Crown', fairy: 'Fairy', rose: 'Rose',
+  castle: 'Castle', princess: 'Princess', puppy: 'Puppy', bunny: 'Bunny', koala: 'Koala', turtle: 'Turtle',
+  dolphin: 'Dolphin', whale: 'Whale', trex: 'T-Rex', elephant: 'Elephant', giraffe: 'Giraffe', lion: 'Lion',
+  tiger: 'Tiger', owl: 'Owl', penguin: 'Penguin', flamingo: 'Flamingo', bee: 'Bee', ladybug: 'Ladybug',
+  fish: 'Fish', sunflower: 'Sunflower', tulip: 'Tulip', clover: 'Clover', cactus: 'Cactus', mushroom: 'Mushroom',
+  tree: 'Tree', strawberry: 'Strawberry', icecream: 'Ice cream', cake: 'Cake', cupcake: 'Cupcake', moon: 'Moon',
+  sun: 'Sun', comet: 'Comet', jupiter: 'Jupiter', balloon: 'Balloon', gift: 'Gift', palette: 'Paint palette',
+  guitar: 'Guitar', bike: 'Bike', helicopter: 'Helicopter', cup: 'Trophy', medal: 'Gold medal', diamond: 'Diamond',
+  circus: 'Circus', island: 'Island', galaxy: 'Galaxy', ufo: 'UFO', ring: 'Ring', dress: 'Dress', shoes: 'Shoes',
+  swan: 'Swan', crystal: 'Crystal ball', mermaid: 'Mermaid',
+};
+const sName = s => (LANG === 'en' ? EN_NAME[s.id] : s.name);
+
+const KEY = 'lara-pocty-test';
+const $ = s => document.querySelector(s);
+const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+/* ====== ULOŽENIE (len v tomto prehliadači) ====== */
+function defaults() {
+  return { name: 'Lara', mascot: 'bunny', stars: 0, sound: true, level: 10, types: 'mix', auto: true,
+           unlocked: [], stats: { right: 0, total: 0 }, bestStreak: 0, rounds: 0, miss: {}, season: 'auto', companions: ['bunny'] };
+}
+// staré zvieratká v záhrade, ktoré sa nahradili novými (aby sa nikomu nestratili kúpené odmeny)
+const OLD_STICKER = { puppy: 'hedgehog', bunny: 'frog', fox: 'squirrel', unicorn: 'parrot', saturn: 'jupiter', rainbow: 'castle' };
+function load() {
+  try {
+    const d = Object.assign(defaults(), JSON.parse(localStorage.getItem(KEY)) || {});
+    if (d.types === 'plus' || d.types === 'minus') d.types = 'pm';   // sčítanie a odčítanie sú spolu
+    if (!Array.isArray(d.companions) || !d.companions.includes('bunny')) d.companions = ['bunny'];
+    d.companions = d.companions.map(c => (c === 'cat' ? 'puppy' : c));   // Mačička sa zmenila na Pejska
+    if (d.mascot === 'cat') d.mascot = 'puppy';
+    if (!d.companions.includes(d.mascot)) d.mascot = 'bunny';
+    if (!d.uniCount) d.uniCount = 0;
+    d.unlocked = [...new Set((d.unlocked || []).map(id => OLD_STICKER[id] || id))];
+    return d;
+  }
+  catch (e) { return defaults(); }
+}
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
+}
+let S = load();
+if (!localStorage.getItem(KEY)) S.stars = 8000;   // TESTOVACIA VERZIA: 8000 hviezdičiek, oddelené úložisko
+
+/* ====== ZVUK ====== */
+let ac = null;
+function tone(f, t, d, type = 'sine', v = 0.18) {
+  if (!S.sound) return;
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    if (ac.state === 'suspended') ac.resume();
+    const s = ac.currentTime + t;
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = type; o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, s);
+    g.gain.exponentialRampToValueAtTime(v, s + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, s + d);
+    o.connect(g); g.connect(ac.destination);
+    o.start(s); o.stop(s + d + 0.05);
+  } catch (e) {}
+}
+const SFX = {
+  ok:   () => [523, 659, 784].forEach((f, i) => tone(f, i * 0.09, 0.3)),
+  oops: () => { tone(330, 0, 0.25, 'triangle'); tone(262, 0.2, 0.35, 'triangle'); },
+  tap:  () => tone(900, 0, 0.04, 'square', 0.04),
+  win:  () => {
+    [523, 659, 784, 1047].forEach((f, i) => tone(f, i * 0.12, 0.4));
+    [784, 988, 1175].forEach((f, i) => tone(f, 0.6 + i * 0.1, 0.5));
+  },
+};
+
+/* ====== HLAS ======
+   Hlas je z tvojho zariadenia. Prehliadač vyberie najprirodzenejší dostupný hlas
+   (napr. Ava, Samantha, Zoe, Aria, Natural, Premium). Na iPade je možné doinštalovať
+   lepšie hlasy v Nastaveniach → Prístupnosť → Hovorený obsah → Hlasy. */
+let voices = [];
+function loadVoices() { if ('speechSynthesis' in window) voices = speechSynthesis.getVoices(); }
+loadVoices();
+if ('speechSynthesis' in window) speechSynthesis.onvoiceschanged = loadVoices;
+const VOICE_PREF = /Ava|Samantha|Zoe|Evan|Allison|Aria|Jenny|Natural|Premium|Enhanced|Online|Google/i;
+function bestVoice() {
+  const code = LANG === 'sk' ? 'sk' : 'en';
+  const list = voices.filter(v => (v.lang || '').toLowerCase().replace('_', '-').startsWith(code));
+  return list.find(v => VOICE_PREF.test(v.name)) || list[0] || null;
+}
+function say(text) {
+  if (!S.sound || !('speechSynthesis' in window)) return;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = LANG === 'sk' ? 'sk-SK' : 'en-US';
+    const v = bestVoice();
+    if (v) u.voice = v;
+    u.rate = 0.95; u.pitch = 1.05;
+    speechSynthesis.speak(u);
+  } catch (e) {}
+}
+/* ====== NAHRÁVKY (hlas Bella warm) ======
+   Nahrávky sú v priečinku audio/en a audio/sk. Ak sa nejaká nenačíta, appka použije hlas zariadenia. */
+const AUDIO_BASE = ROOT + (LANG === 'sk' ? 'audio/sk/' : 'audio/en/');
+const clipCache = {};
+let actx = null, srcs = [], seqId = 0;
+function getCtx() {
+  // iPad: po zamknutí sa zvukový kontext môže zatvoriť, vtedy vytvoríme nový a nahrávky sa znova dekódujú
+  if (actx && actx.state === 'closed') { actx = null; for (const k in clipCache) delete clipCache[k]; }
+  if (!actx) {
+    try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; }
+  }
+  return actx;
+}
+// po návrate do appky (odomknutie iPadu, obnovenie karty) zvuk znova zapneme
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && actx && actx.state !== 'running') actx.resume().catch(() => {});
+});
+window.addEventListener('pageshow', () => {
+  if (actx && actx.state !== 'running') actx.resume().catch(() => {});
+});
+/* Nahrávky sú aj v súbore clips.js (funguje to zo súboru na disku aj na webe, bez sťahovania). */
+const CLIPS_READY = new Promise(res => {
+  const s = document.createElement('script');
+  s.src = ROOT + 'clips.js';
+  s.onload = s.onerror = res;
+  document.head.appendChild(s);
+});
+function b64ToBuf(b64) {
+  const bin = atob(b64), u = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+  return u.buffer;
+}
+/* Odstráni dlhé ticho na začiatku a na konci nahrávky, aby medzi číslami nebola pauza.
+   Hranica je 5 % najhlasnejšieho miesta, takže sa nerezú slabé konce slov. */
+function trimClip(buf) {
+  try {
+    const ctx = getCtx();
+    if (!ctx) return buf;
+    const ch = buf.getChannelData(0);
+    // hlasitosť po 20 ms oknách (RMS), aby jednotlivé šumy na konci nepredĺžili nahrávku
+    const win = Math.max(1, Math.floor(buf.sampleRate * 0.02));
+    const rms = [];
+    let peakR = 0;
+    for (let i = 0; i < ch.length; i += win) {
+      let sum = 0, n = 0;
+      for (let j = i; j < Math.min(ch.length, i + win); j++) { sum += ch[j] * ch[j]; n++; }
+      const r = Math.sqrt(sum / n);
+      rms.push(r);
+      if (r > peakR) peakR = r;
+    }
+    if (!peakR) return buf;
+    const th = peakR * 0.03;   // nízka hranica, aby sa neorezali slabé spoluhlásky (s, ť)
+    const first = rms.findIndex(r => r > th);
+    if (first < 0) return buf;
+    let last = rms.length - 1;
+    while (last > first && rms[last] <= th) last--;
+    const s = Math.max(0, first * win - Math.floor(buf.sampleRate * 0.08));
+    const e = Math.min(ch.length - 1, (last + 1) * win + Math.floor(buf.sampleRate * 0.2));   // dlhší dych po slove
+    const out = ctx.createBuffer(buf.numberOfChannels, e - s + 1, buf.sampleRate);
+    for (let c = 0; c < buf.numberOfChannels; c++) out.copyToChannel(buf.getChannelData(c).subarray(s, e + 1), c);
+    return out;
+  } catch (e) { return buf; }
+}
+function loadClip(key) {
+  if (!clipCache[key]) {
+    clipCache[key] = CLIPS_READY.then(() => {
+      const b64 = window.LARA_CLIPS && window.LARA_CLIPS[LANG] && window.LARA_CLIPS[LANG][key];
+      if (b64) return getCtx().decodeAudioData(b64ToBuf(b64)).then(trimClip);
+      return fetch(AUDIO_BASE + key + '.mp3')
+        .then(r => { if (!r.ok) throw new Error('missing'); return r.arrayBuffer(); })
+        .then(b => getCtx().decodeAudioData(b)).then(trimClip);
+    }).catch(() => null);
+  }
+  return clipCache[key];
+}
+async function playSeq(keys, fallbackText) {
+  if (!S.sound) return;
+  const c = getCtx();
+  if (!c) { say(fallbackText); return; }
+  if (c.state !== 'running') {   // iPad môže byť v stave „interrupted“; čakáme najviac 0,4 s, aby sa nezasekla hra
+    try { await Promise.race([c.resume(), new Promise(r => setTimeout(r, 400))]); } catch (e) {}
+  }
+  const id = ++seqId;
+  srcs.forEach(s => { try { s.stop(); } catch (e) {} });
+  srcs = [];
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+  const bufs = await Promise.all(keys.map(k => loadClip(typeof k === 'number' ? 'n' + k : k)));
+  if (id !== seqId) return;
+  if (bufs.some(b => !b)) { say(fallbackText); return; }
+  let t = c.currentTime + 0.05;
+  bufs.forEach(b => {
+    const s = c.createBufferSource();
+    s.buffer = b;
+    s.connect(c.destination);
+    s.start(t);
+    t += b.duration + 0.06;
+    srcs.push(s);
+  });
+}
+// pochvala s menom Lary, striedame tri znenia
+const praise = () => T('praise' + rnd(1, 3), { name: S.name });
+
+/* ====== EFEKTY ====== */
+function confetti(n) {
+  const box = $('#fx');
+  const em = ['⭐', '✨', '🎉', '💖', '🌈', '🦄'];
+  for (let i = 0; i < n; i++) {
+    const s = document.createElement('span');
+    s.className = 'conf';
+    s.textContent = em[i % em.length];
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.animationDelay = Math.random() * 0.4 + 's';
+    s.style.fontSize = (16 + Math.random() * 16) + 'px';
+    box.appendChild(s);
+    setTimeout(() => s.remove(), 2600);
+  }
+}
+function flyPlus(n) {
+  const s = document.createElement('span');
+  s.className = 'plus';
+  s.textContent = '+' + n + ' ⭐';
+  document.body.appendChild(s);
+  setTimeout(() => s.remove(), 1300);
+}
+function bump(el, cls) {
+  el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls);
+}
+function buildDeco() {
+  const d = $('#deco');
+  const em = ['☁️', '✨'];
+  for (let i = 0; i < 5; i++) {
+    const s = document.createElement('span');
+    s.textContent = em[i % em.length];
+    s.style.left = Math.random() * 100 + '%';
+    s.style.fontSize = (20 + Math.random() * 26) + 'px';
+    s.style.animationDuration = (18 + Math.random() * 20) + 's';
+    s.style.animationDelay = -Math.random() * 30 + 's';
+    d.appendChild(s);
+  }
+}
+
+/* ====== OBRAZOVKY A HORNÝ PANEL ====== */
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('hidden', s.id !== id));
+  window.scrollTo(0, 0);
+}
+function applyStatic() {
+  document.documentElement.lang = LANG;
+  document.title = T('title');
+  document.querySelectorAll('[data-t]').forEach(el => { el.textContent = T(el.dataset.t); });
+  $('#mascotP').innerHTML = laraSVG(64);
+}
+function renderTop() {
+  $('#starsTop').textContent = S.stars;
+  $('#soundBtn').textContent = S.sound ? '🔊' : '🔇';
+  $('#langBtn').textContent = T('otherLang');
+}
+function renderHome() {
+  $('#hello').textContent = T('hi', { name: S.name });
+  $('#laraBig').innerHTML = laraSVG(130, 'idle');
+  $('#mascotBig').innerHTML = mascotSVG(S.mascot, 110, 'idle');
+  $('#sRight').textContent = S.stats.right;
+  $('#sAcc').textContent = S.stats.total ? Math.round(S.stats.right / S.stats.total * 100) + ' %' : '–';
+  $('#sRounds').textContent = S.rounds;
+  $('#sStreak').textContent = S.bestStreak;
+  $('#mascots').innerHTML = MASCOTS.filter(m => S.companions.includes(m.id)).map(m =>
+    `<button class="chip mchip ${m.id === S.mascot ? 'on' : ''}" data-m="${m.id}" title="${mName(m)}">${mascotSVG(m.id, 40)}</button>`).join('');
+  document.querySelectorAll('#types .chip').forEach(b => b.classList.toggle('on', b.dataset.type === S.types));
+  document.querySelectorAll('#levels [data-level]').forEach(b => {
+    b.textContent = T('upTo', { n: b.dataset.level });
+    b.classList.toggle('on', Number(b.dataset.level) === S.level);
+  });
+  $('#autoBtn').classList.toggle('on', S.auto);
+  $('#autoBtn').textContent = `${T('autoLevel')}: ${S.auto ? T('on') : T('off')}`;
+  document.querySelectorAll('#seasons .chip').forEach(b => b.classList.toggle('on', b.dataset.season === S.season));
+  renderGarden(STICKERS.filter(s => S.unlocked.includes(s.id)));
+  if (WATER_PENDING) { WATER_PENDING = false; setTimeout(waterAnim, 500); }
+  const today = new Date().toDateString();
+  if (S.mascot === 'dragon' && S.dragonDay !== today) { S.dragonDay = today; save(); setTimeout(waterAll, 500); }
+  const weak = Object.entries(S.miss).sort((x, y) => y[1] - x[1]).slice(0, 3);
+  $('#weak').textContent = weak.length ? weak.map(([k, v]) => `${k} (${v}×)`).join('   ·   ') : T('weakNone');
+  renderTop();
+}
+
+/* ====== ZADANIA ====== */
+let lastKey = '';
+function kvet(n) {               // slovenský tvar slova "kvet" (len pre slovenskú verziu)
+  const d = n % 10, t = n % 100;
+  if (n === 1) return 'kvet';
+  if (d >= 2 && d <= 4 && (t < 12 || t > 14)) return 'kvety';
+  return 'kvetov';
+}
+function kvetKey(n) {            // kľúč nahrávky pre tvar slova "kvet" (slovenčina)
+  const d = n % 10, t = n % 100;
+  if (n === 1) return 'kvet';
+  if (d >= 2 && d <= 4 && (t < 12 || t > 14)) return 'kvety';
+  return 'kvetov';
+}
+const SND = (en, sk) => (LANG === 'en' ? en : sk);   // zoznam nahrávok pre aktuálny jazyk
+function frames(seq, total) {    // desiatkový rámik: 10 políčok na jeden rámik
+  const slots = Math.max(10, Math.ceil(total / 10) * 10);
+  let h = '';
+  for (let f = 0; f < slots / 10; f++) {
+    h += '<div class="frame">';
+    for (let i = 0; i < 10; i++) h += `<i class="cell ${seq[f * 10 + i] || 'empty'}"></i>`;
+    h += '</div>';
+  }
+  return `<div class="frames">${h}</div>`;
+}
+function genTask(mode, max) {
+  const story = Math.random() < 0.3;
+  if (mode === 'plus') {
+    const c = rnd(2, max), a = rnd(1, c - 1), b = c - a;
+    return {
+      op: '+', a, b, total: c, g1: a, g2: b, mi: 0, ans: c,
+      txt: `${a} + ${b} = ?`, key: `+${a},${b}`,
+      html: `${a} + ${b} = <span class="q">?</span>`,
+      speak: T('speakPlus', { a, b }),
+      step: T('stepPlus', { a, b }),
+      story: story ? T('storyPlus', { a, b, kvet: kvet(a) }) : null,
+      snd: story ? SND(['fairyhad', a, 'flowersgot', b, 'storyq'], ['vilamala', a, kvetKey(a), 'adostala', b, 'kolkokvetov'])
+                 : SND(['whatis', a, 'plus', b], ['kolkoje', a, 'plus', b]),
+    };
+  }
+  if (mode === 'minus') {
+    const a = rnd(2, max), b = rnd(1, a - 1), c = a - b;
+    return {
+      op: '−', a, b, total: a, g1: c, g2: b, mi: 0, ans: c,
+      txt: `${a} − ${b} = ?`, key: `-${a},${b}`,
+      html: `${a} − ${b} = <span class="q">?</span>`,
+      speak: T('speakMinus', { a, b }),
+      step: T('stepMinus', { a, b }),
+      story: story ? T('storyMinus', { a, b, kvet: kvet(a), bolo: a <= 4 ? 'boli' : 'bolo' }) : null,
+      snd: story ? SND(['gardenhad', a, 'flowerspicked', b, 'storyq2'], [a <= 4 ? 'vzahradeboli' : 'vzahrade', a, kvetKey(a), 'princezna', b, 'znichnatrhala'])
+                 : SND(['whatis', a, 'minus', b], ['kolkoje', a, 'minus', b]),
+    };
+  }
+  if (mode === 'fillPlus') {
+    const c = rnd(2, max), k = rnd(1, c - 1), m = c - k;
+    return Math.random() < 0.5
+      ? { op: '+', a: m, b: k, total: c, g1: m, g2: k, mi: 1, ans: m, story: null,
+          txt: `? + ${k} = ${c}`, key: `f+${c},${k},1`,
+          html: `<span class="q">?</span> + ${k} = ${c}`,
+          speak: T('speakFillPlusFront', { k, c }),
+          step: T('stepFillPlusFront', { k, c }),
+          snd: SND(['whatplus', k, 'is', c], ['kolkoplus', k, 'je', c]) }
+      : { op: '+', a: k, b: m, total: c, g1: k, g2: m, mi: 2, ans: m, story: null,
+          txt: `${k} + ? = ${c}`, key: `f+${c},${k},2`,
+          html: `${k} + <span class="q">?</span> = ${c}`,
+          speak: T('speakFillPlusBack', { k, c }),
+          step: T('stepFillPlusBack', { k, c }),
+          snd: SND([k, 'pluswhatis', c], [k, 'pluskolkoje', c]) };
+  }
+  if (mode === 'fillMinus') {
+    const a = rnd(2, max), m = rnd(1, a - 1), c = a - m;
+    return { op: '−', a, b: m, total: a, g1: c, g2: m, mi: 2, ans: m, story: null,
+      txt: `${a} − ? = ${c}`, key: `f-${a},${m}`,
+      html: `${a} − <span class="q">?</span> = ${c}`,
+      speak: T('speakFillMinus', { a, c }),
+      step: T('stepFillMinus', { a, c }),
+      snd: SND([a, 'minuswhatis', c], [a, 'minuskolkoje', c]) };
+  }
+  // porovnanie: >, <, =
+  const a = rnd(1, max), b = Math.random() < 0.15 ? a : rnd(1, max);
+  const sym = a > b ? '>' : a < b ? '<' : '=';
+  return { op: 'cmp', a, b, total: 0, ans: sym, story: null,
+    txt: `${a} ? ${b}`, key: `c${a},${b}`,
+    html: `${a} <span class="q">?</span> ${b}`,
+    speak: T('speakCmp', { a, b }),
+    step: a === b ? T('hintSame') : T('hintBigger', { n: Math.max(a, b) }),
+    snd: SND(['compare', a, 'and', b, 'moreless'], ['porovnaj', a, 'a', b, 'vacsie']) };
+}
+function makeTask() {
+  let t, key;
+  do {
+    let mode = S.types;
+    if (mode === 'mix') mode = pick(['plus', 'minus', 'fill', 'cmp']);
+    if (mode === 'pm') mode = Math.random() < 0.5 ? 'plus' : 'minus';
+    if (mode === 'fill') mode = Math.random() < 0.5 ? 'fillPlus' : 'fillMinus';
+    t = genTask(mode, S.level);
+    key = t.key;
+  } while (key === lastKey);
+  lastKey = key;
+  return t;
+}
+/* pomôcka pre dvojciferné čísla: počítadlo s desiatkami a jednotkami (dieťa ťuká na guličky).
+   Sčítanie: ťuknutím sa počítajú guličky. Odčítanie: ťuknutím sa odoberajú guličky.
+   Desiatka sa pri odčítaní rozmení na 10 jednotiek, ak treba. */
+function cntState(t) {
+  if (!R.cnt || R.cnt.key !== t.key) {
+    R.cnt = { key: t.key, T: Math.floor(t.a / 10), O: t.a % 10, msg: '' };
+  }
+  return R.cnt;
+}
+// slovné vyjadrenie počtu desiatok a jednotiek (správne tvary)
+function abPhrase(n10, n1) {
+  const p = [];
+  if (LANG === 'en') {
+    if (n10) p.push(`${n10} ${n10 === 1 ? 'ten' : 'tens'}`);
+    if (n1) p.push(`${n1} ${n1 === 1 ? 'one' : 'ones'}`);
+    return p.join(' and ');
+  }
+  if (n10) p.push(`${n10} ${n10 === 1 ? 'desiatku' : (n10 <= 4 ? 'desiatky' : 'desiatok')}`);
+  if (n1) p.push(`${n1} ${n1 === 1 ? 'jednotku' : (n1 <= 4 ? 'jednotky' : 'jednotiek')}`);
+  return p.join(' a ');
+}
+// jeden rad počítadla: desiatky (10 korálikov) alebo jednotky (do 19, dva rady po 10)
+function abRow(kind, n, hi = -1) {
+  const slots = kind === 't' ? 10 : 20;
+  let beads = '';
+  for (let i = 0; i < slots; i++) {
+    beads += `<span class="ab-bead ${kind}${i < n ? ' on' : ''}${i === hi ? ' hint' : ''}" data-k="${kind}" data-i="${i}"></span>`;
+  }
+  return `<div class="ab-row"><div class="ab-lab"><span class="ab-val">${kind === 't' ? '10' : '1'}</span> ${T(kind === 't' ? 'abTens' : 'abOnes')}</div><div class="ab-beads">${beads}</div></div>`;
+}
+// čo má dieťa ťuknúť ďalej (zvýrazní sa); null, keď je výsledok na počítadle
+function abHint(t, st) {
+  const val = st.T * 10 + st.O;
+  const c = t.op === '+' ? t.a + t.b : t.a - t.b;
+  if (t.op === '+') {
+    const rem = c - val;
+    if (rem <= 0) return null;
+    if (rem >= 10 && st.T < 9) return { k: 't', i: st.T };
+    return { k: 'o', i: st.O };
+  }
+  const rem = val - c;
+  if (rem <= 0) return null;
+  if (rem >= 10 && st.T > 0) return { k: 't', i: st.T - 1 };
+  if (st.O >= rem) return { k: 'o', i: st.O - rem };
+  return { k: 'b' };   // treba rozmeniť desiatku
+}
+function cntHTML(t) {
+  const st = cntState(t);
+  const h = abHint(t, st);
+  const verb = T(t.op === '+' ? 'abAdd' : 'abSub', { x: abPhrase(Math.floor(t.b / 10), t.b % 10) });
+  const now = T('abNow', { n: st.T * 10 + st.O });
+  const showBorrow = t.op === '−' && st.T > 0;
+  const borrow = showBorrow ? `<button class="chip ab-borrow${h && h.k === 'b' ? ' hint' : ''}" type="button">${T('abBorrow')}</button>` : '';
+  const done = h ? '' : `<div class="ab-done">${T('abDone')}</div>`;
+  return `<div class="ab-wrap">${abRow('t', st.T, h && h.k === 't' ? h.i : -1)}${abRow('o', st.O, h && h.k === 'o' ? h.i : -1)}<div class="ab-now">${now}</div><div class="ab-step">${verb}</div>${borrow}${done}${st.msg ? `<div class="cnt-msg">${st.msg}</div>` : ''}</div>`;
+}
+// ťuknutie na korálik: zapnutý sa vypne (aj všetky nad ním), vypnutý sa zapne (aj všetky pod ním)
+function abTap(t, el) {
+  const st = cntState(t);
+  const key = el.dataset.k === 't' ? 'T' : 'O';
+  const i = Number(el.dataset.i), n = st[key];
+  st.msg = '';
+  st[key] = i < n ? i : i + 1;
+  if (key === 'O' && st.O === 10 && n < 10) {          // sčítanie: 10 jednotiek sa zmení na desiatku
+    st.O = 0; st.T = Math.min(9, st.T + 1); st.msg = T('abCarry');
+  }
+}
+// odčítanie: desiatka sa rozmení na 10 jednotiek
+function abBorrow(t) {
+  const st = cntState(t);
+  if (st.T <= 0) return;
+  st.T -= 1; st.O += 10; st.msg = T('abBorrowMsg');
+}
+// pomôcka: desiatkový rámik pre čísla do 20, inak len text kroku
+function hintHTML(t, reveal) {
+  if ((t.op === '+' || t.op === '−') && t.mi === 0 && t.total > 10 && !reveal) {
+    const open = !!R.cntOpen;
+    return `<div class="hintbox" data-left="${t.g1}"><button class="chip help-btn" type="button" id="helpBtn">${T(open ? 'helpHide' : 'helpBtn')}</button>` +
+      (open ? cntHTML(t) : '') + `<div class="tip">${t.step}</div></div>`;
+  }
+  if (t.op === 'cmp' || t.total > 20) return `<div class="tip">${t.step}</div>`;
+  const tappable = t.op === '−' && t.mi === 0 && !reveal;   // odčítanie: dieťa ťukne na to, čo odíde
+  const tip = `<div class="tip">${t.step}</div>` + (tappable ? `<div class="tip tapmsg">${T('tapHint')}</div>` : '');
+  if (t.story) return `<div class="hintbox" data-left="${t.g1}">${flowerRow(t, reveal, tappable)}${tip}</div>`;
+  const M = reveal ? 'gold' : 'ghost';
+  const c1 = t.mi === 1 ? M : 'blue';
+  const c2 = t.mi === 2 ? M : (t.op === '−' ? (tappable ? 'yellow tap' : 'out') : 'yellow');
+  const seq = Array(t.g1).fill(c1).concat(Array(t.g2).fill(c2));
+  return `<div class="hintbox" data-left="${t.g1}">${frames(seq, t.total)}${tip}</div>`;
+}
+// slovná úloha: namiesto guličiek kvety zo záhrady (ten istý príbeh ako v zadaní)
+function flowerRow(t, reveal, tappable) {
+  const f = itemSVG('flower', 34);
+  const kept = Array(t.g1).fill(`<span class="fl">${f}</span>`).join('');
+  const picked = t.op === '−'
+    ? Array(t.g2).fill(`<span class="fl ${tappable ? 'tap' : 'faded'}">${f}</span>`).join('')
+    : Array(t.g2).fill(`<span class="fl">${f}</span>`).join('');
+  return `<div class="flrow">${kept}${picked}</div>`;
+}
+
+/* ====== HRA ====== */
+let R = null;   // stav kola
+let streak = 0; // séria správnych odpovedí
+
+function startRound() {
+  R = { res: [], queue: [], ok: 0, first: 0, gained: 0, t: null, tries: 0, done: false, input: '' };
+  $('#mascotP').innerHTML = laraSVG(64);
+  show('play');
+  playSeq(['praise1'], T('praise1', { name: S.name }));
+  startTask();
+}
+function startTask() {
+  // úlohy, ktoré sa nepodarili, sa niekedy zopakujú
+  const useRetry = R.queue.length > 0 && R.res.length >= 2 && Math.random() < 0.6;
+  R.t = useRetry ? R.queue.shift() : makeTask();
+  R.t.retry = useRetry;
+  R.res.push('');
+  R.tries = 0; R.done = false; R.input = '';
+  const st = $('#story');
+  st.textContent = R.t.story || '';
+  st.classList.toggle('hidden', !R.t.story);
+  $('#task').innerHTML = R.t.html;
+  $('#fb').textContent = '';
+  R.cntOpen = false; R.cnt = null;
+  // dvojciferné úlohy: tlačidlo „Pomôž si“ je k dispozícii hneď, ostatné nápovedy až po chybe
+  const twoDigit = (R.t.op === '+' || R.t.op === '−') && R.t.mi === 0 && R.t.total > 20;
+  $('#hint').innerHTML = twoDigit ? `<button class="chip help-btn" type="button" id="helpBtn">${T('helpBtn')}</button>` : '';
+  $('#pad').classList.remove('off');
+  $('#cmpBtns').classList.remove('off');
+  const isCmp = R.t.op === 'cmp';
+  $('#pad').classList.toggle('hidden', isCmp);
+  $('#cmpBtns').classList.toggle('hidden', !isCmp);
+  $('#nextBtn').classList.add('hidden');
+  $('#streakTxt').textContent = R.t.retry ? T('retry') : (streak > 1 ? T('streakBadge', { n: streak }) : '');
+  updateAns();
+  renderProgress();
+  playSeq(R.t.snd, R.t.story || R.t.speak);
+}
+// spoločník pokračuje po číselnej osi: pozícia zodpovedá počtu správnych odpovedí v kole
+function renderRider() {
+  const el = $('#rider');
+  el.innerHTML = mascotSVG(S.mascot, 48, 'idle');
+  const dots = document.querySelectorAll('#progress .pd');
+  if (!dots.length) return;
+  const d = dots[Math.min(R.ok, dots.length - 1)];   // nad políčkom, ktoré zodpovedá počtu správnych odpovedí
+  el.style.left = (d.offsetLeft + d.offsetWidth / 2) + 'px';
+}
+function renderProgress() {
+  $('#progress').innerHTML = Array.from({ length: CONFIG.ROUND_LENGTH }, (_, i) => {
+    const st = R.res[i] || '';
+    const cur = (i === R.res.length - 1 && !R.done) ? ' cur' : '';
+    return `<span class="pd ${st}${cur}"></span>`;
+  }).join('');
+  renderRider();
+}
+function updateAns() {
+  const el = $('#ans');
+  el.textContent = R.input || '?';
+  el.classList.toggle('empty', !R.input);
+}
+function fb(text, good) {
+  const el = $('#fb');
+  el.textContent = text;
+  el.style.color = good ? 'var(--green)' : 'var(--ink)';
+}
+function gain(n) {
+  S.stars += n;
+  if (R) R.gained += n;
+  save(); renderTop(); flyPlus(n);
+}
+function press(k) {
+  if (R.done) return;
+  if (k === 'ok') return check();
+  if (k === 'del') R.input = R.input.slice(0, -1);
+  else if (!(R.input === '' && k === '0') && R.input.length < 4) R.input += k;
+  SFX.tap();
+  updateAns();
+}
+function chooseCmp(sym) {
+  if (R.done) return;
+  R.input = sym;
+  SFX.tap();
+  updateAns();
+  check();
+}
+function check() {
+  if (R.input === '') { bump($('#ans'), 'shake'); return; }
+  const given = R.t.op === 'cmp' ? R.input : parseInt(R.input, 10);
+  R.tries++;
+  if (given === R.t.ans) win();
+  else if (R.tries === 1) {
+    SFX.oops();
+    bump($('#mascotP'), 'sad');
+    S.miss[R.t.txt] = (S.miss[R.t.txt] || 0) + 1;
+    fb(T('tryAgain'), false);
+    // v angličtine striedame viac jemných formulácií; v slovenčine je len jedna nahrávka
+    playSeq([pick(LANG === 'en' ? ['tryagain', 'tryagain2', 'tryagain3'] : ['tryagain'])], T('speakTry'));
+    R.input = ''; updateAns();
+    $('#hint').innerHTML = hintHTML(R.t, false);
+  } else lose();
+  save();
+}
+function win() {
+  R.done = true;
+  const first = R.tries === 1;
+  R.res[R.res.length - 1] = 'ok';
+  R.ok++; if (first) R.first++;
+  S.stats.right++; S.stats.total++;
+  streak++;
+  S.bestStreak = Math.max(S.bestStreak, streak);
+  gain(first ? CONFIG.STARS_FIRST_TRY : CONFIG.STARS_SECOND_TRY);
+  let msg = first ? T('great') : T('correctSecond');
+  if (streak % CONFIG.STREAK_EVERY === 0) {
+    gain(CONFIG.STREAK_BONUS);
+    msg = T('streakMsg', { n: streak, b: CONFIG.STREAK_BONUS });
+    SFX.win(); confetti(20);
+  } else { SFX.ok(); confetti(8); }
+  // úlohy zvolených spoločníkov
+  if (S.mascot === 'puppy' && first) { gain(1); msg = T('puppyBonus'); }             // pejsko: +1 za správnu na prvý pokus
+  if (S.mascot === 'fox' && Math.random() < 0.125) { gain(1); msg = T('foxStar'); }   // líška: občas nájde skrytú hviezdičku
+  if (S.mascot === 'unicorn') {                                                       // jednorožec: každá 10. odpoveď dvojnásobne
+    S.uniCount = (S.uniCount || 0) + 1;
+    if (S.uniCount % 10 === 0) { gain(first ? CONFIG.STARS_FIRST_TRY : CONFIG.STARS_SECOND_TRY); msg = T('unicornDouble'); }
+  }
+  fb(msg, true);
+  bump($('#mascotP'), 'happy');
+  bump($('#rider'), 'happy');
+  if (first) WATER_PENDING = true;   // na domovskej obrazovke spoločník zaleje kvet
+  // pochvala nie pri každej správnej odpovedi, a keď áno, z viacerých variant
+  const pk = pick(LANG === 'en' ? ['praise1', 'praise2', 'praise3', 'praise4', 'praise5', 'praise6'] : ['praise1', 'praise2', 'praise3']);
+  if (first && Math.random() < 0.5) playSeq([pk], T(pk, { name: S.name }));
+  else playSeq(['correct'], T('speakRight'));
+  $('#hint').innerHTML = '';   // po správnej odpovedi pomôcku nezobrazujeme
+  finishTask();
+}
+function lose() {
+  R.done = true;
+  R.res[R.res.length - 1] = 'bad';
+  R.queue.push(R.t);             // zopakujeme neskôr v tom istom kole
+  S.stats.total++;
+  streak = 0;
+  SFX.oops();
+  bump($('#mascotP'), 'sad');
+  R.input = String(R.t.ans); updateAns();
+  gain(CONFIG.STARS_EFFORT);
+  fb(`${T('answerIs', { a: R.t.ans })} ${T('effort', { n: CONFIG.STARS_EFFORT })}`, false);
+  $('#hint').innerHTML = hintHTML(R.t, true);
+  finishTask();
+}
+function finishTask() {
+  $('#pad').classList.add('off');
+  $('#cmpBtns').classList.add('off');
+  $('#nextBtn').textContent = R.res.length >= CONFIG.ROUND_LENGTH ? T('results') : T('next');
+  $('#nextBtn').classList.remove('hidden');
+  renderProgress();
+  save();
+}
+function next() {
+  if (!R || !R.done) return;
+  if (R.res.length >= CONFIG.ROUND_LENGTH) return endRound();
+  startTask();
+}
+function endRound() {
+  let bonus = 0, msg, mk;
+  if (R.first === CONFIG.ROUND_LENGTH) { bonus = CONFIG.ROUND_BONUS_PERFECT; msg = T('perfect'); mk = 'perfect'; }
+  else if (R.ok >= 8) { bonus = CONFIG.ROUND_BONUS_GOOD; msg = T('veryGood'); mk = 'verygood'; }
+  else { msg = T('good'); mk = 'good'; }
+  if (bonus) gain(bonus);
+
+  // automatická obtiažnosť
+  let levelMsg = '';
+  const i = LEVELS.indexOf(S.level);
+  if (S.auto) {
+    if (R.first >= 8 && i < LEVELS.length - 1) {
+      S.level = LEVELS[i + 1];
+      levelMsg = T('levelUp', { n: S.level });
+    } else if (R.ok <= 4 && i > 0) {
+      S.level = LEVELS[i - 1];
+      levelMsg = T('levelDown', { n: S.level });
+    }
+  }
+
+  S.rounds++;
+  if (S.mascot === 'capybara' && S.rounds % 3 === 0) setTimeout(() => fb(T('capyBreak'), true), 1600);   // kapybara pripomína prestávku
+  save();
+  const cheapest = Math.min(...STICKERS.filter(s => !S.unlocked.includes(s.id)).map(s => s.price), Infinity);
+  const shopMsg = S.stars >= cheapest ? T('shopHint') : '';
+  $('#doneMascot').innerHTML = mascotSVG(S.mascot, 110, 'idle');
+  $('#doneMsg').textContent = msg;
+  $('#dOk').textContent = `${R.ok}/${CONFIG.ROUND_LENGTH}`;
+  $('#dStars').textContent = `+${R.gained}`;
+  $('#doneHint').textContent = [levelMsg, shopMsg].filter(Boolean).join(' ');
+  SFX.win(); confetti(25);
+  playSeq([mk], msg);
+  renderHome();
+  show('done');
+}
+
+/* ====== ZÁHRADA – SCÉNA ====== */
+const SEASON_KEYS = ['spring', 'summer', 'autumn', 'winter'];
+const POND_CELL = `<div class="pond-cell"><div class="water"><i class="lily l1"></i><i class="lily l2"></i><i class="ripple"></i></div></div>`;
+const HOUSE_SVG = `<svg viewBox="0 0 140 120" aria-hidden="true">
+  <rect x="26" y="50" width="88" height="62" rx="4" fill="#fff1d6" stroke="#e0c49a" stroke-width="2"/>
+  <polygon points="14,56 70,12 126,56" fill="#ff8c7a" stroke="#d96a5a" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="92" y="18" width="13" height="28" fill="#c97a6a"/>
+  <circle cx="70" cy="42" r="6" fill="#ffd23c" stroke="#e8b400" stroke-width="1.5"/>
+  <rect x="56" y="70" width="28" height="42" rx="13" fill="#8a5a3c"/>
+  <circle cx="78" cy="94" r="2" fill="#ffd23c"/>
+  <rect x="34" y="64" width="16" height="16" rx="3" fill="#bfe9ff" stroke="#9fd0ee" stroke-width="1.5"/>
+  <rect x="90" y="64" width="16" height="16" rx="3" fill="#bfe9ff" stroke="#9fd0ee" stroke-width="1.5"/>
+  <circle cx="22" cy="110" r="5" fill="#ff8fbf"/><circle cx="118" cy="110" r="5" fill="#ffd23c"/>
+</svg>`;
+const LAMP_SVG = `<svg viewBox="0 0 30 80" aria-hidden="true">
+  <rect x="13" y="22" width="4" height="58" rx="2" fill="#8a6a5a"/>
+  <circle cx="15" cy="14" r="10" fill="#ffe08a" stroke="#e8b84a" stroke-width="2"/>
+  <rect x="9" y="76" width="12" height="4" rx="2" fill="#8a6a5a"/>
+</svg>`;
+function currentSeason() {
+  return S.season !== 'auto' ? S.season : SEASON_KEYS[Math.floor(S.rounds / 3) % SEASON_KEYS.length];
+}
+// dúha nad záhradou, keď je zvolený jednorožec
+const RAINBOW_SVG = `<svg class="rainbow" viewBox="0 0 150 80" aria-hidden="true">${['#ff6b6b', '#ffb347', '#ffe066', '#7bd389', '#6ec6ff', '#b38cff'].map((c, i) =>
+  `<path d="M${12 + i * 5} 78 A${66 - i * 5} ${66 - i * 5} 0 0 1 ${138 - i * 5} 78" stroke="${c}" stroke-width="5" fill="none" stroke-linecap="round"/>`).join('')}</svg>`;
+let WATER_PENDING = false;
+// spoločník (zvolený v domčeku) prejde k náhodnému kvetu, zaleje ho a kvet sa „vyšvihne“
+function waterAnim() {
+  const plots = [...document.querySelectorAll('#album .plot:not(.empty)')];
+  const scene = document.querySelector('#scene');
+  if (!plots.length || !scene || !S.mascot) return;
+  // medvedík zaleje dva kvety naraz, ostatní jeden
+  const picked = plots.sort(() => Math.random() - 0.5).slice(0, S.mascot === 'bear' ? 2 : 1);
+  picked.forEach(plot => waterOne(plot, scene));
+  if (S.mascot === 'unicorn') sparkles(scene);   // jednorožec zanechá iskričky
+}
+function waterOne(plot, scene) {
+  const sr = scene.getBoundingClientRect(), pr = plot.getBoundingClientRect();
+  const x = pr.left - sr.left + pr.width * 0.3;
+  const w = document.createElement('div');
+  w.className = 'waterer';
+  w.style.left = (pr.left - sr.left - 60) + 'px';
+  w.style.top = (pr.top - sr.top - 18) + 'px';
+  w.innerHTML = mascotSVG(S.mascot, 46) + '<span class="can">💧</span>';
+  scene.appendChild(w);
+  requestAnimationFrame(() => requestAnimationFrame(() => { w.style.left = x + 'px'; }));
+  setTimeout(() => plot.classList.add('grow'), 2000);
+  setTimeout(() => w.remove(), 3400);
+}
+function sparkles(scene) {
+  for (let i = 0; i < 6; i++) {
+    const s = document.createElement('span');
+    s.className = 'spark';
+    s.textContent = '✨';
+    s.style.left = (10 + Math.random() * 80) + '%';
+    s.style.top = (20 + Math.random() * 50) + '%';
+    scene.appendChild(s);
+    setTimeout(() => s.remove(), 1800);
+  }
+}
+// dráčik zaleje celú záhradu (raz denne, pri prvom otvorení domčeka)
+function waterAll() {
+  document.querySelectorAll('#album .plot:not(.empty)').forEach(p => p.classList.add('grow'));
+}
+function renderGarden(owned) {
+  const season = currentSeason();
+  $('#scene').className = 'gscene ' + season;
+  // zvieratká (úroveň 2) chodia po záhrade, ozdoby (úroveň 1) sú na záhone,
+  // stavby (úroveň 3) stoja za záhonom a vzácne veci (úroveň 4) sú na oblohe
+  const walkers = owned.filter(s => s.tier === 2).slice(0, 4);
+  const plants = owned.filter(s => s.tier <= 2 && !walkers.includes(s));
+  const builds = owned.filter(s => s.tier === 3);
+  const sky = owned.filter(s => s.tier === 4);
+  $('#builds').innerHTML = builds.map(s => `<div class="bld" title="${sName(s)}">${itemSVG(s.id, 52)}</div>`).join('');
+  $('#sky').innerHTML = (S.mascot === 'unicorn' ? RAINBOW_SVG : '') +
+    sky.map((s, i) => `<div class="skyi" style="animation-delay:${-i * 0.7}s">${itemSVG(s.id, 36)}</div>`).join('');
+  let decor = `<div class="house">${HOUSE_SVG}</div>`;
+  if (owned.length >= 6) decor += `<div class="lamp">${LAMP_SVG}</div>`;
+  $('#decor').innerHTML = decor;
+  const pondCells = owned.length >= 3 ? 2 : 0;
+  const cells = Math.max(12, Math.ceil((plants.length + pondCells) / 4) * 4);
+  let g = pondCells ? POND_CELL : '';
+  for (let i = 0; i < cells - pondCells; i++) {
+    const s = plants[i];
+    g += s
+      ? `<div class="plot" title="${sName(s)}"><span class="plant" style="animation-delay:${-(i % 5) * 0.7}s">${itemSVG(s.id, 52)}</span></div>`
+      : '<div class="plot empty"><span class="sprout">🌱</span></div>';
+  }
+  $('#album').innerHTML = g;
+  $('#walkers').innerHTML = walkers.map((s, i) =>
+    `<div class="walker" style="top:${12 + i * 20}%;animation-duration:${20 + i * 6}s;animation-delay:${-i * 7}s">${itemSVG(s.id, 54)}</div>`).join('');
+  $('#fxl').innerHTML = Array.from({ length: 10 }, (_, i) =>
+    `<i class="p ${season}" style="left:${(i * 37) % 100}%;animation-delay:${-(i * 1.7)}s;animation-duration:${(season === 'summer' ? 7 : 9) + (i % 4) * 2}s"></i>`).join('');
+  $('#gardenCount').textContent = T('gardenCount', { n: owned.length, total: STICKERS.length, season: T(season) });
+}
+
+/* ====== OBCHOD ====== */
+// úloha spoločníka a úroveň predmetu – zobrazia sa v obchode
+const ROLE_TXT = {
+  sk: { bunny: 'Vysvetlí úlohu hlasom', puppy: '+1 ⭐ za správnu na prvý pokus', bear: 'Zalieva dva kvety naraz',
+    fox: 'Občas nájde skrytú hviezdičku', capybara: 'Pripomenie prestávku', dragon: 'Každý deň zaleje celú záhradu',
+    unicorn: 'Každá 10. správna = dvojnásobok ⭐ a dúha nad záhradou' },
+  en: { bunny: 'Explains the task out loud', puppy: '+1 ⭐ for a first-try answer', bear: 'Waters two flowers at once',
+    fox: 'Sometimes finds a hidden star', capybara: 'Reminds you to take a break', dragon: 'Waters the whole garden every day',
+    unicorn: 'Every 10th correct = double ⭐ and a rainbow' },
+};
+const TIER_TXT = { sk: ['', 'Ozdoba', 'Pomocník', 'Stavba', 'Vzácne'], en: ['', 'Decor', 'Helper', 'Building', 'Rare'] };
+function renderShop() {
+  $('#shopSub').textContent = T('haveStars', { n: S.stars });
+  $('#shopGrid').innerHTML = [...STICKERS].sort((a, b) => a.price - b.price).map(s => {
+    const own = S.unlocked.includes(s.id);
+    return `<button class="st ${own ? 'owned' : ''}" data-buy="${s.id}" ${own ? 'disabled' : ''}>
+      <span class="se">${itemSVG(s.id, 56)}</span>${sName(s)}<em class="role">${TIER_TXT[LANG][s.tier]}</em><small>${own ? '✓' : s.price + ' ⭐'}</small></button>`;
+  }).join('');
+  $('#companionGrid').innerHTML = MASCOTS.map(m => {
+    const own = S.companions.includes(m.id);
+    const active = own && S.mascot === m.id;
+    return `<button class="st ${own ? 'owned' : ''} ${active ? 'on' : ''}" data-comp="${m.id}">
+      <span class="se">${mascotSVG(m.id, 56)}</span>${mName(m)}<em class="role">${ROLE_TXT[LANG][m.id]}</em><small>${own ? (active ? '✓ ' + T('on') : '✓') : m.price + ' ⭐'}</small></button>`;
+  }).join('');
+  $('#shopMsg').textContent = '';
+}
+
+/* ====== UDALOSTI ====== */
+$('#startBtn').onclick = () => { SFX.tap(); startRound(); };
+$('#againBtn').onclick = () => { SFX.tap(); startRound(); };
+$('#backHomeBtn').onclick = () => { renderHome(); show('home'); };
+$('#homeBtn').onclick = () => { renderHome(); show('home'); };
+$('#shopBtn').onclick = () => { renderShop(); show('shop'); };
+$('#shopBack').onclick = () => { renderHome(); show('home'); };
+$('#nextBtn').onclick = next;
+$('#sayBtn').onclick = () => playSeq(R.t.snd, R.t.story || R.t.speak);
+// odčítanie: každá guľôčka, na ktorú dieťa ťukne, odletí a ozve sa počet
+$('#hint').addEventListener('click', e => {
+  // pomôcka pre dvojciferné čísla: tlačidlo a guličky počítadla
+  if (e.target.closest('#helpBtn')) {
+    R.cntOpen = !R.cntOpen;
+    if (R.cntOpen && S.mascot === 'bunny' && S.sound) playSeq(R.t.snd, R.t.speak);   // zajko vysvetlí úlohu hlasom
+    $('#hint').innerHTML = hintHTML(R.t, false);
+    return;
+  }
+  const ab = e.target.closest('.ab-bead');
+  const bw = e.target.closest('.ab-borrow');
+  if ((ab || bw) && R.cntOpen) {
+    if (ab) abTap(R.t, ab); else abBorrow(R.t);
+    if (S.sound) SFX.tap();
+    $('#hint').innerHTML = hintHTML(R.t, false);
+    return;
+  }
+  const c = e.target.closest('.tap');
+  if (!c || c.classList.contains('gone')) return;
+  c.classList.add('gone');
+  const gone = document.querySelectorAll('#hint .gone').length;
+  const done = !document.querySelector('#hint .tap:not(.gone)');
+  const left = Number(document.querySelector('#hint .hintbox').dataset.left);
+  // jedno hlásenie na ťuknutie: vždy počet odobratých (pri poslednej guličke "päť", nie zvyšok "jeden")
+  playSeq([gone], String(gone));
+  const msg = document.querySelector('#hint .tapmsg');
+  if (msg) msg.textContent = done ? T('tapLeft', { n: left }) : T('tapCount', { n: gone });
+  if (done) fb(T('tapLeft', { n: left }), true);
+});
+$('#langBtn').onclick = () => { location.href = LANG === 'en' ? 'sk/' : '../'; };
+$('#pad').addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (b) press(b.dataset.k);
+});
+$('#cmpBtns').addEventListener('click', e => {
+  const b = e.target.closest('[data-s]');
+  if (b) chooseCmp(b.dataset.s);
+});
+document.addEventListener('keydown', e => {
+  if ($('#play').classList.contains('hidden') || e.target.tagName === 'INPUT') return;
+  if (e.key === 'Enter') { if (R.done) next(); else press('ok'); return; }
+  if (R.t.op === 'cmp') {
+    if (['<', '>', '='].includes(e.key)) chooseCmp(e.key);
+    return;
+  }
+  if (/^[0-9]$/.test(e.key)) press(e.key);
+  else if (e.key === 'Backspace') press('del');
+});
+$('#mascotBig').onclick = () => {
+  bump($('#mascotBig'), 'happy'); SFX.tap();
+  const m = MASCOTS.find(x => x.id === S.mascot) || MASCOTS[0];
+  playSeq(['hilara'], T('mascotHi', { name: S.name, mascot: mName(m) }));
+};
+$('#soundBtn').onclick = () => {
+  S.sound = !S.sound; save(); renderTop();
+  if (S.sound) SFX.tap();
+};
+$('#mascots').onclick = e => {
+  const b = e.target.closest('[data-m]');
+  if (!b) return;
+  S.mascot = b.dataset.m; save(); renderHome(); applyStatic();
+};
+$('#types').onclick = e => {
+  const b = e.target.closest('[data-type]');
+  if (!b) return;
+  S.types = b.dataset.type; save(); renderHome();
+};
+$('#levels').onclick = e => {
+  const b = e.target.closest('[data-level]');
+  if (!b) return;
+  S.level = Number(b.dataset.level); save(); renderHome();
+};
+$('#autoBtn').onclick = () => { S.auto = !S.auto; save(); renderHome(); };
+$('#seasons').onclick = e => {
+  const b = e.target.closest('[data-season]');
+  if (!b) return;
+  S.season = b.dataset.season; save(); renderHome();
+};
+/* záloha postupu: celý stav hry ako kód (na presun medzi adresami) */
+$('#backupBtn').onclick = () => {
+  $('#backupBox').classList.toggle('hidden');
+  $('#backupOut').value = btoa(unescape(encodeURIComponent(JSON.stringify(S))));
+  $('#backupMsg').textContent = '';
+};
+$('#backupCopy').onclick = () => {
+  const ta = $('#backupOut');
+  ta.select(); ta.setSelectionRange(0, 999999);
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch (e) {}
+  $('#backupMsg').textContent = ok ? T('backupCopied') : '';
+};
+$('#backupRestore').onclick = () => {
+  try {
+    const data = JSON.parse(decodeURIComponent(escape(atob($('#backupIn').value.trim()))));
+    if (!data || !data.stats) throw new Error('bad');
+    S = Object.assign(defaults(), data);
+    if (!Array.isArray(S.companions) || !S.companions.includes('bunny')) S.companions = ['bunny'];
+    if (!S.companions.includes(S.mascot)) S.mascot = 'bunny';
+    save(); renderHome(); renderTop();
+    $('#backupMsg').textContent = T('backupDone');
+  } catch (e) {
+    $('#backupMsg').textContent = T('backupBad');
+  }
+};
+$('#resetBtn').onclick = () => {
+  if (!confirm(T('resetConfirm'))) return;
+  const keep = { name: S.name, mascot: S.mascot, sound: S.sound, level: S.level, types: S.types, auto: S.auto, season: S.season, companions: S.companions };
+  S = Object.assign(defaults(), keep);
+  save(); renderHome();
+};
+$('#companionGrid').onclick = e => {
+  const b = e.target.closest('[data-comp]');
+  if (!b) return;
+  const m = MASCOTS.find(x => x.id === b.dataset.comp);
+  if (S.companions.includes(m.id)) { S.mascot = m.id; save(); renderShop(); renderHome(); return; }
+  if (S.stars < m.price) {
+    SFX.oops();
+    $('#shopMsg').textContent = T('needMore', { n: m.price - S.stars });
+    return;
+  }
+  S.stars -= m.price;
+  S.companions.push(m.id);
+  S.mascot = m.id;
+  save(); SFX.ok(); confetti(12);
+  $('#shopMsg').textContent = T('bought', { name: mName(m) });
+  renderShop(); renderTop();
+};
+$('#shopGrid').onclick = e => {
+  const b = e.target.closest('[data-buy]');
+  if (!b) return;
+  const s = STICKERS.find(x => x.id === b.dataset.buy);
+  if (S.stars < s.price) {
+    SFX.oops();
+    $('#shopMsg').textContent = T('needMore', { n: s.price - S.stars });
+    return;
+  }
+  S.stars -= s.price;
+  S.unlocked.push(s.id);
+  save(); SFX.ok(); confetti(12);
+  $('#shopMsg').textContent = T('bought', { name: sName(s) });
+  renderShop(); renderTop();
+};
+
+/* ====== ŠTART ====== */
+applyStatic();
+buildDeco();
+renderHome();
+show('home');
+// ikona a názov na ploche iPadu, manifest a offline služba: správne aj keď je appka v /sk/
+document.querySelector('link[rel=manifest]').href = ROOT + 'manifest.webmanifest';
+document.querySelector('link[rel=apple-touch-icon]').href = ROOT + 'icon-180.png';
+document.querySelector('meta[name=apple-mobile-web-app-title]').content = LANG === 'sk' ? 'Počty' : 'Lara Math';
+// offline režim: služba sa spustí len na https (Netlify, GitHub) alebo localhost
+if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) {
+  navigator.serviceWorker.register(ROOT + 'sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
