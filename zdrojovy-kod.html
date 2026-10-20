@@ -155,7 +155,8 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 #decor .bld{position:absolute}
 #decor .bld svg,#decor .sky svg{display:block;width:100%!important;height:auto!important;overflow:visible}
 #decor .sky{position:absolute;animation:bob 3.4s ease-in-out infinite alternate}
-#album{position:absolute;inset:0;z-index:2;pointer-events:none}
+/* záhony a zvieratká sú v jednej vrstve so stavbami: poradie určuje výška stanovišťa (z-index) */
+#album,#walkers{display:contents}
 /* záhon: 112 × 82 jednotiek (celá záhrada je 1000 × 700) */
 .plot{position:absolute;width:11.2%;height:11.7%}
 /* rastlina: semiačko (g0), potom výhonok (g1), rastlina (g2) a kvet (g3) */
@@ -173,7 +174,6 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 .plant.pop .bloom{animation:growPop .8s ease-out}
 @keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
 /* zvieratká: nohy sa hýbu len pri chôdzi; v pokoji sa len pasú, kopú, mávajú chvostom alebo nakláňajú tykadlá */
-#walkers{position:absolute;inset:0;z-index:3;pointer-events:none}
 .walker{position:absolute}
 .walker .flip{width:100%}
 .walker svg{display:block;width:100%;height:auto;overflow:visible}
@@ -292,8 +292,6 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
           <div class="wchip" id="wchip"></div>
           <div id="land"></div>
           <div id="decor"></div>
-          <div id="album"></div>
-          <div id="walkers"></div>
           <div class="fxl" id="fxl"></div>
         </div>
       </div>
@@ -1918,8 +1916,8 @@ const BEDS = {
 // stavby na pevných miestach (c = stred, b = zem, w = šírka); oblohu: c = stred, y = stred, w = šírka
 const SLOT = {
   windmill: { c: 66, b: 300, w: 116 }, greenhouse: { c: 884, b: 318, w: 210 },
-  gazebo: { c: 84, b: 470, w: 150 }, birdhouse: { c: 84, b: 600, w: 102 }, bench: { c: 84, b: 690, w: 150 },
-  swing: { c: 912, b: 470, w: 130 }, well: { c: 892, b: 600, w: 100 }, table: { c: 920, b: 690, w: 130 },
+  gazebo: { c: 84, b: 530, w: 150 }, birdhouse: { c: 175, b: 342, w: 102 }, bench: { c: 84, b: 690, w: 150 },
+  swing: { c: 912, b: 500, w: 130 }, well: { c: 892, b: 600, w: 100 }, table: { c: 920, b: 690, w: 130 },
   statue: { c: 300, b: 352, w: 150 }, lamp: { c: 700, b: 352, w: 116 },
   fountain: { c: 500, b: 690, w: 170 }, pond: { c: 500, b: 472, w: 170 },
   jupiter: { c: 60, y: 60, w: 84 }, moon: { c: 175, y: 70, w: 74 }, kite: { c: 170, y: 190, w: 96 },
@@ -2010,8 +2008,8 @@ function landSVG() {
     <rect x="466" y="352" width="68" height="348" fill="${gravel}"/>
     <rect x="0" y="684" width="1000" height="16" fill="${gravel}"/>
     <ellipse cx="500" cy="424" rx="92" ry="54" fill="${gravel}" stroke="${gravelE}" stroke-width="2"/>
-    <ellipse cx="84" cy="486" rx="80" ry="20" fill="${gravel}"/>
-    <ellipse cx="905" cy="486" rx="70" ry="18" fill="${gravel}"/>
+    <ellipse cx="84" cy="530" rx="80" ry="20" fill="${gravel}"/>
+    <ellipse cx="905" cy="500" rx="70" ry="18" fill="${gravel}"/>
     <ellipse cx="880" cy="612" rx="64" ry="16" fill="${gravel}"/>
     ${hedges}${soil}
   </svg>`;
@@ -2214,23 +2212,25 @@ function renderGarden(owned) {
     const p = SLOT[s.id];
     return `<div class="sky" title="${sName(s)}" style="left:${(p.c - p.w / 2) / GW * 100}%;top:${(p.y - p.w / 2) / GH * 100}%;width:${p.w / GW * 100}%">${itemSVG(s.id, 100)}</div>`;
   }).join('');
-  $('#decor').innerHTML = decor;
+  const decorHTML = decor;
   // záhony: rastlina sa objaví na svojom mieste ako semiačko a podľa zálievania rastie
-  $('#album').innerHTML = owned.filter(s => s.tier === 1 && BEDS[s.id]).map((s, i) => {
+  const plotsHTML = owned.filter(s => s.tier === 1 && BEDS[s.id]).map((s, i) => {
     const [cx, cy] = BEDS[s.id];
     const g = S.grow[s.id] || 0;
-    return `<div class="plot" data-id="${s.id}" title="${sName(s)} · ${GROW_NAME[LANG][g]}" style="left:${(cx - 56) / GW * 100}%;top:${(cy - 41) / GH * 100}%">` +
+    return `<div class="plot" data-id="${s.id}" title="${sName(s)} · ${GROW_NAME[LANG][g]}" style="left:${(cx - 56) / GW * 100}%;top:${(cy - 41) / GH * 100}%;z-index:${Math.round(cy + 41)}">` +
       `<span class="plant g${g}" style="animation-delay:${-(i % 5) * 0.7}s"><span class="seedling">${SEED_SVG}</span><span class="bloom">${itemSVG(s.id, 110)}</span></span></div>`;
   }).join('');
   // zvieratká: ich stav sa drží aj pri prekreslení, takže sa nezaseknú; chodia po chodníkoch
   const walkers = owned.filter(s => CRIT[s.id]);
   Object.keys(critState).forEach(id => { if (!walkers.some(s => s.id === id)) delete critState[id]; });
-  $('#walkers').innerHTML = walkers.map(s => {
+  const walkersHTML = walkers.map(s => {
     const c = CRIT[s.id];
     if (!critState[s.id]) critInit(s.id);
     const st = critState[s.id];
-    return `<div class="walker ${st.moving ? 'walking' : 'rest'}" data-id="${s.id}" style="width:${c.w / GW * 100}%;left:${(st.x - c.w / 2) / GW * 100}%;bottom:${critBottom(s.id)}%;--gait:${c.gait}s">${critFlip(s.id, st.dir)}</div>`;
+    return `<div class="walker ${st.moving ? 'walking' : 'rest'}" data-id="${s.id}" style="width:${c.w / GW * 100}%;left:${(st.x - c.w / 2) / GW * 100}%;bottom:${critBottom(s.id)}%;z-index:${c.lane};--gait:${c.gait}s">${critFlip(s.id, st.dir)}</div>`;
   }).join('');
+  // stavby, záhony a zvieratká sú v jednej vrstve: vyššie stanovište (menšia hodnota y) sa kreslí skôr
+  $('#decor').innerHTML = decorHTML + `<div id="album">${plotsHTML}</div><div id="walkers">${walkersHTML}</div>`;
   if (!critTimer) critTimer = setInterval(critTick, 100);
   $('#fxl').innerHTML = Array.from({ length: 10 }, (_, i) =>
     `<i class="p ${season}" style="left:${(i * 37) % 100}%;animation-delay:${-(i * 1.7)}s;animation-duration:${(season === 'summer' ? 7 : 9) + (i % 4) * 2}s"></i>`).join('');
