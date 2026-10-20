@@ -201,7 +201,7 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 #decor .bld svg{width:100%!important;height:auto!important;display:block}
 #decor .sky{position:absolute;animation:bob 3.4s ease-in-out infinite alternate}
 #decor .sky svg{width:100%!important;height:auto!important;display:block}
-#decor .rainbow{position:absolute;left:12%;top:6%;width:44%;height:auto;opacity:.92}
+#decor .rainbow{position:absolute;left:14%;top:0;width:34%;height:auto;opacity:.92}
 .pondb .pa{position:absolute;width:18%;animation:swim 6s ease-in-out infinite alternate}
 .pondb .pa svg{width:100%!important;height:auto!important;display:block}
 @keyframes swim{0%{transform:translateX(-8px)}100%{transform:translateX(8px)}}
@@ -1761,27 +1761,27 @@ const POND_ANIMALS = ['frog', 'turtle', 'fish', 'swan'];
 const POND_POS = { fish: 'left:30%;top:50%', swan: 'left:56%;top:30%;width:30%', frog: 'left:14%;top:26%;width:14%', turtle: 'left:70%;top:58%;width:16%' };
 // miesta v krajine (súradnice 640 × 200): x = ľavý okraj, w = šírka, b = zem (dole), t = vrch (nebo)
 const SLOT = {
-  windmill: { x: 292, b: 144, w: 42 }, gazebo: { x: 90, b: 150, w: 96 }, greenhouse: { x: 330, b: 164, w: 76 },
-  birdhouse: { x: 228, b: 166, w: 24 }, well: { x: 300, b: 178, w: 32 }, statue: { x: 262, b: 184, w: 32 },
-  fountain: { x: 190, b: 192, w: 56 }, swing: { x: 14, b: 188, w: 64 }, pond: { x: 88, b: 199, w: 112 },
-  bench: { x: 350, b: 194, w: 44 }, table: { x: 404, b: 196, w: 44 }, lamp: { x: 470, b: 190, w: 22 },
-  moon: { x: 18, t: 14, w: 42 }, kite: { x: 96, t: 42, w: 36 }, hotair: { x: 168, t: 8, w: 40 },
-  comet: { x: 250, t: 24, w: 60 }, jupiter: { x: 340, t: 10, w: 40 }, galaxy: { x: 400, t: 34, w: 52 },
+  windmill: { x: 300, b: 150, w: 60 }, gazebo: { x: 110, b: 162, w: 130 }, greenhouse: { x: 320, b: 178, w: 110 },
+  birdhouse: { x: 236, b: 178, w: 36 }, well: { x: 356, b: 200, w: 50 }, statue: { x: 306, b: 204, w: 46 },
+  fountain: { x: 222, b: 208, w: 80 }, swing: { x: 4, b: 200, w: 90 }, pond: { x: 98, b: 214, w: 120 },
+  bench: { x: 412, b: 208, w: 58 }, table: { x: 480, b: 212, w: 60 }, lamp: { x: 580, b: 214, w: 26 },
+  moon: { x: 12, t: 10, w: 56 }, kite: { x: 110, t: 40, w: 48 }, hotair: { x: 190, t: 6, w: 56 },
+  comet: { x: 280, t: 22, w: 80 }, jupiter: { x: 380, t: 6, w: 56 }, galaxy: { x: 460, t: 30, w: 70 },
 };
 function landSVG() {
-  return `<svg viewBox="0 0 640 200" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+  return `<svg viewBox="0 0 640 220" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
     <defs>
       <linearGradient id="gSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--s1)"/><stop offset="1" style="stop-color:var(--s2)"/></linearGradient>
       <pattern id="gPicket" width="22" height="34" patternUnits="userSpaceOnUse"><path d="M2 8 L9 1 L16 8 L16 34 L2 34Z" fill="#ffffff"/></pattern>
     </defs>
-    <rect width="640" height="200" fill="url(#gSky)"/>
+    <rect width="640" height="220" fill="url(#gSky)"/>
     <circle cx="584" cy="36" r="26" style="fill:var(--sun)"/>
     <g fill="#ffffff" opacity=".95"><ellipse cx="96" cy="44" rx="36" ry="13"/><circle cx="84" cy="36" r="13"/><circle cx="110" cy="34" r="11"/></g>
     <g fill="#ffffff" opacity=".9"><ellipse cx="300" cy="30" rx="30" ry="10"/><circle cx="286" cy="24" r="10"/></g>
     <path d="M0 124 L70 84 L118 112 L190 76 L252 110 L320 80 L386 112 L452 84 L520 110 L584 82 L640 104 L640 136 L0 136Z" fill="#b8d8ea"/>
     <g fill="#7bbf8a">${Array.from({ length: 19 }, (_, i) => `<ellipse cx="${i * 36}" cy="124" rx="20" ry="12"/>`).join('')}</g>
     <path d="M0 134 Q120 118 240 132 T480 130 T640 126 L640 152 L0 152Z" style="fill:var(--hill)"/>
-    <rect x="0" y="150" width="640" height="50" style="fill:var(--g1)"/>
+    <rect x="0" y="150" width="640" height="70" style="fill:var(--g1)"/>
     <rect x="0" y="138" width="640" height="34" fill="url(#gPicket)"/>
     <rect x="0" y="146" width="640" height="5" fill="#f2dcc4"/><rect x="0" y="160" width="640" height="5" fill="#f2dcc4"/>
     <g transform="translate(446 60) scale(0.96)">${HOUSE_SVG.replace(/<\/?svg[^>]*>/g, '')}</g>
@@ -1883,16 +1883,16 @@ function renderGarden(owned) {
     .sort((a, b) => SLOT[a.id].b - SLOT[b.id].b)
     .map(s => {
       const p = SLOT[s.id];
-      return `<div class="bld" title="${sName(s)}" style="left:${p.x / 6.4}%;bottom:${(200 - p.b) / 2}%;width:${p.w / 6.4}%;z-index:${Math.round(p.b)}">${itemSVG(s.id, 100)}</div>`;
+      return `<div class="bld" title="${sName(s)}" style="left:${p.x / 6.4}%;bottom:${(220 - p.b) / 2.2}%;width:${p.w / 6.4}%;z-index:${Math.round(p.b)}">${itemSVG(s.id, 100)}</div>`;
     }).join('');
   if (owned.some(s => s.id === 'pond')) {
     const p = SLOT.pond;
     const kids = pondAnimals.map(s => `<span class="pa" title="${sName(s)}" style="${POND_POS[s.id]}">${itemSVG(s.id, 60)}</span>`).join('');
-    decor += `<div class="bld pondb" style="left:${p.x / 6.4}%;bottom:${(200 - p.b) / 2}%;width:${p.w / 6.4}%;z-index:${p.b}">${itemSVG('pond', 100)}${kids}</div>`;
+    decor += `<div class="bld pondb" style="left:${p.x / 6.4}%;bottom:${(220 - p.b) / 2.2}%;width:${p.w / 6.4}%;z-index:${p.b}">${itemSVG('pond', 100)}${kids}</div>`;
   }
   decor += owned.filter(s => s.tier === 4).map(s => {
     const p = SLOT[s.id];
-    return `<div class="sky" title="${sName(s)}" style="left:${p.x / 6.4}%;top:${p.t / 2}%;width:${p.w / 6.4}%">${itemSVG(s.id, 100)}</div>`;
+    return `<div class="sky" title="${sName(s)}" style="left:${p.x / 6.4}%;top:${p.t / 2.2}%;width:${p.w / 6.4}%">${itemSVG(s.id, 100)}</div>`;
   }).join('');
   if (S.mascot === 'unicorn') decor += RAINBOW_SVG;   // jednorožec nad záhradou
   $('#decor').innerHTML = decor;
