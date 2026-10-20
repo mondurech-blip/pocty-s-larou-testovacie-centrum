@@ -548,6 +548,31 @@ function rays(cx, cy, r1, r2, n, color) {
   return s;
 }
 const ITEM_ART = {
+  // nové zvieratká do záhrady (nie sú medzi spoločníkmi)
+  hedgehog: `<path d="M16 84 Q14 42 60 36 Q106 42 104 84 Z" fill="#a9825b" stroke="#7f5d3c" stroke-width="2"/>
+    <polygon points="28,62 34,38 42,60" fill="#7f5d3c"/><polygon points="44,52 52,30 60,50" fill="#7f5d3c"/>
+    <polygon points="62,50 70,30 78,52" fill="#7f5d3c"/><polygon points="80,60 88,40 94,64" fill="#7f5d3c"/>
+    <ellipse cx="86" cy="82" rx="26" ry="20" fill="#f4d9b8" stroke="#d9b888" stroke-width="2"/>
+    <circle cx="84" cy="76" r="3.5" fill="#3b2a5a"/><ellipse cx="102" cy="80" rx="4" ry="3.5" fill="#3b2a5a"/>
+    <ellipse cx="94" cy="92" rx="3" ry="2" fill="#ff8fbf"/>
+    <ellipse cx="40" cy="100" rx="9" ry="6" fill="#7f5d3c"/><ellipse cx="66" cy="100" rx="9" ry="6" fill="#7f5d3c"/>`,
+  frog: `<ellipse cx="60" cy="78" rx="42" ry="28" fill="#7ed37e" stroke="#4fae52" stroke-width="2"/>
+    <circle cx="36" cy="46" r="17" fill="#7ed37e" stroke="#4fae52" stroke-width="2"/><circle cx="84" cy="46" r="17" fill="#7ed37e" stroke="#4fae52" stroke-width="2"/>
+    <circle cx="36" cy="46" r="10" fill="#fff"/><circle cx="84" cy="46" r="10" fill="#fff"/>
+    <circle cx="38" cy="48" r="5" fill="#3b2a5a"/><circle cx="82" cy="48" r="5" fill="#3b2a5a"/>
+    <path d="M40 84 Q60 98 80 84" stroke="#3b2a5a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="26" cy="104" rx="11" ry="7" fill="#7ed37e"/><ellipse cx="94" cy="104" rx="11" ry="7" fill="#7ed37e"/>`,
+  squirrel: `<path d="M84 84 Q118 74 106 42 Q98 22 82 40 Q96 58 74 78Z" fill="#c98a4b" stroke="#a86a33" stroke-width="2"/>
+    <polygon points="36,50 38,22 56,44" fill="#e09a5a"/><polygon points="84,50 82,22 64,44" fill="#e09a5a"/>
+    <circle cx="60" cy="72" r="30" fill="#e09a5a" stroke="#c07a3a" stroke-width="2"/>
+    <ellipse cx="60" cy="86" rx="15" ry="11" fill="#f8e0c4"/>
+    ${face(66)}<ellipse cx="60" cy="84" rx="3.5" ry="2.5" fill="#3b2a5a"/>`,
+  parrot: `<path d="M62 30 Q98 26 96 66 Q94 96 62 100 Q40 98 40 70 Q40 34 62 30Z" fill="#5fd38d" stroke="#3fae6e" stroke-width="2"/>
+    <path d="M40 60 Q14 56 22 84 Q34 90 42 80Z" fill="#ff6b6b" stroke="#d94a4a" stroke-width="1.5"/>
+    <path d="M64 30 Q62 14 74 14 Q80 24 72 34Z" fill="#ffd23c"/>
+    <circle cx="66" cy="50" r="8" fill="#fff"/><circle cx="68" cy="50" r="4" fill="#3b2a5a"/>
+    <path d="M74 56 Q86 60 78 68 Q72 66 74 56Z" fill="#ffb347"/>
+    <ellipse cx="60" cy="104" rx="3" ry="6" fill="#ffb347"/>`,
   bunny: CHARS.bunny, cat: CHARS.cat, fox: CHARS.fox, unicorn: CHARS.unicorn,
   panda: `<circle cx="60" cy="68" r="34" fill="#fff" stroke="#d8c6ea" stroke-width="2"/>
     <circle cx="32" cy="40" r="13" fill="#3b2a5a"/><circle cx="88" cy="40" r="13" fill="#3b2a5a"/>
@@ -867,8 +892,8 @@ const mName = m => (LANG === 'en' ? m.en : m.sk);
 /* odmeny – slovenský názov a cena; anglický názov je v EN_NAME */
 const STICKERS = [
   { id: 'cat',       e: '🐱', name: 'Mačka',       price: 10 },
-  { id: 'unicorn',   e: '🦄', name: 'Jednorožec',  price: 10 },
-  { id: 'fox',       e: '🦊', name: 'Líška',       price: 15 },
+  { id: 'parrot',    e: '🦜', name: 'Papagáj',     price: 10 },
+  { id: 'squirrel',  e: '🐿️', name: 'Veverička',   price: 15 },
   { id: 'panda',     e: '🐼', name: 'Panda',       price: 15 },
   { id: 'rainbow',   e: '🌈', name: 'Dúha',        price: 20 },
   { id: 'rocket',    e: '🚀', name: 'Raketa',      price: 20 },
@@ -880,8 +905,8 @@ const STICKERS = [
   { id: 'rose',      e: '🌹', name: 'Ruža',        price: 15 },
   { id: 'castle',    e: '🏰', name: 'Zámok',       price: 35 },
   { id: 'princess',  e: '👸', name: 'Princezná',   price: 45 },
-  { id: 'puppy',      e: '🐶', name: 'Pejsko',          price: 10 },
-  { id: 'bunny',      e: '🐰', name: 'Zajačik',         price: 10 },
+  { id: 'hedgehog',   e: '🦔', name: 'Ježko',           price: 10 },
+  { id: 'frog',       e: '🐸', name: 'Žabka',           price: 10 },
   { id: 'koala',      e: '🐨', name: 'Koala',           price: 15 },
   { id: 'turtle',     e: '🐢', name: 'Korytnačka',      price: 15 },
   { id: 'dolphin',    e: '🐬', name: 'Delfín',          price: 25 },
@@ -932,6 +957,7 @@ const STICKERS = [
   { id: 'mermaid',    e: '🧜', name: 'Morská víla',     price: 120 },
 ];
 const EN_NAME = {
+  parrot: 'Parrot', squirrel: 'Squirrel', hedgehog: 'Hedgehog', frog: 'Frog',
   cat: 'Cat', unicorn: 'Unicorn', fox: 'Fox', panda: 'Panda', rainbow: 'Rainbow', rocket: 'Rocket',
   butterfly: 'Butterfly', flower: 'Flower', star: 'Star', crown: 'Crown', fairy: 'Fairy', rose: 'Rose',
   castle: 'Castle', princess: 'Princess', puppy: 'Puppy', bunny: 'Bunny', koala: 'Koala', turtle: 'Turtle',
@@ -956,6 +982,8 @@ function defaults() {
   return { name: 'Lara', mascot: 'bunny', stars: 0, sound: true, level: 10, types: 'mix', auto: true,
            unlocked: [], stats: { right: 0, total: 0 }, bestStreak: 0, rounds: 0, miss: {}, season: 'auto', companions: ['bunny'] };
 }
+// staré zvieratká v záhrade, ktoré sa nahradili novými (aby sa nikomu nestratili kúpené odmeny)
+const OLD_STICKER = { puppy: 'hedgehog', bunny: 'frog', fox: 'squirrel', unicorn: 'parrot' };
 function load() {
   try {
     const d = Object.assign(defaults(), JSON.parse(localStorage.getItem(KEY)) || {});
@@ -964,6 +992,7 @@ function load() {
     d.companions = d.companions.map(c => (c === 'cat' ? 'puppy' : c));   // Mačička sa zmenila na Pejska
     if (d.mascot === 'cat') d.mascot = 'puppy';
     if (!d.companions.includes(d.mascot)) d.mascot = 'bunny';
+    d.unlocked = [...new Set((d.unlocked || []).map(id => OLD_STICKER[id] || id))];
     return d;
   }
   catch (e) { return defaults(); }
