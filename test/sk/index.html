@@ -1811,8 +1811,10 @@ function flowerRow(t, reveal, tappable) {
    Text sa prehrá z nahrávok (kľúče); ak niektorá nahrávka chýba, prečíta celý text hlas zariadenia. */
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 const N = n => 'n' + n;   // kľúč nahrávky čísla
+// text pre systémový hlas: bez emoji a šípok, aby ich hlas nečítal po názvoch
+const plainSpeech = s => String(s).replace(/[\p{Extended_Pictographic}\p{Variation_Selector}]/gu, '').replace(/→/g, ', ').replace(/·/g, '. ').replace(/\s+/g, ' ').replace(/\s+([,.!?:])/g, '$1').trim();
 function speakable(text, keys) {
-  return `<span class="spkrow"><span class="spk">${text}</span><button class="spkbtn" type="button" data-keys='${JSON.stringify(keys || [])}' data-text="${esc(text)}" aria-label="🔊">🔊</button></span>`;
+  return `<span class="spkrow"><span class="spk">${text}</span><button class="spkbtn" type="button" data-keys='${JSON.stringify(keys || [])}' data-text="${esc(plainSpeech(text))}" aria-label="🔊">🔊</button></span>`;
 }
 document.addEventListener('click', e => {
   const b = e.target.closest('.spkbtn');
@@ -1990,7 +1992,7 @@ function lose() {
   bump($('#mascotP'), 'sad');
   R.input = String(R.t.ans); updateAns();
   gain(CONFIG.STARS_EFFORT);
-  fbHTML(`${speakable(T('answerIs', { a: R.t.ans }), answerKeys(R.t.ans))} ${T('effort', { n: CONFIG.STARS_EFFORT })}`, false);
+  fbHTML(`${speakable(T('answerIs', { a: R.t.ans }), answerKeys(R.t.ans))} ${speakable(T('effort', { n: CONFIG.STARS_EFFORT }), [])}`, false);
   $('#hint').innerHTML = hintHTML(R.t, true);
   finishTask();
 }
@@ -2040,7 +2042,7 @@ function endRound() {
   $('#dOk').textContent = `${R.ok}/${CONFIG.ROUND_LENGTH}`;
   $('#dStars').textContent = `+${R.gained}`;
   $('#doneHint').innerHTML = [levelMsg && speakable(levelMsg, levelKeys), shopMsg && speakable(shopMsg, ['shophint'])].filter(Boolean).join(' ');
-  $('#doneWater').textContent = R.ok ? T('dropsGot', { n: R.ok }) : '';
+  $('#doneWater').innerHTML = R.ok ? speakable(T('dropsGot', { n: R.ok }), []) : '';
   SFX.win(); confetti(25);
   playSeq([mk], msg);
   renderHome();
@@ -2395,7 +2397,7 @@ function renderGarden(owned) {
   if (!critTimer) critTimer = setInterval(critTick, 100);
   $('#fxl').innerHTML = Array.from({ length: 10 }, (_, i) =>
     `<i class="p ${season}" style="left:${(i * 37) % 100}%;animation-delay:${-(i * 1.7)}s;animation-duration:${(season === 'summer' ? 7 : 9) + (i % 4) * 2}s"></i>`).join('');
-  $('#gardenCount').textContent = T('gardenLegend');
+  $('#gardenCount').innerHTML = speakable(T('gardenLegend'), []);
 }
 
 /* ====== OBCHOD ====== */
@@ -2459,8 +2461,8 @@ $('#hint').addEventListener('click', e => {
   // jedno hlásenie na ťuknutie: vždy počet odobratých (pri poslednej guličke "päť", nie zvyšok "jeden")
   playSeq([gone], String(gone));
   const msg = document.querySelector('#hint .tapmsg');
-  if (msg) msg.textContent = done ? T('tapLeft', { n: left }) : T('tapCount', { n: gone });
-  if (done) fb(T('tapLeft', { n: left }), true);
+  if (msg) msg.innerHTML = speakable(done ? T('tapLeft', { n: left }) : T('tapCount', { n: gone }), []);
+  if (done) fbHTML(speakable(T('tapLeft', { n: left }), []), true);
 });
 $('#langBtn').onclick = () => { location.href = LANG === 'en' ? 'sk/' : '../'; };
 $('#pad').addEventListener('click', e => {
