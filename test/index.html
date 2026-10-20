@@ -1936,6 +1936,8 @@ const CRIT = {
   squirrel: { lane: 688, w: 40, speed: 20,  rest: [1, 3],  calm: .3,  gait: .2 },
   slimak:   { lane: 688, w: 40, speed: 1.6, rest: [8, 15], calm: .85, gait: 1.4 },
 };
+// prekážky na chodníkoch (x od–do): jazierko vzadu, fontána a lavička a stôl vpredu; zvieratká ich neprechádzajú
+const CRIT_BLOCKS = { 380: [[415, 585]], 688: [[415, 585], [9, 159], [855, 985]] };
 // zámok so terasou, balustrádou a schodmi; za ním kopce a les (objekty stoja v #decor)
 function castleSVG() {
   const box = (x, y, w, h) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#fff4e0" stroke="#e2c9a0" stroke-width="2"/>`;
@@ -2155,8 +2157,15 @@ function waterAll() {
 const critState = {};   // id -> { x, dir, moving, target, until }
 let critTimer = null;
 const frand = (a, b) => a + Math.random() * (b - a);
+// je miesto pre stred zvieraťa také, aby sa jeho telo nedotklo prekážky?
+function critFree(c, x) {
+  return !(CRIT_BLOCKS[c.lane] || []).some(([a, b]) => x > a - c.w / 2 && x < b + c.w / 2);
+}
 function critInit(id) {
-  critState[id] = { x: frand(120, 880), dir: Math.random() < 0.5 ? 1 : -1, moving: false, target: 0, until: performance.now() + frand(0, 4000) };
+  const c = CRIT[id];
+  let x;
+  do { x = frand(120, 880); } while (!critFree(c, x));   // začína sa mimo prekážok
+  critState[id] = { x, dir: Math.random() < 0.5 ? 1 : -1, moving: false, target: 0, until: performance.now() + frand(0, 4000) };
 }
 // spodok obrázka tak, aby nohy stáli presne na chodníku (v %)
 function critBottom(id) {
@@ -2170,11 +2179,18 @@ function critTick() {
   Object.keys(critState).forEach(id => {
     const c = CRIT[id], st = critState[id];
     if (st.moving) {
-      st.x += st.dir * c.speed * 0.1;
-      if ((st.dir > 0 && st.x >= st.target) || (st.dir < 0 && st.x <= st.target)) {
-        st.x = st.target;
+      const nx = st.x + st.dir * c.speed * 0.1;
+      if (!critFree(c, nx)) {                   // pred prekážkou sa zvieratko zastaví a otočí
         st.moving = false;
+        st.dir = -st.dir;
         st.until = now + frand(c.rest[0], c.rest[1]) * 1000;
+      } else {
+        st.x = nx;
+        if ((st.dir > 0 && st.x >= st.target) || (st.dir < 0 && st.x <= st.target)) {
+          st.x = st.target;
+          st.moving = false;
+          st.until = now + frand(c.rest[0], c.rest[1]) * 1000;
+        }
       }
     } else if (now >= st.until) {
       if (Math.random() < c.calm) {          // zostane ešte chvíľu stáť
