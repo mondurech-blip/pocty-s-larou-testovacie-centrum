@@ -286,6 +286,7 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 <div class="wrap">
   <header class="top">
     <button class="icon" id="homeBtn" aria-label="Home">🏠</button>
+    <button class="icon" id="soundBtn" aria-label="Sound">🔊</button>
     <div class="stars">⭐ <b id="starsTop">0</b></div>
     <button class="icon txt" id="langBtn" aria-label="Language"></button>
     <button class="icon gear" id="gearBtn" type="button" aria-label="Parents"><span class="gearico">⚙️</span><svg class="ring" viewBox="0 0 44 44" aria-hidden="true"><circle id="gearRing" cx="22" cy="22" r="20" pathLength="100"/></svg></button>
@@ -315,24 +316,6 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
     <div class="card">
       <div class="label" data-t="myPet"></div>
       <div class="chips" id="mascots"></div>
-    </div>
-  </section>
-
-  <!-- RODIČOVSKÝ ZÁMOK: štatistiky, najčastejšie chyby, nastavenia, záloha a vynulovanie -->
-  <section id="parent" class="screen hidden">
-    <h1 data-t="parentTitle"></h1>
-    <p class="sub" data-t="parentSub"></p>
-    <div class="card">
-      <div class="stats">
-        <div><b id="sRight">0</b><span data-t="correct"></span></div>
-        <div><b id="sAcc">–</b><span data-t="accuracy"></span></div>
-        <div><b id="sRounds">0</b><span data-t="rounds"></span></div>
-        <div><b id="sStreak">0</b><span data-t="bestStreak"></span></div>
-      </div>
-      <div class="label" data-t="toPractice"></div>
-      <div class="tip" id="weak"></div>
-    </div>
-    <div class="card">
       <div class="label" data-t="whatWeCount"></div>
       <div class="chips" id="types">
         <button class="chip" data-type="pm">X ± Y = ?</button>
@@ -358,8 +341,24 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
         <button class="chip" data-season="autumn" data-t="autumn"></button>
         <button class="chip" data-season="winter" data-t="winter"></button>
       </div>
-      <div class="label" data-t="soundLabel"></div>
-      <div class="chips"><button class="chip" id="soundChip" type="button"></button></div>
+    </div>
+  </section>
+
+  <!-- RODIČOVSKÝ ZÁMOK: štatistiky, najčastejšie chyby, nastavenia, záloha a vynulovanie -->
+  <section id="parent" class="screen hidden">
+    <h1 data-t="parentTitle"></h1>
+    <p class="sub" data-t="parentSub"></p>
+    <div class="card">
+      <div class="stats">
+        <div><b id="sRight">0</b><span data-t="correct"></span></div>
+        <div><b id="sAcc">–</b><span data-t="accuracy"></span></div>
+        <div><b id="sRounds">0</b><span data-t="rounds"></span></div>
+        <div><b id="sStreak">0</b><span data-t="bestStreak"></span></div>
+      </div>
+      <div class="label" data-t="toPractice"></div>
+      <div class="tip" id="weak"></div>
+    </div>
+    <div class="card">
       <div style="text-align:center;margin-top:18px">
         <button class="resetbtn" id="resetBtn" type="button" data-t="reset"></button>
       </div>
@@ -1424,7 +1423,7 @@ function trimClip(buf) {
     let last = rms.length - 1;
     while (last > first && rms[last] <= th) last--;
     const s = Math.max(0, first * win - Math.floor(buf.sampleRate * 0.08));
-    const e = Math.min(ch.length - 1, (last + 1) * win + Math.floor(buf.sampleRate * 0.2));   // dlhší dych po slove
+    const e = Math.min(ch.length - 1, (last + 1) * win + Math.floor(buf.sampleRate * 0.12));   // krátky dych po slove
     const out = ctx.createBuffer(buf.numberOfChannels, e - s + 1, buf.sampleRate);
     for (let c = 0; c < buf.numberOfChannels; c++) out.copyToChannel(buf.getChannelData(c).subarray(s, e + 1), c);
     return out;
@@ -1538,7 +1537,7 @@ function applyStatic() {
 }
 function renderTop() {
   $('#starsTop').textContent = S.stars;
-  $('#soundChip').textContent = T(S.sound ? 'soundOn' : 'soundOff');
+  $('#soundBtn').textContent = S.sound ? '🔊' : '🔇';
   $('#langBtn').textContent = T('otherLang');
 }
 function renderHome() {
@@ -1885,8 +1884,7 @@ function startRound() {
   R = { res: [], queue: [], ok: 0, first: 0, gained: 0, t: null, tries: 0, done: false, input: '' };
   $('#mascotP').innerHTML = laraSVG(64);
   show('play');
-  const praise = playSeq(['praise1'], T('praise1', { name: S.name }));   // pochvala dohrá, až potom ide úloha
-  startTask(praise);
+  startTask();   // na začiatku kola sa nechváli, úloha sa ozve hneď
 }
 function startTask(after) {
   // úlohy, ktoré sa nepodarili, sa niekedy zopakujú
@@ -2534,7 +2532,7 @@ $('#mascotBig').onclick = () => {
   const m = MASCOTS.find(x => x.id === S.mascot) || MASCOTS[0];
   playSeq(['hilara'], T('mascotHi', { name: S.name, mascot: mName(m) }));
 };
-$('#soundChip').onclick = () => {
+$('#soundBtn').onclick = () => {
   S.sound = !S.sound; save(); renderTop();
   if (S.sound) SFX.tap();
 };
