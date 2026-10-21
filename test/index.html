@@ -1487,10 +1487,18 @@ function trimClip(buf) {
     if (first < 0) return buf;
     let last = rms.length - 1;
     while (last > first && rms[last] <= th) last--;
-    const s = Math.max(0, first * win - Math.floor(buf.sampleRate * 0.08));
-    const e = Math.min(ch.length - 1, (last + 1) * win + Math.floor(buf.sampleRate * 0.12));   // krátky dych po slove
+    const s = Math.max(0, first * win - Math.floor(buf.sampleRate * 0.03));
+    const e = Math.min(ch.length - 1, (last + 1) * win + Math.floor(buf.sampleRate * 0.05));   // krátky dych po slove
     const out = ctx.createBuffer(buf.numberOfChannels, e - s + 1, buf.sampleRate);
-    for (let c = 0; c < buf.numberOfChannels; c++) out.copyToChannel(buf.getChannelData(c).subarray(s, e + 1), c);
+    // jednotná hlasitosť: každý klip na rovnakú strednú hlasitosť (zosilnenie najviac 3×)
+    let sum = 0;
+    for (let i = s; i <= e; i++) sum += ch[i] * ch[i];
+    const rmsAll = Math.sqrt(sum / (e - s + 1));
+    const gain = rmsAll > 0 ? Math.min(3, 0.1 / rmsAll) : 1;
+    for (let c = 0; c < buf.numberOfChannels; c++) {
+      const src = buf.getChannelData(c), dst = out.getChannelData(c);
+      for (let i = s; i <= e; i++) dst[i - s] = Math.max(-1, Math.min(1, src[i] * gain));
+    }
     return out;
   } catch (e) { return buf; }
 }
@@ -1529,7 +1537,7 @@ async function playSeq(keys, fallbackText, inChain) {
     s.buffer = b;
     s.connect(c.destination);
     s.start(t);
-    t += b.duration + 0.06;
+    t += b.duration + 0.02;
     srcs.push(s);
   });
   // vrátime sa až keď zvuk dohrá (ďalší zvuk môže počkať na tento)
@@ -2255,7 +2263,8 @@ const plainSpeech = s => String(s).replace(/[\p{Extended_Pictographic}\p{Variati
 // hlas Lary: vety za sebou; ďalšia sa rozbehne, až keď sa predchádzajúca dohrá, a len ak ju nič nepreruší
 function speakList(items) {
   const mine = ++chainId;
-  return items.reduce((p, [keys, text]) => p.then(() => (mine === chainId ? playSeq(keys, text, true) : null)), Promise.resolve()).catch(() => {});
+  // medzi vetami krátka prirodzená pauza (0,5 s), aby sa koniec vety dal rozpoznať
+  return items.reduce((p, [keys, text], i) => p.then(() => (mine === chainId ? playSeq(keys, text, true) : null)).then(() => (i < items.length - 1 && mine === chainId ? new Promise(r => setTimeout(r, 500)) : null)), Promise.resolve()).catch(() => {});
 }
 // kľúče nahrávok pre správy zložené z častí; názvy odmien sú kľúče „odm_<id>“
 const effortKeys = () => (LANG === 'sk' ? ['zasnahumas', 'jednuhviezdicku'] : ['fortrying', 'onestar']);   // STARS_EFFORT je 1
