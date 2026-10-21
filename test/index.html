@@ -2654,8 +2654,8 @@ const SEED_SVG = `<svg viewBox="0 0 120 120" aria-hidden="true">
 let POUR = null;   // zalievanie, ktoré práve beží: { total, timer }
 function plantsOwned() { return S.unlocked.map(id => STICKERS.find(s => s.id === id)).filter(s => s && s.tier === 1); }
 // kam ide ďalšia kvapka: najmenej vyrastená rastlina, ktorá ešte nekvitne (pri rovnosti podľa poradia na záhone)
-function dropTarget(plants, taken = []) {
-  const open = plants.filter(s => (S.grow[s.id] || 0) < 3 && !taken.includes(s.id));
+function dropTarget(plants) {
+  const open = plants.filter(s => (S.grow[s.id] || 0) < 3);
   return open.sort((a, b) => (S.grow[a.id] || 0) - (S.grow[b.id] || 0) || plants.indexOf(a) - plants.indexOf(b))[0] || null;
 }
 function setChip(text, fade = false) {
@@ -2720,13 +2720,12 @@ function runWatering() {
   if (S.mascot === 'unicorn') sparkles(scene);   // jednorožec zanechá iskričky
   POUR.timer = setTimeout(() => {   // stav sa zmení tesne pred dopadom, aby rastlina ukázala novú fázu
     if (!POUR) return;
-    const taken = [];
     let fruit = false;
-    for (let k = 0; k < total; k++) {
-      const s = dropTarget(plants, taken);
-      if (s) { taken.push(s.id); S.grow[s.id] = (S.grow[s.id] || 0) + 1; }
-      else if (dropFruit(plants)) fruit = true;   // kvitnúca rastlina bez plodu dostane plod
-      else sparkles(scene);   // všetky kvety kvitnú a plody sú: kvapka sa len vsiakne
+    for (let k = 0; k < total; k++) {   // každá kvapka ide na najmenej vyrastenú rastlinu, až kým nekvitne
+      const s = dropTarget(plants);
+      if (s) S.grow[s.id] = (S.grow[s.id] || 0) + 1;
+      else if (dropFruit(plants)) fruit = true;   // všetky rastliny kvitnú: kvitnúca rastlina bez plodu dostane plod
+      else sparkles(scene);   // všetky kvitnú a plody sú: kvapka sa len vsiakne
     }
     S.water = 0;
     save();
