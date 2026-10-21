@@ -562,7 +562,7 @@ const TX = {
     waterAllBloom: '🌸 All flowers are already blooming!', dragonWatered: '🐉 The dragon watered the whole garden today',
     planted: '🌱 {name} is planted! We will water it with your correct answers.', dropsGot: '💧 Your correct answers are drops for the plants: {n}',
     gardenLegend: '🌱 Seed → 🌿 sprout → 🌼 blooms · every correct answer is a 💧 drop',
-    puppyBonus: 'Puppy brings a star!', foxStar: 'The fox found a hidden star!', unicornDouble: 'Unicorn magic: double stars!', capyBreak: 'Capybara says: time for a break!',
+    foxStar: 'The fox found a hidden star!', unicornDouble: 'Unicorn magic: double stars!', capyBreak: 'Capybara says: time for a break!',
     backupTitle: 'Progress backup', backupShow: 'Show backup', backupCopyHint: 'Copy this code and keep it. It holds your stars and garden.', backupCopyBtn: 'Copy',
     backupRestoreHint: 'To restore, paste the code here.', backupRestoreBtn: 'Restore', backupDone: 'Restored ✓', backupBad: 'This code does not fit.', backupCopied: 'Copied ✓',
     great: 'Great! 🎉', correctSecond: 'Correct, nice! ⭐', tryAgain: 'Try again! 💪',
@@ -606,7 +606,7 @@ const TX = {
     waterAllBloom: '🌸 Všetky kvety už kvitnú!', dragonWatered: '🐉 Dráčik dnes zalial celú záhradu',
     planted: '🌱 {name} je {z}! Zalievame {j} tvojimi správnymi odpoveďami.', dropsGot: '💧 Tvoje správne odpovede sú kvapky pre rastliny: {n}',
     gardenLegend: '🌱 Semiačko → 🌿 výhonok → 🌼 kvitne · každá správna odpoveď je 💧 kvapka',
-    puppyBonus: 'Pejsko prináša hviezdičku!', foxStar: 'Líška našla skrytú hviezdičku!', unicornDouble: 'Čarovný jednorožec: dvojnásobné hviezdičky!', capyBreak: 'Kapybara hovorí: čas na prestávku!',
+    foxStar: 'Líška našla skrytú hviezdičku!', unicornDouble: 'Čarovný jednorožec: dvojnásobné hviezdičky!', capyBreak: 'Kapybara hovorí: čas na prestávku!',
     backupTitle: 'Záloha postupu', backupShow: 'Zobraziť zálohu', backupCopyHint: 'Skopíruj tento kód a ulož si ho. Obsahuje tvoje hviezdičky a záhradu.', backupCopyBtn: 'Skopírovať',
     backupRestoreHint: 'Na obnovenie vlož kód sem.', backupRestoreBtn: 'Obnoviť', backupDone: 'Obnovené ✓', backupBad: 'Tento kód nepasuje.', backupCopied: 'Skopírované ✓',
     great: 'Výborne! 🎉', correctSecond: 'Správne, super! ⭐', tryAgain: 'Skús to ešte raz! 💪',
@@ -1585,11 +1585,10 @@ function show(id) {
   if (id === 'done') { $('#doneGarden').appendChild($('#scene')); SHOW_TIMER = setTimeout(runWatering, 1000); }   // najprv výsledok, potom zalievanie
   if (id === 'home') {
     $('#homeGarden').appendChild($('#scene'));
-    if (S.water > 0) SHOW_TIMER = setTimeout(() => { $('#scene').scrollIntoView({ block: 'center', behavior: 'smooth' }); runWatering(); }, 900);
   }
 }
-// návrat domov: legenda záhrady sa ozve sama (ťuknutie je gesto, takže zvuk smie hrať)
-function goHome() { renderHome(); show('home'); playSeq(gardenKeys(), T('gardenLegend')); }
+// návrat domov (legendu záhrady si Lara vypočuje tlačidlom 🔊 v záhrade)
+function goHome() { renderHome(); show('home'); }
 function applyStatic() {
   document.documentElement.lang = LANG;
   document.title = T('title');
@@ -1968,7 +1967,7 @@ function dotsAgain(t) {
   return [[sk ? 'spocitajme' : 'letscount', ...nums.map(N)], (sk ? 'Spočítajme: ' : "Let's count: ") + nums.join(', ')];
 }
 // plody: kvitnúca rastlina dostane ďalšou kvapkou plod; ťuknutím ho Lara zoberie a dostane hviezdičku
-function fruitEmoji(id) { const s = STICKERS.find(x => x.id === id); return s ? s.e : '🍓'; }
+const fruitEmoji = () => '🍎';   // plod je jablko, nie ikona rastliny (aby nevyzeral ako druhá rastlina)
 function refreshFruit() {
   document.querySelectorAll('#album .plot[data-id]').forEach(p => {
     const id = p.dataset.id, f = p.querySelector('.fruit');
@@ -2087,19 +2086,24 @@ function writeMoveEv(e) {
 function writeMove(e) {
   const [x, y] = writePoint(e);
   WR.ink += (WR.ink ? ' L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1);
-  const s = WR.strokes[WR.k];
-  WR.idx = wAdvance(s, WR.idx, x, y);
+  // ťah je dotiahnutý až k poslednej vzorke; ďalší ťah môže začať bez zdvihnutia prsta
+  while (WR.k < WR.strokes.length) {
+    const s = WR.strokes[WR.k];
+    WR.idx = wAdvance(s, WR.idx, x, y);
+    // ťah je hotový, až keď je prst naozaj pri jeho koncovom bode (nie skôr)
+    const last = s[s.length - 1];
+    if (WR.idx < s.length - 1 || Math.hypot(last[0] - x, last[1] - y) > 24) break;
+    writeStrokeDone();
+  }
   writePaint();
-  if (WR.idx >= s.length - 4) writeStrokeDone();   // dotiahnuté až ku koncu ťahu
 }
 function writeStrokeDone() {
   WR.paths.push(WR.ink);
-  WR.ink = ''; WR.idx = 0; WR.drawing = false;
+  WR.ink = ''; WR.idx = 0;
   WR.k++;
   if (WR.k >= WR.strokes.length) return writeDigitDone();
   SFX.ok();
   writeMark();
-  writePaint();
 }
 // prst zodvihnutý pred koncom ťahu: nič sa nezapočíta, ťah sa začne znova od zelenej bodky
 function writeUp() {
@@ -2114,6 +2118,7 @@ function writeUp() {
 function writeDigitDone() {
   const d = WR.d, sk = LANG === 'sk';
   WR.done = true;
+  WR.drawing = false;
   S.writing[d] = (S.writing[d] || 0) + 1;   // postup sa ukladá
   S.writeNext = (d + 1) % 10;
   S.stars += 1;   // 1 hviezda za každú dobre napísanú číslicu
@@ -2411,6 +2416,7 @@ function win() {
   R.res[R.res.length - 1] = 'ok';
   R.ok++; if (first) R.first++;
   S.stats.right++; S.stats.total++;
+  S.water = (S.water || 0) + 1;   // každá správna odpoveď je jedna kvapka pre rastliny; zalieva sa po dokončenom kole
   streak++;
   S.bestStreak = Math.max(S.bestStreak, streak);
   gain(first ? CONFIG.STARS_FIRST_TRY : CONFIG.STARS_SECOND_TRY);
@@ -2422,7 +2428,6 @@ function win() {
     SFX.win(); confetti(20);
   } else { SFX.ok(); confetti(8); }
   // úlohy zvolených spoločníkov
-  if (S.mascot === 'puppy' && first) { gain(1); said = [LANG === 'sk' ? ['pejskoprinasa'] : ['puppybrings'], T('puppyBonus')]; }             // pejsko: +1 za správnu na prvý pokus
   if (S.mascot === 'fox' && Math.random() < 0.125) { gain(1); said = [LANG === 'sk' ? ['liskanasla'] : ['foxfound'], T('foxStar')]; }   // líška: občas nájde skrytú hviezdičku
   if (S.mascot === 'unicorn') {                                                       // jednorožec: každá 10. odpoveď dvojnásobne
     S.uniCount = (S.uniCount || 0) + 1;
@@ -2500,7 +2505,6 @@ function endRound() {
   }
 
   S.rounds++;
-  S.water = (S.water || 0) + R.ok;   // každá správna odpoveď je jedna kvapka pre rastliny
   const capy = S.mascot === 'capybara' && S.rounds % 3 === 0;   // kapybara pripomína prestávku
   save();
   const cheapest = Math.min(...STICKERS.filter(s => !S.unlocked.includes(s.id)).map(s => s.price), Infinity);
@@ -2876,10 +2880,10 @@ function renderGarden(owned) {
 /* ====== OBCHOD ====== */
 // úloha spoločníka a úroveň predmetu – zobrazia sa v obchode
 const ROLE_TXT = {
-  sk: { bunny: 'Vysvetlí úlohu hlasom', puppy: '+1 ⭐ za správnu na prvý pokus', bear: 'Zalieva dva kvety naraz',
+  sk: { bunny: 'Vysvetlí úlohu hlasom', puppy: 'Pejsko ťa povzbudzuje', bear: 'Zalieva dva kvety naraz',
     fox: 'Občas nájde skrytú hviezdičku', capybara: 'Pripomenie prestávku', dragon: 'Každý deň zaleje celú záhradu',
     unicorn: 'Každá 10. správna = dvojnásobok ⭐ a dúha nad záhradou' },
-  en: { bunny: 'Explains the task out loud', puppy: '+1 ⭐ for a first-try answer', bear: 'Waters two flowers at once',
+  en: { bunny: 'Explains the task out loud', puppy: 'Puppy cheers you on', bear: 'Waters two flowers at once',
     fox: 'Sometimes finds a hidden star', capybara: 'Reminds you to take a break', dragon: 'Waters the whole garden every day',
     unicorn: 'Every 10th correct = double ⭐ and a rainbow' },
 };
