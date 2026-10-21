@@ -323,6 +323,9 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 .dice i.on{background:var(--ink)}
 .wp-items .pl{font-size:40px;font-weight:800;padding:0 6px}
 .fruit{position:absolute;right:-10px;top:-10px;z-index:3;min-width:60px;min-height:60px;display:flex;align-items:center;justify-content:center;font-size:40px;cursor:pointer;touch-action:manipulation;animation:pulse 1.6s ease-in-out infinite}
+/* pozadie krajiny a dekorácie len kreslia; dotyk má ísť na záhony a na jablko */
+#land, #fxl { pointer-events: none; }
+.plot .fruit { pointer-events: auto; }   /* jablko sa musí dať ťuknúť, aj keď je záhon bez dotyku */
 </style>
 </head>
 <body>
@@ -1575,9 +1578,13 @@ function buildDeco() {
 
 /* ====== OBRAZOVKY A HORNÝ PANEL ====== */
 let SHOW_TIMER = null;   // čakanie pred zalievaním; ak sa obrazovka zmení skôr, zruší sa
+let SCREEN = '';
 function show(id) {
-  if (id !== 'done') flushWatering();   // zalievanie, ktoré ešte beží, sa zruší; kvapky ostanú na ďalšiu návštevu
-  clearTimeout(SHOW_TIMER);
+  // z výsledkov kola do novej hry sa zalievanie dokončí (záhrada sa len skryje); inak zalievanie, ktoré ešte beží, sa zruší
+  const continuing = id === 'play' && SCREEN === 'done';
+  SCREEN = id;
+  if (id !== 'done' && !continuing) flushWatering();   // kvapky ostanú na ďalšiu návštevu
+  if (!continuing) clearTimeout(SHOW_TIMER);
   document.querySelectorAll('.screen').forEach(s => s.classList.toggle('hidden', s.id !== id));
   $('#gearBtn').classList.toggle('hidden', id !== 'home');   // ozubené koliesko je len na Lariných hlavnej obrazovke
   window.scrollTo(0, 0);
@@ -1972,8 +1979,10 @@ const fruitEmoji = () => '🍎';   // plod je jablko, nie ikona rastliny (aby ne
 function refreshFruit() {
   document.querySelectorAll('#album .plot[data-id]').forEach(p => {
     const id = p.dataset.id, f = p.querySelector('.fruit');
+    if (!p.dataset.z) p.dataset.z = p.style.zIndex || '';
     if (S.fruit[id] && !f) p.insertAdjacentHTML('beforeend', `<span class="fruit" title="Ťukni">${fruitEmoji(id)}</span>`);
     else if (!S.fruit[id] && f) f.remove();
+    p.style.zIndex = S.fruit[id] ? '9000' : p.dataset.z;   // plod je navrchu, aby sa dal ťuknúť aj cez susedný záhon
   });
 }
 function harvest(id) {
