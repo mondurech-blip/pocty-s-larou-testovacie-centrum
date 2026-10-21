@@ -277,6 +277,52 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 .confirmyes{border:0;background:transparent;color:var(--muted);font-size:14px;padding:8px;cursor:pointer}
 /* vynulovanie: sivé a menej výrazné tlačidlo */
 .resetbtn{border:0;border-radius:999px;background:var(--line);color:var(--muted);font-size:13px;font-weight:600;padding:8px 16px;cursor:pointer;opacity:.85}
+/* krok 02: voľby, bodky, krokodíl, číselná os, slovné úlohy s obrázkami, písanie číslic */
+.choices{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:14px auto;max-width:520px}
+.choices button{min-width:74px;min-height:74px;padding:0 14px;font-size:34px;font-weight:800;border-radius:20px;border:0;background:var(--card);color:var(--ink);box-shadow:var(--shadow);cursor:pointer;touch-action:manipulation}
+.choices button:active{transform:scale(.95)}
+.choices button:disabled{opacity:.35;cursor:default}
+.obj-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:10px auto;max-width:460px}
+.obj{min-width:62px;min-height:62px;font-size:40px;line-height:1;border-radius:16px;border:2px solid transparent;background:transparent;cursor:pointer;touch-action:manipulation}
+.obj.counted{border-color:var(--green);background:rgba(120,220,160,.18)}
+.dots{display:inline-grid;grid-template-columns:repeat(3,16px);gap:8px;justify-content:center;margin:6px auto}
+.dots i{display:block;width:16px;height:16px;border-radius:50%;background:var(--ink)}
+.cmpline{display:flex;align-items:flex-end;justify-content:center;gap:14px;flex-wrap:wrap;margin:6px auto}
+.cmpline .cn{display:flex;flex-direction:column;align-items:center;font-size:64px;font-weight:800}
+.cmpline .q{font-size:64px;font-weight:800;min-width:1ch}
+.croc{display:inline-block;width:150px;height:72px;vertical-align:middle}
+.croc svg{width:100%;height:100%;overflow:visible}
+.croc.face-left svg{transform:scaleX(-1)}
+.croc .jaw{transition:transform .5s ease;transform-origin:70px 34px}
+.croc.open .jaw{transform:rotate(-26deg)}
+.nl{display:flex;flex-wrap:wrap;justify-content:center;max-width:720px;margin:12px auto}
+.nl-tick{position:relative;flex:0 0 62px;height:90px;border:0;border-radius:14px;background:transparent;cursor:pointer;touch-action:manipulation}
+.nl-tick::before{content:"";position:absolute;left:50%;top:6px;width:4px;height:30px;margin-left:-2px;background:var(--ink);border-radius:2px}
+.nl-tick b{position:absolute;left:0;right:0;bottom:0;font-size:20px;text-align:center;color:var(--ink)}
+.nl-tick.hit{background:rgba(120,220,160,.2);border-radius:14px}
+.wp{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:10px auto}
+.wp-scene{font-size:50px;line-height:1}
+.wp-items{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;max-width:320px}
+.wp-items span{font-size:36px;line-height:1.1;transition:opacity .4s}
+.wp-items .out{opacity:.22;text-decoration:line-through}
+.wstage{width:min(300px,80vw);aspect-ratio:1/1;margin:8px auto}
+#wsvg{width:100%;height:100%;display:block;background:var(--card);border-radius:22px;box-shadow:var(--shadow);touch-action:none}
+.wguide{fill:none;stroke:#c9c3dc;stroke-width:12;stroke-dasharray:14 12;stroke-linecap:round;stroke-linejoin:round}
+.wstart{fill:#4ac27a}
+.warrow{fill:#c9c3dc}
+.wink{fill:none;stroke:var(--pink);stroke-width:10;stroke-linecap:round;stroke-linejoin:round}
+.wbtns{display:flex;justify-content:center;gap:10px;margin-top:8px;flex-wrap:wrap}
+.wbtns .chip{min-width:60px;min-height:60px;padding:0 22px;font-size:20px}
+.cmpans{text-align:center;min-height:70px;margin-top:6px}
+.cmpans .q{font-size:56px;font-weight:800}
+.qbig2{font-size:44px;font-weight:800;text-align:center;margin:8px auto}
+.dicebox{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;align-items:center;min-height:170px;margin:12px auto;transition:opacity .4s}
+.dicebox.dothidden{opacity:0}
+.dice{display:grid;grid-template-columns:repeat(3,34px);grid-template-rows:repeat(3,34px);gap:8px;padding:14px;border-radius:18px;background:var(--card);box-shadow:var(--shadow)}
+.dice i{width:34px;height:34px;border-radius:50%}
+.dice i.on{background:var(--ink)}
+.wp-items .pl{font-size:40px;font-weight:800;padding:0 6px}
+.fruit{position:absolute;right:-10px;top:-10px;z-index:3;min-width:60px;min-height:60px;display:flex;align-items:center;justify-content:center;font-size:40px;cursor:pointer;touch-action:manipulation;animation:pulse 1.6s ease-in-out infinite}
 </style>
 </head>
 <body>
@@ -298,6 +344,7 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
     <p class="sub" data-t="sub"></p>
     <div class="duo"><span class="lara" id="laraBig"></span><span class="mascot" id="mascotBig" title="Tap me">🦄</span></div>
     <button class="bigbtn" id="startBtn" data-t="play"></button>
+    <button class="bigbtn alt" id="writeBtn" data-t="writeBtn"></button>
     <button class="bigbtn alt" id="shopBtn" data-t="shop"></button>
 
     <div class="card">
@@ -321,6 +368,7 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
         <button class="chip" data-type="pm">X ± Y = ?</button>
         <button class="chip" data-type="fill">X ± ? = Y</button>
         <button class="chip" data-type="cmp">&gt; &lt; =</button>
+        <button class="chip" data-type="num" data-t="numbersType"></button>
         <button class="chip" data-type="mix" data-t="typesAll"></button>
       </div>
       <div class="label" data-t="upToLabel"></div>
@@ -379,6 +427,21 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
     <button class="bigbtn alt" id="parentBack" type="button" data-t="parentBack"></button>
   </section>
 
+  <!-- PÍŠEME ČÍSLA: obťahovanie číslic prstom -->
+  <section id="write" class="screen hidden">
+    <h1 data-t="writeTitle"></h1>
+    <p class="sub" data-t="writeSub"></p>
+    <div class="card" style="text-align:center">
+      <div class="wstage"><svg id="wsvg" viewBox="0 0 300 300" role="img" aria-label="číslica"></svg></div>
+      <div class="wbtns">
+        <button class="chip say" id="writeSay" type="button" data-t="speakBtn"></button>
+        <button class="chip" id="writeClear" type="button" data-t="writeClear"></button>
+      </div>
+      <div class="tip" id="writeMsg"></div>
+    </div>
+    <button class="bigbtn alt" id="writeBack" type="button" data-t="writeBack"></button>
+  </section>
+
   <!-- HRA -->
   <section id="play" class="screen hidden">
     <div class="card" style="text-align:center">
@@ -401,6 +464,7 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
       <div class="cmp hidden" id="cmpBtns">
         <button data-s="&lt;">&lt;</button><button data-s="=">=</button><button data-s="&gt;">&gt;</button>
       </div>
+      <div class="choices hidden" id="choiceBtns"></div>
       <button class="bigbtn hidden" id="nextBtn"></button>
     </div>
   </section>
@@ -481,6 +545,7 @@ const TX = {
     sub: "Let's count and collect stars", play: 'Play ▶', shop: 'Shop & garden 🛍️', shopCompanions: 'Companions', shopRewards: 'Garden rewards',
     correct: 'correct', accuracy: 'accuracy', rounds: 'rounds', bestStreak: 'best streak', stars: 'stars',
     myGarden: 'My garden', toPractice: 'To practice', myPet: 'My companion', whatWeCount: 'What we count',
+    writeBtn: 'We write numbers', writeTitle: 'We write numbers', writeSub: 'Trace the digit with your finger. The green dot is the start.', writeBack: '← Back to Lara', writeClear: 'Clear', numbersType: 'Numbers',
     typesAll: 'All', upToLabel: 'How high', upTo: 'up to {n}', autoLevel: 'Auto level', lv_5: 'up to 5', lv_10: 'up to 10', lv_20n: 'up to 20, no crossing ten', lv_20c: 'up to 20, with crossing ten', lv_50: 'up to 50', lv_100: 'up to 100', on: 'on', off: 'off',
     seasonLabel: 'Season in the garden', seasonAuto: 'Automatic', spring: 'Spring', summer: 'Summer', autumn: 'Autumn', winter: 'Winter',
     reset: 'Reset progress', resetConfirm: 'Really reset stars, garden and stats?',
@@ -512,8 +577,6 @@ const TX = {
     stepPlus: 'Start at {a} and count on {b}.', stepMinus: 'Start at {a} and take away {b}.',
     stepFillPlusFront: 'How much do we add to {k} to make {c}?', stepFillPlusBack: 'Start at {k} and count on until you reach {c}.',
     stepFillMinus: 'Start at {a} and take away until you reach {c}.',
-    storyPlus: 'The fairy had {a} {flower} and got {b} more. How many flowers does she have now?',
-    storyMinus: 'The garden had {a} {flower}. The princess picked {b} of them. How many are left?',
     speakPlus: 'What is {a} plus {b}?', speakMinus: 'What is {a} minus {b}?',
     speakFillPlusFront: 'What plus {k} is {c}?', speakFillPlusBack: '{k} plus what is {c}?', speakFillMinus: '{a} minus what is {c}?',
     speakCmp: 'Compare {a} and {b}. Is it more, less, or the same?',
@@ -526,6 +589,7 @@ const TX = {
     sub: 'Poďme počítať a zbierať hviezdičky', play: 'Hrať ▶', shop: 'Obchod a záhrada 🛍️', shopCompanions: 'Spoločníci', shopRewards: 'Odmeny do záhrady',
     correct: 'správne', accuracy: 'úspešnosť', rounds: 'kôl', bestStreak: 'najlepšia séria', stars: 'hviezdičiek',
     myGarden: 'Moja záhrada', toPractice: 'Na precvičenie', myPet: 'Môj spoločník', whatWeCount: 'Čo počítame',
+    writeBtn: 'Píšeme čísla', writeTitle: 'Píšeme čísla', writeSub: 'Obťahuj prstom číslicu. Zelená bodka je začiatok.', writeBack: '← Späť k Lare', writeClear: 'Zmazať', numbersType: 'Čísla',
     typesAll: 'Všetko', upToLabel: 'Do akého čísla', upTo: 'do {n}', autoLevel: 'Sama zvyšovať', lv_5: 'do 5', lv_10: 'do 10', lv_20n: 'do 20 bez prechodu', lv_20c: 'do 20 s prechodom', lv_50: 'do 50', lv_100: 'do 100', on: 'zap', off: 'vyp',
     seasonLabel: 'Ročné obdobie v záhrade', seasonAuto: 'Automaticky', spring: 'Jar', summer: 'Leto', autumn: 'Jeseň', winter: 'Zima',
     reset: 'Vynulovať pokrok', resetConfirm: 'Naozaj vynulovať hviezdičky, záhradu a štatistiky?',
@@ -556,8 +620,6 @@ const TX = {
     stepPlus: 'Začni na {a} a počítaj ďalej {b}.', stepMinus: 'Začni na {a} a odpočítaj {b}.',
     stepFillPlusFront: 'Koľko treba pridať k {k}, aby to bolo {c}?', stepFillPlusBack: 'Začni na {k} a počítaj ďalej, kým nebudeš na {c}.',
     stepFillMinus: 'Od {a} uberaj, kým nebudeš na {c}.',
-    storyPlus: 'Víla mala {a} {kvet} a dostala ešte {b}. Koľko kvetov má teraz?',
-    storyMinus: 'V záhrade {bolo} {a} {kvet}. Princezná {b} z nich natrhala. Koľko ich zostalo?',
     speakPlus: 'Koľko je {a} plus {b}?', speakMinus: 'Koľko je {a} mínus {b}?',
     speakFillPlusFront: 'Koľko plus {k} je {c}?', speakFillPlusBack: '{k} plus koľko je {c}?', speakFillMinus: '{a} mínus koľko je {c}?',
     speakCmp: 'Porovnaj {a} a {b}. Je väčšie, menšie, alebo rovnaké?',
@@ -1278,7 +1340,7 @@ const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 /* ====== ULOŽENIE (len v tomto prehliadači) ====== */
 function defaults() {
   return { name: 'Lara', mascot: 'bunny', stars: 0, sound: true, level: '10', types: 'mix', auto: true,
-           unlocked: [], stats: { right: 0, total: 0 }, bestStreak: 0, rounds: 0, miss: {}, season: 'auto', companions: ['bunny'], water: 0 };
+           unlocked: [], stats: { right: 0, total: 0 }, bestStreak: 0, rounds: 0, miss: {}, season: 'auto', companions: ['bunny'], water: 0, fruit: {}, practice: {}, writing: {}, writeNext: 0 };
 }
 // staré zvieratká v záhrade, ktoré sa nahradili novými (aby sa nikomu nestratili kúpené odmeny)
 const OLD_STICKER = {
@@ -1561,25 +1623,13 @@ function renderHome() {
   renderGarden(STICKERS.filter(s => S.unlocked.includes(s.id)));
   const today = new Date().toDateString();
   if (S.mascot === 'dragon' && S.dragonDay !== today) { S.dragonDay = today; save(); setTimeout(waterAll, 500); }
-  const weak = Object.entries(S.miss).sort((x, y) => y[1] - x[1]).slice(0, 3);
-  $('#weak').textContent = weak.length ? weak.map(([k, v]) => `${k} (${v}×)`).join('   ·   ') : T('weakNone');
+  const weak = Object.values(S.practice).sort((x, y) => y.n - x.n).slice(0, 3);   // Na precvičenie: najčastejšie chyby
+  $('#weak').textContent = weak.length ? weak.map(p => `${p.t.txt} (${p.n}×)`).join('   ·   ') : T('weakNone');
   renderTop();
 }
 
 /* ====== ZADANIA ====== */
 let lastKey = '';
-function kvet(n) {               // slovenský tvar slova "kvet" (len pre slovenskú verziu)
-  const d = n % 10, t = n % 100;
-  if (n === 1) return 'kvet';
-  if (d >= 2 && d <= 4 && (t < 12 || t > 14)) return 'kvety';
-  return 'kvetov';
-}
-function kvetKey(n) {            // kľúč nahrávky pre tvar slova "kvet" (slovenčina)
-  const d = n % 10, t = n % 100;
-  if (n === 1) return 'kvet';
-  if (d >= 2 && d <= 4 && (t < 12 || t > 14)) return 'kvety';
-  return 'kvetov';
-}
 function kvapky(n) {            // slovenský tvar slova "kvapka" (1 kvapka, 2 až 4 kvapky, 5 a viac kvapiek)
   const d = n % 10, t = n % 100;
   if (n === 1) return 'kvapku';
@@ -1627,8 +1677,9 @@ function zeroTask(mode, st) {
 }
 function genTask(mode, st) {
   const max = st.max;
+  if (mode === 'num') return numTask(st);
   if ((mode === 'plus' || mode === 'minus') && max >= 10 && Math.random() < 0.1) return zeroTask(mode, st);   // nula približne v každej desiatej úlohe
-  const story = Math.random() < 0.3;
+  if ((mode === 'plus' || mode === 'minus') && Math.random() < 0.3) return wpTask(mode === 'plus' ? '+' : '−', st);   // slovná úloha s predmetmi, výsledok do 20
   if (mode === 'plus') {
     let c, a, b;
     do { c = rnd(st.carry === 'yes' ? 11 : 2, max); a = rnd(1, c - 1); b = c - a; } while (!fitsStage(st, '+', a, b));
@@ -1638,9 +1689,8 @@ function genTask(mode, st) {
       html: `${a} + ${b} = <span class="q">?</span>`,
       speak: T('speakPlus', { a, b }),
       step: T('stepPlus', { a, b }),
-      story: story ? T('storyPlus', { a, b, kvet: kvet(a), flower: a === 1 ? 'flower' : 'flowers' }) : null,
-      snd: story ? SND(['fairyhad', a, a === 1 ? 'flowerandgot' : 'flowersgot', b, 'storyq'], ['vilamala', a, kvetKey(a), 'adostalaesto', b, 'kolkokvetomateraz'])
-                 : SND(['whatis', a, 'plus', b], ['kolkoje', a, 'plus', b]),
+      story: null,
+      snd: SND(['whatis', a, 'plus', b], ['kolkoje', a, 'plus', b]),
     };
   }
   if (mode === 'minus') {
@@ -1652,9 +1702,8 @@ function genTask(mode, st) {
       html: `${a} − ${b} = <span class="q">?</span>`,
       speak: T('speakMinus', { a, b }),
       step: T('stepMinus', { a, b }),
-      story: story ? T('storyMinus', { a, b, kvet: kvet(a), flower: a === 1 ? 'flower' : 'flowers', bolo: a <= 4 ? 'boli' : 'bolo' }) : null,
-      snd: story ? SND(['gardenhad', a, 'flowerspicked', b, 'storyq2'], [a <= 4 ? 'vzahradeboli' : 'vzahrade', a, kvetKey(a), 'princezna', b, 'znichnatrhala', 'kolkoichzostalo'])
-                 : SND(['whatis', a, 'minus', b], ['kolkoje', a, 'minus', b]),
+      story: null,
+      snd: SND(['whatis', a, 'minus', b], ['kolkoje', a, 'minus', b]),
     };
   }
   if (mode === 'fillPlus') {
@@ -1689,17 +1738,398 @@ function genTask(mode, st) {
   const sym = a > b ? '>' : a < b ? '<' : '=';
   return { op: 'cmp', a, b, total: 0, ans: sym, story: null,
     txt: `${a} ? ${b}`, key: `c${a},${b}`,
-    html: `${a} <span class="q">?</span> ${b}`,
+    html: cmpHTML(a, b),
     speak: T('speakCmp', { a, b }),
     step: a === b ? T('hintSame') : T('hintBigger', { n: Math.max(a, b) }),
     snd: SND(['compare', a, 'and', b, 'moreless'], ['porovnaj', a, 'a', b, 'vacsie']) };
 }
 function currentStage() { return STAGES[STAGE_IDS.indexOf(S.level)] || STAGES[1]; }
+/* ====== KROK 02: slovné úlohy, úlohy „Čísla“, krokodíl, opakovanie a plody ====== */
+// slovné úlohy: podstatné mená s tvarmi pre 1, 2–4 a 5+ (SK) a s jednotným a množným číslom (EN)
+const WP_FORM_SK = { tava: ['ťava', 'ťavy', 'ťiav'], lodka: ['loďka', 'loďky', 'loďiek'], jablko: ['jablko', 'jablká', 'jabĺk'], hruska: ['hruška', 'hrušky', 'hrušiek'], zmrzlina: ['zmrzlina', 'zmrzliny', 'zmrzlín'], kvetina: ['kvetina', 'kvetiny', 'kvetín'], hviezdicka: ['hviezdička', 'hviezdičky', 'hviezdičiek'], dieta: ['dieťa', 'deti', 'detí'], lopta: ['lopta', 'lopty', 'lôpt'], kamarat: ['kamarát', 'kamaráti', 'kamarátov'] };
+const WP_GENDER = { tava: 'f', lodka: 'f', jablko: 'n', hruska: 'f', zmrzlina: 'f', kvetina: 'f', hviezdicka: 'f', dieta: 'n', lopta: 'f', kamarat: 'm' };
+const WP_EN = { tava: 'camel', lodka: 'boat', jablko: 'apple', hruska: 'pear', zmrzlina: 'cone', kvetina: 'flower', hviezdicka: 'star', dieta: 'child', lopta: 'ball', kamarat: 'friend' };
+const WP_FORM_EN = { camel: ['camel', 'camels'], boat: ['boat', 'boats'], apple: ['apple', 'apples'], pear: ['pear', 'pears'], cone: ['ice cream cone', 'ice cream cones'], flower: ['flower', 'flowers'], star: ['star', 'stars'], child: ['child', 'children'], ball: ['ball', 'balls'], friend: ['friend', 'friends'] };
+const WP_EMOJI = { tava: '🐪', lodka: '⛵', jablko: '🍎', hruska: '🍐', zmrzlina: '🍦', kvetina: '🌸', hviezdicka: '⭐', dieta: '🧒', lopta: '⚽', kamarat: '🧑' };
+const WP_PLACES = [
+  { sk: 'naplazi', skT: 'Na pláži', en: 'onthebeach', enT: 'On the beach', scene: '🏖️', nouns: ['tava', 'lodka', 'lopta'] },
+  { sk: 'vtriede', skT: 'V triede', en: 'intheclass', enT: 'In the class', scene: '🏫', nouns: ['dieta', 'kamarat'] },
+  { sk: 'vzahrade', skT: 'V záhrade', en: 'inthegarden', enT: 'In the garden', scene: '🌷', nouns: ['kvetina', 'jablko'] },
+  { sk: 'vdubaji', skT: 'V Dubaji', en: 'indubai', enT: 'In Dubai', scene: '🏜️', nouns: ['tava', 'lodka'] },
+  { sk: 'nastrome', skT: 'Na strome', en: 'onthetree', enT: 'On the tree', scene: '🌳', nouns: ['jablko', 'hruska'] },
+  { sk: 'vzmrzlinarni', skT: 'V zmrzlinárni', en: 'attheshop', enT: 'At the ice cream shop', scene: '🍨', nouns: ['zmrzlina'] },
+  { sk: 'vparku', skT: 'V parku', en: 'atthepark', enT: 'At the park', scene: '🌳', nouns: ['lopta', 'kamarat'] },
+  { sk: 'naoblohe', skT: 'Na oblohe', en: 'inthesky', enT: 'In the sky', scene: '☁️', nouns: ['hviezdicka'] },
+];
+const VERB_TXT = { pribudli: 'Pribudli', pribudlo: 'Pribudlo', odisli: 'Odišli', odislo: 'Odišlo' };
+function wpNounKey(base, n) { return LANG === 'sk' ? 'w_' + base + '_' + (n === 1 ? 1 : n <= 4 ? 2 : 5) : 'w_' + WP_EN[base] + '_' + (n === 1 ? 1 : 2); }
+function wpNounText(base, n) { return LANG === 'sk' ? WP_FORM_SK[base][n === 1 ? 0 : n <= 4 ? 1 : 2] : WP_FORM_EN[WP_EN[base]][n === 1 ? 0 : 1]; }
+// číslo pred podstatným menom: jeden/jedna/jedno a dva/dve podľa rodu
+function wpNumKey(n, base) {
+  if (LANG !== 'sk') return N(n);
+  if (n === 1) return WP_GENDER[base] === 'f' ? 'jedna' : WP_GENDER[base] === 'n' ? 'jedno' : N(1);
+  if (n === 2) return WP_GENDER[base] === 'm' ? N(2) : 'dve';
+  return N(n);
+}
+// slovná úloha: obrázok s predmetmi a veta, ktorú Lara počuje celú; pri odčítaní predmety odchádzajú
+function wpTask(op, st) {
+  const sk = LANG === 'sk';
+  const cap = Math.min(20, Math.max(st.max, 5));   // najvyšší výsledok podľa stupňa
+  const place = pick(WP_PLACES);
+  const base = pick(place.nouns);
+  const add = op === '+';
+  let a, b;
+  do {   // čísla zodpovedajú stupňu (bez prechodu alebo s prechodom cez desiatku)
+    a = add ? rnd(1, cap - 2) : rnd(3, cap);
+    b = add ? rnd(2, cap - a) : rnd(2, a - 1);
+  } while (!fitsStage(st, add ? '+' : '-', a, b));
+  const ans = add ? a + b : a - b;
+  const nA = wpNounKey(base, a), nB = wpNounKey(base, b);
+  const tA = wpNounText(base, a), tB = wpNounText(base, b);
+  let keys, text;
+  if (sk) {
+    const verbA = [2, 3, 4].includes(a) ? 'su' : 'je';
+    const verbT = verbA === 'su' ? 'sú' : 'je';
+    const verbB = add ? (b <= 4 ? 'pribudli' : 'pribudlo') : (b <= 4 ? 'odisli' : 'odislo');
+    if (add) {
+      keys = [place.sk, verbA, wpNumKey(a, base), nA, verbB, wpNumKey(b, base), nB, 'kolkoje', 'spolu'];
+      text = `${place.skT} ${verbT} ${a} ${tA}. ${VERB_TXT[verbB]} ${b} ${tB}. Koľko je spolu?`;
+    } else {
+      keys = [place.sk, verbA, wpNumKey(a, base), nA, wpNumKey(b, base), nB, verbB, 'kolkoich', 'zostalo'];
+      text = `${place.skT} ${verbT} ${a} ${tA}. ${b} ${tB} ${VERB_TXT[verbB].toLowerCase()}. Koľko ich zostalo?`;
+    }
+  } else {
+    const thereA = a === 1 ? 'thereis' : 'therearee';
+    const thereT = a === 1 ? 'there is' : 'there are';
+    if (add) {
+      keys = [place.en, thereA, N(a), nA, 'then', N(b), 'more', nB, 'came', 'howmanyinall'];
+      text = `${place.enT} ${thereT} ${a} ${tA}. Then ${b} more ${tB} came. How many in all?`;
+    } else {
+      keys = [place.en, thereA, N(a), nA, N(b), nB, 'wentaway', 'howmanyareleft'];
+      text = `${place.enT} ${thereT} ${a} ${tA}. ${b} ${tB} went away. How many are left?`;
+    }
+  }
+  const e = WP_EMOJI[base];
+  const rep = (n, cls) => Array.from({ length: n }, () => `<span${cls ? ` class="${cls}"` : ''}>${e}</span>`).join('');
+  const items = add ? rep(a) + '<b class="pl">+</b>' + rep(b) : rep(a) + rep(b, 'out');
+  const picture = `<div class="wp"><span class="wp-scene">${place.scene}</span><div class="wp-items">${items}</div></div>`;
+  return { op: add ? '+' : '−', a, b, total: add ? ans : a, g1: add ? a : ans, g2: b, mi: 0, ans,
+    txt: `${a} ${add ? '+' : '−'} ${b} = ?`, key: `wp-${place.sk}-${base}-${a}-${b}-${add ? 'p' : 'm'}`,
+    html: `${a} ${add ? '+' : '−'} ${b} = <span class="q">?</span>`,
+    speak: T(add ? 'speakPlus' : 'speakMinus', { a, b }), step: T(add ? 'stepPlus' : 'stepMinus', { a, b }),
+    story: text, storyPic: picture, snd: keys };
+}
+// voľby pod úlohou: náhodné čísla okolo správneho, vždy štyri, správne medzi nimi
+function numChoices(ans, lo, hi) {
+  const pool = [];
+  for (let v = Math.max(0, lo); v <= Math.min(20, hi); v++) if (v !== ans) pool.push(v);
+  const out = [ans];
+  while (out.length < 4 && pool.length) out.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+  return out.sort(() => Math.random() - 0.5);
+}
+const DICE_POS = { 1: [4], 2: [0, 8], 3: [0, 4, 8], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] };
+function diceHTML(k) { return `<div class="dice">${Array.from({ length: 9 }, (_, i) => `<i class="${DICE_POS[k].includes(i) ? 'on' : ''}"></i>`).join('')}</div>`; }
+const nlLabels = max => (max >= 20 ? [0, 10, 20] : max >= 10 ? [0, 5, 10] : [0, max]);
+// číselná os: tlačidlá (tap) alebo len zobrazenie; cieľové číslo je zvýraznené a označené
+function nlHTML(max, target, tap) {
+  const L = nlLabels(max);
+  let h = '';
+  for (let v = 0; v <= max; v++) {
+    const lab = L.includes(v) || v === target ? `<b>${v}</b>` : '';
+    const cls = v === target ? ' hit' : '';
+    h += tap ? `<button class="nl-tick${cls}" type="button" data-v="${v}">${lab}</button>` : `<span class="nl-tick${cls}">${lab}</span>`;
+  }
+  return `<div class="nl">${h}</div>`;
+}
+// úlohy „Čísla“: spočítaj predmety, koľko bodiek, nájdi číslo, pred a za, číselná os, rozklad
+// zadanie je v #story a hlas ho prečíta; čísla sú do 20 (číselná os 0 až 10, pri stupni do 20 na 0 až 20)
+function numTask(st) {
+  const sk = LANG === 'sk';
+  const max = Math.min(20, st.max);
+  const axis = max >= 20 ? 20 : 10;
+  const sub = pick(['count', 'dots', 'find', 'before', 'after', 'line', 'decomp']);
+  const mk = ({ prompt, ...o }) => Object.assign({ op: 'num', sub, mi: 0, total: o.ans, g1: o.ans, g2: 0, story: prompt, step: prompt, speak: prompt, choices: null, txt: '', key: '', snd: [], html: '' }, o);
+  if (sub === 'count') {
+    const n = rnd(max <= 5 ? 1 : 2, Math.min(max, 12));
+    const e = pick(['🍎', '⭐', '🌸', '🐞', '🍓']);
+    return mk({ ans: n, key: 'num-count-' + n + e, txt: (sk ? 'spočítaj ' : 'count ') + n,
+      prompt: sk ? 'Spočítaj' : 'Count them.', snd: [sk ? 'spocitaj' : 'countthem'],
+      html: `<div class="obj-grid">${Array.from({ length: n }, () => `<button class="obj" type="button">${e}</button>`).join('')}</div>`,
+      choices: numChoices(n, 1, max) });
+  }
+  if (sub === 'dots') {
+    const n = rnd(1, Math.min(max, 12));
+    return mk({ ans: n, key: 'num-dots-' + n, txt: (sk ? 'bodky ' : 'dots ') + n,
+      prompt: sk ? 'Koľko je bodiek?' : 'How many dots?', snd: sk ? ['kolkoje', 'bodiek'] : ['howmanydots'],
+      html: `<div class="dicebox" id="dotsBox">${diceHTML(Math.min(n, 6))}${n > 6 ? diceHTML(n - 6) : ''}</div>`,
+      choices: numChoices(n, 1, max) });
+  }
+  if (sub === 'find') {
+    const n = rnd(1, max);
+    return mk({ ans: n, key: 'num-find-' + n, txt: (sk ? 'nájdi ' : 'find ') + n,
+      prompt: sk ? 'Nájdi číslo' : 'Find the number', snd: [sk ? 'najdicislo' : 'findthenumber', N(n)],
+      choices: numChoices(n, 1, max) });
+  }
+  if (sub === 'before' || sub === 'after') {
+    const before = sub === 'before';
+    const n = before ? rnd(2, max) : rnd(1, max - 1);
+    const ans = before ? n - 1 : n + 1;
+    return mk({ ans, key: 'num-' + sub + '-' + n, txt: (sk ? (before ? 'pred ' : 'za ') : (before ? 'before ' : 'after ')) + n,
+      prompt: sk ? `Ktoré číslo je ${before ? 'pred' : 'za'} ${n}?` : `Which number is ${before ? 'before' : 'after'} ${n}?`,
+      snd: sk ? ['ktorecislo', before ? 'jepred' : 'jeza', N(n)] : [before ? 'whichnumberisbefore' : 'whichnumberisafter', N(n)],
+      html: nlHTML(axis, n, false),
+      choices: numChoices(ans, Math.max(0, ans - 3), Math.min(axis, ans + 3)) });
+  }
+  if (sub === 'line') {
+    const n = rnd(1, max);
+    return mk({ ans: n, key: 'num-line-' + n + '-' + axis, txt: (sk ? 'os ' : 'line ') + n,
+      prompt: sk ? `Kde je číslo ${n} na osi?` : `Where is the number ${n} on the number line?`,
+      snd: sk ? ['kdejecislo', N(n), 'naosi'] : ['wherenumberis', N(n), 'onthenumberline'],
+      html: nlHTML(axis, -1, true) });
+  }
+  // rozklad: „5 je 2 a koľko?“ s desiatkovým rámikom; biele políčka sú chýbajúce kúsky
+  const n = rnd(3, max);
+  const k = rnd(1, n - 1);
+  const seq = Array(k).fill('blue').concat(Array(n - k).fill('ghost'));
+  return mk({ ans: n - k, key: 'num-decomp-' + n + '-' + k, txt: `${n} = ${k} + ?`,
+    prompt: sk ? `${n} je ${k} a koľko?` : `${n} is ${k} and how many?`,
+    snd: [N(n), sk ? 'je' : 'is', N(k), sk ? 'akolko' : 'andhowmany'],
+    html: `<div class="qbig2">${n} ${sk ? 'je' : 'is'} ${k} ${sk ? 'a' : 'and'} <span class="q">?</span></div>${frames(seq, n)}`,
+    choices: numChoices(n - k, 1, max) });
+}
+// veta po porovnaní: „7 je väčšie ako 4“ (SK) alebo „7 is bigger than 4“ (EN)
+function cmpSpeech(t) {
+  const sk = LANG === 'sk';
+  const s = t.ans === '>' ? 0 : t.ans === '<' ? 1 : 2;
+  const w = sk ? ['jevacsieako', 'jemensieako', 'jerovnaako'][s] : ['isbiggerthan', 'issmallerthan', 'isthesameas'][s];
+  const txt = sk ? ['je väčšie ako', 'je menšie ako', 'je rovnaké ako'][s] : ['is bigger than', 'is smaller than', 'is the same as'][s];
+  return [[N(t.a), w, N(t.b)], `${t.a} ${txt} ${t.b}`];
+}
+// krokodíl medzi číslami: papuľa sa otvorí k väčšiemu číslu; pri rovnosti ostane zavretý
+function crocSVG() {
+  return `<svg viewBox="0 0 150 72" aria-hidden="true"><path d="M16 46 Q4 38 6 26 Q22 34 30 42Z" fill="#9ee6a8" stroke="#6cc07e" stroke-width="2"/><ellipse cx="66" cy="48" rx="46" ry="16" fill="#9ee6a8" stroke="#6cc07e" stroke-width="2"/><path d="M96 50 L144 50 Q148 58 138 60 L100 60 Z" fill="#8bd08a" stroke="#6cc07e" stroke-width="2"/><g class="jaw"><path d="M70 30 L142 32 Q150 40 140 44 L70 44 Z" fill="#9ee6a8" stroke="#6cc07e" stroke-width="2"/><path d="M104 44 l5 7 l5 -7 M120 44 l5 7 l5 -7" fill="#fff" stroke="#fff" stroke-width="1"/></g><circle cx="90" cy="30" r="4" fill="#222"/></svg>`;
+}
+function cmpHTML(a, b) {
+  const dotsOf = n => (S.level === '5' || S.level === '10') ? `<span class="dots">${Array.from({ length: n }, () => '<i></i>').join('')}</span>` : '';
+  return `<div class="cmpline"><span class="cn"><b>${a}</b>${dotsOf(a)}</span><span class="croc" id="croc">${crocSVG()}</span><span class="cn"><b>${b}</b>${dotsOf(b)}</span></div><div class="cmpans"><span class="q">?</span></div>`;
+}
+function revealCroc(t) {
+  const c = $('#croc');
+  if (!c) return;
+  c.classList.toggle('face-left', t.a > t.b);
+  c.classList.toggle('open', t.a !== t.b);
+}
+// opakovanie: úloha, ktorá sa nepodarila na prvý pokus, sa vráti v ďalšom kole; po dvoch správnych v dvoch kolách zmizne
+const cloneTask = t => JSON.parse(JSON.stringify(t));
+function recordPractice(t) {
+  if (!t || !t.key) return;
+  if (!S.practice[t.key]) {
+    const keys = Object.keys(S.practice);
+    if (keys.length >= 40) delete S.practice[keys[0]];   // zoznam má najviac 40 úloh
+    S.practice[t.key] = { t: cloneTask(Object.assign({}, t, { retry: false })), rounds: [], n: 0 };
+  }
+  S.practice[t.key].n++;
+  save();
+}
+function practiceOK(t) {
+  const p = t && S.practice[t.key];
+  if (!p || !R.id) return;
+  if (!p.rounds.includes(R.id)) p.rounds.push(R.id);
+  if (p.rounds.length >= 2) delete S.practice[t.key];
+  save();
+}
+function pickPractice(n) {
+  const list = Object.values(S.practice).map(p => p.t);
+  const out = [];
+  while (out.length < n && list.length) out.push(cloneTask(list.splice(Math.floor(Math.random() * list.length), 1)[0]));
+  return out;
+}
+// voľby pod úlohou: pri počítaní a bodkách sa sprístupnia až po splnení
+function setChoicesEnabled(on) { document.querySelectorAll('#choiceBtns button').forEach(b => { b.disabled = !on; }); }
+function numUI(t) {
+  clearTimeout(R.dotsTimer);
+  R.counted = 0;
+  const box = $('#choiceBtns');
+  if (t.op !== 'num' || !t.choices) { box.classList.add('hidden'); box.innerHTML = ''; return; }
+  const ready = t.sub !== 'count' && t.sub !== 'dots';
+  box.innerHTML = t.choices.map(v => `<button type="button" data-v="${v}"${ready ? '' : ' disabled'}>${v}</button>`).join('');
+  box.classList.remove('hidden');
+  if (t.sub === 'dots') R.dotsTimer = setTimeout(() => {   // bodky sa 1,5 s ukazujú, potom sa skryjú a dá sa vybrať číslo
+    if (!R || R.t !== t) return;
+    const d = $('#dotsBox'); if (d) d.classList.add('dothidden');
+    setChoicesEnabled(true);
+  }, 1500);
+}
+// bodky sa po chybe ukážu znova a hlas ich spočíta
+function dotsAgain(t) {
+  const d = $('#dotsBox');
+  if (d) d.classList.remove('dothidden');
+  const sk = LANG === 'sk';
+  const nums = Array.from({ length: t.ans }, (_, i) => i + 1);
+  return [[sk ? 'spocitajme' : 'letscount', ...nums.map(N)], (sk ? 'Spočítajme: ' : "Let's count: ") + nums.join(', ')];
+}
+// plody: kvitnúca rastlina dostane ďalšou kvapkou plod; ťuknutím ho Lara zoberie a dostane hviezdičku
+function fruitEmoji(id) { const s = STICKERS.find(x => x.id === id); return s ? s.e : '🍓'; }
+function refreshFruit() {
+  document.querySelectorAll('#album .plot[data-id]').forEach(p => {
+    const id = p.dataset.id, f = p.querySelector('.fruit');
+    if (S.fruit[id] && !f) p.insertAdjacentHTML('beforeend', `<span class="fruit" title="Ťukni">${fruitEmoji(id)}</span>`);
+    else if (!S.fruit[id] && f) f.remove();
+  });
+}
+function harvest(id) {
+  if (!S.fruit[id]) return;
+  delete S.fruit[id];
+  S.grow[id] = 2;   // rastlina sa vráti o stupeň späť a rastie znova
+  S.stars += 1;
+  save(); renderTop(); flyPlus(1); refreshStages();
+  const sk = LANG === 'sk';
+  playSeq(sk ? ['zobralasiplod', 'jednuhviezdicku'] : ['youpickedthefruit', 'onestar'], sk ? 'Zobrala si plod, jednu hviezdičku.' : 'You picked the fruit, one star.');
+}
+document.addEventListener('click', e => {
+  const f = e.target.closest('#album .fruit');
+  if (f) harvest(f.closest('.plot').dataset.id);
+});
+/* ====== PÍSANIE ČÍSLIC: tlačené číslice ako v anglickej písanke ======
+   Číslica je zoznam ťahov; ťah je lomená čiara od zelenej bodky v smere šípky. Ťahy sa kontrolujú v poradí a smere
+   s veľkou toleranciou. Pri chybe nič nestrácame: len jemný zvuk a nový pokus. */
+const arc = (cx, cy, rx, ry, a0, a1, n) => Array.from({ length: n + 1 }, (_, i) => {
+  const a = (a0 + (a1 - a0) * i / n) * Math.PI / 180;   // uhol v stupňoch: 90 je dole, 270 hore
+  return [cx + rx * Math.cos(a), cy + ry * Math.sin(a)];
+});
+const DIGIT_STROKES = [
+  [arc(150, 150, 75, 115, -90, -450, 16)],                                                        // 0: od hora proti smeru hodín
+  [[[110, 80], [150, 40], [150, 260]]],                                                           // 1
+  [arc(150, 105, 70, 65, 180, 360, 12).concat([[80, 260], [230, 260]])],                          // 2
+  [arc(150, 95, 65, 60, 200, 450, 14), arc(150, 205, 70, 55, 270, 520, 14)],                      // 3
+  [[[190, 40], [70, 190], [240, 190]], [[190, 40], [190, 265]]],                                  // 4
+  [[[220, 50], [90, 50], [85, 140]].concat(arc(150, 195, 70, 60, 210, 480, 16))],                 // 5
+  [[[215, 60], [150, 75], [100, 115], [82, 170]].concat(arc(150, 205, 68, 60, 180, 540, 20))],    // 6
+  [[[85, 50], [225, 50], [120, 265]]],                                                            // 7
+  [arc(150, 95, 55, 50, 270, 630, 20), arc(150, 205, 65, 60, 270, 630, 20)],                      // 8
+  [arc(150, 105, 68, 60, 0, -360, 20).concat([[218, 130], [205, 200], [160, 248], [105, 262]])],  // 9
+];
+// zahustí ťah na vzorky po 8 jednotkách, aby sa dal kontrolovať aj pri rýchlom ťahu
+function densify(pts, step = 8) {
+  const out = [pts[0]];
+  for (let i = 1; i < pts.length; i++) {
+    const [x0, y0] = pts[i - 1], [x1, y1] = pts[i];
+    const n = Math.max(1, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / step));
+    for (let k = 1; k <= n; k++) out.push([x0 + (x1 - x0) * k / n, y0 + (y1 - y0) * k / n]);
+  }
+  return out;
+}
+const DIGIT_DENSE = DIGIT_STROKES.map(strokes => strokes.map(s => densify(s)));
+const WTOL = 46, WAHEAD = 6;   // tolerancia (plátno má 300 jednotiek) a koľko vzoriek dopredu sa hľadá
+// posúva sa len dopredu po ťahu: ide až k najďalšej vzorke, na ktorú bod dieťaťa ešte v tolerancii dosiahne
+function wAdvance(s, idx, x, y) {
+  for (let j = Math.min(s.length, idx + WAHEAD) - 1; j >= idx; j--) if (Math.hypot(s[j][0] - x, s[j][1] - y) <= WTOL) return j;
+  return idx;
+}
+let WR = null;   // stav písania: číslica, ťah, pozícia na ťahu a nakreslené čiary
+const wPath = s => 'M' + s.map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' L');
+function writePoint(e) {
+  const r = $('#wsvg').getBoundingClientRect();
+  return [(e.clientX - r.left) / r.width * 300, (e.clientY - r.top) / r.height * 300];
+}
+function writeKeys(d, end) {
+  const sk = LANG === 'sk';
+  if (end) return [sk ? ['totojecislo', N(d)] : ['thisisthenumber', N(d)], sk ? `Toto je číslo ${d}` : `This is the number ${d}`];
+  return [sk ? ['napiscislo', N(d)] : ['writethenumber', N(d)], sk ? `Napíš číslo ${d}` : `Write the number ${d}`];
+}
+// zelená bodka je pri začiatku ťahu; šípka smeru je len na predlohe
+function writeMark() {
+  const s = WR.strokes[WR.k];
+  if (!s) { $('#wmark').innerHTML = ''; return; }
+  let h = `<circle class="wstart" cx="${s[0][0]}" cy="${s[0][1]}" r="14"/>`;
+  if (WR.guide) {
+    const m = Math.floor(s.length / 2);
+    const ang = Math.atan2(s[m + 1][1] - s[m - 1][1], s[m + 1][0] - s[m - 1][0]) * 180 / Math.PI;
+    h += `<path class="warrow" transform="translate(${s[m][0]} ${s[m][1]}) rotate(${ang})" d="M 12 0 L -9 -10 L -9 10 Z"/>`;
+  }
+  $('#wmark').innerHTML = h;
+}
+function writePaint() {
+  const lines = WR.paths.concat(WR.ink ? [WR.ink] : []);
+  $('#wpaint').innerHTML = lines.map(d => `<path class="wink" d="${d}"/>`).join('');
+}
+function writeRender() {
+  WR.guide = (S.writing[WR.d] || 0) < 3;   // po troch dobrých obťahnutiach je číslica bez predlohy
+  const guides = WR.guide ? WR.strokes.map(s => `<path class="wguide" d="${wPath(s)}"/>`).join('') : '';
+  $('#wsvg').innerHTML = `<g>${guides}</g><g id="wmark"></g><g id="wpaint"></g>`;
+  writeMark();
+  writePaint();
+}
+function writeNewDigit() {
+  WR = { d: S.writeNext, strokes: DIGIT_DENSE[S.writeNext], k: 0, idx: 0, drawing: false, moved: false, ink: '', paths: [], done: false };
+  writeRender();
+  $('#writeMsg').textContent = '';
+  const [keys, text] = writeKeys(WR.d, false);
+  playSeq(keys, text);
+}
+function startWrite() { show('write'); writeNewDigit(); }
+function writeSay() { const [keys, text] = writeKeys(WR ? WR.d : S.writeNext, false); playSeq(keys, text); }
+function writeClear() {
+  if (!WR) return;
+  WR.k = 0; WR.idx = 0; WR.paths = []; WR.ink = ''; WR.drawing = false;
+  writeRender();
+}
+function writeDown(e) {
+  if (!WR || WR.done || WR.k >= WR.strokes.length) return;
+  $('#wsvg').setPointerCapture(e.pointerId);
+  WR.drawing = true; WR.moved = false; WR.ink = '';
+  writeMove(e);
+}
+function writeMoveEv(e) {
+  if (!WR || !WR.drawing) return;
+  WR.moved = true;
+  writeMove(e);
+}
+function writeMove(e) {
+  const [x, y] = writePoint(e);
+  WR.ink += (WR.ink ? ' L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1);
+  const s = WR.strokes[WR.k];
+  WR.idx = wAdvance(s, WR.idx, x, y);
+  writePaint();
+  if (WR.idx >= s.length - 4) writeStrokeDone();   // dotiahnuté až ku koncu ťahu
+}
+function writeStrokeDone() {
+  WR.paths.push(WR.ink);
+  WR.ink = ''; WR.idx = 0; WR.drawing = false;
+  WR.k++;
+  if (WR.k >= WR.strokes.length) return writeDigitDone();
+  SFX.ok();
+  writeMark();
+  writePaint();
+}
+// prst zodvihnutý pred koncom ťahu: nič sa nezapočíta, ťah sa začne znova od zelenej bodky
+function writeUp() {
+  if (!WR || !WR.drawing) return;
+  WR.drawing = false;
+  if (!WR.moved) return;
+  WR.ink = ''; WR.idx = 0;
+  writePaint();
+  SFX.oops();   // jemný zvuk a nový pokus, bez trestu
+  playSeq(['tryagain'], T('speakTry'));
+}
+function writeDigitDone() {
+  const d = WR.d, sk = LANG === 'sk';
+  WR.done = true;
+  S.writing[d] = (S.writing[d] || 0) + 1;   // postup sa ukladá
+  S.writeNext = (d + 1) % 10;
+  S.stars += 1;   // 1 hviezda za každú dobre napísanú číslicu
+  save(); renderTop(); flyPlus(1);
+  const pk = sk ? 'praise' + rnd(1, 3) : 'praise' + rnd(1, 6);
+  const [keys, text] = writeKeys(d, true);
+  speakList([[[pk], T(pk, { name: S.name })], [keys, text]]);
+  $('#writeMsg').innerHTML = speakable(text, keys);
+  setTimeout(() => { if (WR && WR.d === d && WR.done && !$('#write').classList.contains('hidden')) writeNewDigit(); }, 1800);
+}
 function makeTask() {
   let t, key;
   do {
     let mode = S.types;
-    if (mode === 'mix') mode = pick(['plus', 'minus', 'fill', 'cmp']);
+    if (mode === 'mix') mode = pick(['plus', 'minus', 'fill', 'cmp', 'num']);
     if (mode === 'pm') mode = Math.random() < 0.5 ? 'plus' : 'minus';
     if (mode === 'fill') mode = Math.random() < 0.5 ? 'fillPlus' : 'fillMinus';
     t = genTask(mode, currentStage());
@@ -1785,6 +2215,7 @@ function ctPress(t, op, k) {
 }
 // pomôcka: desiatkový rámik pre čísla do 20, inak len text kroku
 function hintHTML(t, reveal) {
+  if (t.op === 'num') return `<div class="tip">${speakable(t.step, t.snd)}</div>`;
   if ((t.op === '+' || t.op === '−') && t.mi === 0 && t.total > 10 && !reveal) {
     const open = !!R.cntOpen;
     return `<div class="hintbox" data-left="${t.g1}"><button class="chip help-btn" type="button" id="helpBtn">${T(open ? 'helpHide' : 'helpBtn')}</button>` +
@@ -1793,23 +2224,12 @@ function hintHTML(t, reveal) {
   if (t.op === 'cmp' || t.total > 20) return `<div class="tip">${speakable(t.step, stepKeysOf(t))}</div>`;
   const tappable = t.op === '−' && t.mi === 0 && !reveal;   // odčítanie: dieťa ťukne na to, čo odíde
   const tip = `<div class="tip">${speakable(t.step, stepKeysOf(t))}</div>` + (tappable ? `<div class="tip tapmsg">${speakable(T('tapHint'), [LANG === 'sk' ? 'tukni' : 'tapwhatgoesaway'])}</div>` : '');
-  if (t.story) return `<div class="hintbox" data-left="${t.g1}">${flowerRow(t, reveal, tappable)}${tip}</div>`;
   const M = reveal ? 'gold' : 'ghost';
   const c1 = t.mi === 1 ? M : 'blue';
   const c2 = t.mi === 2 ? M : (t.op === '−' ? (tappable ? 'yellow tap' : 'out') : 'yellow');
   const seq = Array(t.g1).fill(c1).concat(Array(t.g2).fill(c2));
   return `<div class="hintbox" data-left="${t.g1}">${frames(seq, t.total)}${tip}</div>`;
 }
-// slovná úloha: namiesto guličiek kvety zo záhrady (ten istý príbeh ako v zadaní)
-function flowerRow(t, reveal, tappable) {
-  const f = itemSVG('flower', 34);
-  const kept = Array(t.g1).fill(`<span class="fl">${f}</span>`).join('');
-  const picked = t.op === '−'
-    ? Array(t.g2).fill(`<span class="fl ${tappable ? 'tap' : 'faded'}">${f}</span>`).join('')
-    : Array(t.g2).fill(`<span class="fl">${f}</span>`).join('');
-  return `<div class="flrow">${kept}${picked}</div>`;
-}
-
 /* ====== TEXTY PRE LARU S TLAČIDLOM S REPRODUKTOROM ======
    Text sa prehrá z nahrávok (kľúče); ak niektorá nahrávka chýba, prečíta celý text hlas zariadenia. */
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
@@ -1881,22 +2301,25 @@ let R = null;   // stav kola
 let streak = 0; // séria správnych odpovedí
 
 function startRound() {
-  R = { res: [], queue: [], ok: 0, first: 0, gained: 0, t: null, tries: 0, done: false, input: '' };
+  R = { id: String(Date.now()) + Math.random().toString(36).slice(2, 6), practiceQ: pickPractice(2), res: [], queue: [], ok: 0, first: 0, gained: 0, t: null, tries: 0, done: false, input: '' };
   $('#mascotP').innerHTML = laraSVG(64);
   show('play');
   startTask();   // na začiatku kola sa nechváli, úloha sa ozve hneď
 }
 function startTask(after) {
-  // úlohy, ktoré sa nepodarili, sa niekedy zopakujú
-  const useRetry = R.queue.length > 0 && R.res.length >= 2 && Math.random() < 0.6;
-  R.t = useRetry ? R.queue.shift() : makeTask();
+  // na 3. a 7. mieste kola ide úloha z „Na precvičenie“; inak sa niekedy zopakuje úloha, ktorá sa nepodarila
+  const pos = R.res.length;
+  const practice = (pos === 2 || pos === 6) && R.practiceQ.length ? R.practiceQ.shift() : null;
+  const useRetry = !practice && R.queue.length > 0 && R.res.length >= 2 && Math.random() < 0.6;
+  R.t = practice || (useRetry ? R.queue.shift() : makeTask());
   R.t.retry = useRetry;
   R.res.push('');
   R.tries = 0; R.done = false; R.input = '';
   const st = $('#story');
-  st.innerHTML = R.t.story ? speakable(R.t.story, R.t.snd) : '';
+  st.innerHTML = R.t.story ? (R.t.storyPic || '') + speakable(R.t.story, R.t.snd) : '';
   st.classList.toggle('hidden', !R.t.story);
   $('#task').innerHTML = R.t.html;
+  numUI(R.t);
   $('#fb').textContent = '';
   R.cntOpen = false; R.cnt = null;
   // dvojciferné úlohy: tlačidlo „Pomôž si“ je k dispozícii hneď, ostatné nápovedy až po chybe
@@ -1905,7 +2328,7 @@ function startTask(after) {
   $('#pad').classList.remove('off');
   $('#cmpBtns').classList.remove('off');
   const isCmp = R.t.op === 'cmp';
-  $('#pad').classList.toggle('hidden', isCmp);
+  $('#pad').classList.toggle('hidden', isCmp || R.t.op === 'num');
   $('#cmpBtns').classList.toggle('hidden', !isCmp);
   $('#nextBtn').classList.add('hidden');
   $('#streakTxt').textContent = R.t.retry ? T('retry') : (streak > 1 ? T('streakBadge', { n: streak }) : '');
@@ -1972,10 +2395,12 @@ function check() {
   else if (R.tries === 1) {
     SFX.oops();
     bump($('#mascotP'), 'sad');
-    S.miss[R.t.txt] = (S.miss[R.t.txt] || 0) + 1;
+    recordPractice(R.t);   // úloha ide do „Na precvičenie“, kým ju Lara nevyrieši na prvý pokus v dvoch kolách
     fb(T('tryAgain'), false);
     // v angličtine striedame viac jemných formulácií; v slovenčine je len jedna nahrávka
-    playSeq([pick(LANG === 'en' ? ['tryagain', 'tryagain2', 'tryagain3'] : ['tryagain'])], T('speakTry'));
+    const again = [[pick(LANG === 'en' ? ['tryagain', 'tryagain2', 'tryagain3'] : ['tryagain'])], T('speakTry')];
+    if (R.t.sub === 'dots') speakList([again, dotsAgain(R.t)]);   // bodky sa ukážu znova a hlas ich spočíta
+    else playSeq(again[0], again[1]);
     R.input = ''; updateAns();
     $('#hint').innerHTML = hintHTML(R.t, false);
   } else lose();
@@ -2011,7 +2436,11 @@ function win() {
   // pochvala nie pri každej správnej odpovedi, a keď áno, z viacerých variant
   const pk = pick(LANG === 'en' ? ['praise1', 'praise2', 'praise3', 'praise4', 'praise5', 'praise6'] : ['praise1', 'praise2', 'praise3']);
   const prs = first && Math.random() < 0.5 ? [[pk], T(pk, { name: S.name })] : [['correct'], T('speakRight')];
-  speakList(said ? [prs, said] : [prs]);   // pochvala, potom prípadná správa o sérii alebo spoločníkovi
+  const items = [prs];   // pochvala, pri porovnaní veta o číslach, potom prípadná správa o sérii alebo spoločníkovi
+  if (R.t.op === 'cmp') { revealCroc(R.t); items.push(cmpSpeech(R.t)); }
+  if (said) items.push(said);
+  speakList(items);
+  if (first && !R.t.retry) practiceOK(R.t);
   $('#hint').innerHTML = '';   // po správnej odpovedi pomôcku nezobrazujeme
   finishTask();
 }
@@ -2028,13 +2457,17 @@ function lose() {
   const ansK = answerKeys(R.t.ans);
   const spoken = R.t.op === 'cmp' ? CMP_TXT[R.t.ans][LANG === 'sk' ? 0 : 1] : R.t.ans;   // pri porovnaní sa povie slovo, na obrazovke ostáva znak
   fbHTML(`${speakable(T('answerIs', { a: R.t.ans }), ansK)} ${speakable(T('effort', { n: CONFIG.STARS_EFFORT }), effortKeys())}`, false);
-  speakList([[ansK, T('answerIs', { a: spoken })], [effortKeys(), T('effort', { n: CONFIG.STARS_EFFORT })]]);
+  const items = [[ansK, T('answerIs', { a: spoken })]];
+  if (R.t.op === 'cmp') { revealCroc(R.t); items.push(cmpSpeech(R.t)); }   // krokodíl ukáže väčšie číslo a povie sa veta
+  items.push([effortKeys(), T('effort', { n: CONFIG.STARS_EFFORT })]);
+  speakList(items);
   $('#hint').innerHTML = hintHTML(R.t, true);
   finishTask();
 }
 function finishTask() {
   $('#pad').classList.add('off');
   $('#cmpBtns').classList.add('off');
+  setChoicesEnabled(false);
   $('#nextBtn').textContent = R.res.length >= CONFIG.ROUND_LENGTH ? T('results') : T('next');
   $('#nextBtn').classList.remove('hidden');
   renderProgress();
@@ -2239,6 +2672,7 @@ function setPlantStage(plot, stage, pop = false) {
 }
 function refreshStages() {
   document.querySelectorAll('#album .plot[data-id]').forEach(p => setPlantStage(p, S.grow[p.dataset.id] || 0));
+  refreshFruit();
 }
 // kvapky padajú z konvičky na kvet
 function dropsFall(scene, cx, cy) {
@@ -2287,14 +2721,16 @@ function runWatering() {
   POUR.timer = setTimeout(() => {   // stav sa zmení tesne pred dopadom, aby rastlina ukázala novú fázu
     if (!POUR) return;
     const taken = [];
+    let fruit = false;
     for (let k = 0; k < total; k++) {
       const s = dropTarget(plants, taken);
       if (s) { taken.push(s.id); S.grow[s.id] = (S.grow[s.id] || 0) + 1; }
-      else sparkles(scene);   // všetky kvety už kvitnú: kvapka sa len vsiakne
+      else if (dropFruit(plants)) fruit = true;   // kvitnúca rastlina bez plodu dostane plod
+      else sparkles(scene);   // všetky kvety kvitnú a plody sú: kvapka sa len vsiakne
     }
     S.water = 0;
     save();
-    finishWatering(total);
+    finishWatering(total, fruit);
   }, 800);
 }
 // iskričky: jednorožec ich zanecháva a aj kvety, ktoré už kvitnú
@@ -2309,10 +2745,17 @@ function sparkles(scene) {
     setTimeout(() => s.remove(), 1800);
   }
 }
-function finishWatering(total) {
+// kvapka na rastline, ktorá už kvitne: vznikne plod (najviac jeden na rastline); vráti true, ak plod vznikol
+function dropFruit(plants) {
+  const s = plants.find(p => (S.grow[p.id] || 0) >= 3 && !S.fruit[p.id]);
+  if (s) S.fruit[s.id] = true;
+  return !!s;
+}
+function finishWatering(total, fruit) {
   POUR = null;
   refreshStages();
   setChip(T('waterFinished', { n: total, drops: total === 1 ? 'drop' : 'drops', kv: kvapky(total) }), true);
+  if (fruit) playSeq(LANG === 'sk' ? ['nakvetejeplod', 'tuknina'] : ['thereisafruit', 'tapit'], LANG === 'sk' ? 'Na kvete je plod. Ťukni naň.' : 'There is a fruit! Tap it.');
 }
 // keď dieťa odíde, zalievanie sa len zruší: stav sa nemení a kvapky ostanú na ďalšiu návštevu (nič sa nezaleje potichu)
 function flushWatering() {
@@ -2428,6 +2871,7 @@ function renderGarden(owned) {
   if (!critTimer) critTimer = setInterval(critTick, 100);
   $('#fxl').innerHTML = Array.from({ length: 10 }, (_, i) =>
     `<i class="p ${season}" style="left:${(i * 37) % 100}%;animation-delay:${-(i * 1.7)}s;animation-duration:${(season === 'summer' ? 7 : 9) + (i % 4) * 2}s"></i>`).join('');
+  refreshFruit();
   $('#gardenCount').innerHTML = speakable(T('gardenLegend'), gardenKeys());
 }
 
@@ -2505,6 +2949,37 @@ $('#cmpBtns').addEventListener('click', e => {
   const b = e.target.closest('[data-s]');
   if (b) chooseCmp(b.dataset.s);
 });
+// Čísla: odpoveď sa ťuknutím na možnosť; predmety sa ťukajú pri počítaní; miesto na osi sa ťukne priamo
+$('#choiceBtns').addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b || b.disabled || !R || R.done) return;
+  R.input = b.dataset.v;
+  SFX.tap();
+  updateAns();
+  check();
+});
+$('#task').addEventListener('click', e => {
+  if (!R || R.done || !R.t || R.t.op !== 'num') return;
+  const tick = e.target.closest('.nl-tick[data-v]');
+  if (tick) { R.input = tick.dataset.v; SFX.tap(); check(); return; }
+  const o = e.target.closest('.obj');
+  if (!o || o.classList.contains('counted')) return;
+  o.classList.add('counted');
+  R.counted = (R.counted || 0) + 1;
+  SFX.tap();
+  const n = R.counted, sk = LANG === 'sk';
+  if (n < R.t.ans) { playSeq([N(n)], String(n)); return; }
+  setChoicesEnabled(true);   // všetko spočítané: Lara vyberie číslo
+  speakList([[[N(n)], String(n)], [[sk ? 'vyberc' : 'choosethenumber'], sk ? 'Vyber číslo' : 'Choose the number.']]);
+});
+$('#writeBtn').onclick = () => { SFX.tap(); startWrite(); };
+$('#writeBack').onclick = goHome;
+$('#writeSay').onclick = writeSay;
+$('#writeClear').onclick = writeClear;
+$('#wsvg').addEventListener('pointerdown', writeDown);
+$('#wsvg').addEventListener('pointermove', writeMoveEv);
+$('#wsvg').addEventListener('pointerup', writeUp);
+$('#wsvg').addEventListener('pointercancel', writeUp);
 document.addEventListener('keydown', e => {
   if ($('#play').classList.contains('hidden') || e.target.tagName === 'INPUT') return;
   if (e.key === 'Enter') { if (R.done) next(); else press('ok'); return; }
@@ -2512,6 +2987,7 @@ document.addEventListener('keydown', e => {
     if (['<', '>', '='].includes(e.key)) chooseCmp(e.key);
     return;
   }
+  if (R.t.op === 'num') return;   // Čísla sa odpovedajú len ťuknutím
   if (/^[0-9]$/.test(e.key)) press(e.key);
   else if (e.key === 'Backspace') press('del');
 });
