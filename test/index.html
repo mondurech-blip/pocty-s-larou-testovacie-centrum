@@ -304,7 +304,9 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 .wp-scene{font-size:50px;line-height:1}
 .wp-items{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;max-width:320px}
 .wp-items span{font-size:36px;line-height:1.1;transition:opacity .4s}
-.wp-items .out{opacity:.22;text-decoration:line-through}
+.wp-items .tap{cursor:pointer;animation:pulse 1.6s ease-in-out infinite}
+.wp-items .faded{opacity:.22;animation:none}
+.wp-total{display:flex;align-items:center;justify-content:center;min-width:60px;height:60px;padding:0 10px;border-radius:30px;background:rgba(255,255,255,.7);font-size:34px;font-weight:800}
 .wstage{width:min(300px,80vw);aspect-ratio:1/1;margin:8px auto}
 #wsvg{width:100%;height:100%;display:block;background:var(--card);border-radius:22px;box-shadow:var(--shadow);touch-action:none}
 .wguide{fill:none;stroke:#c9c3dc;stroke-width:12;stroke-dasharray:14 12;stroke-linecap:round;stroke-linejoin:round}
@@ -322,10 +324,12 @@ h1{font-size:28px;margin:6px 0 4px;text-align:center}
 .dice i{width:34px;height:34px;border-radius:50%}
 .dice i.on{background:var(--ink)}
 .wp-items .pl{font-size:40px;font-weight:800;padding:0 6px}
-.fruit{position:absolute;right:-10px;top:-10px;z-index:3;min-width:60px;min-height:60px;display:flex;align-items:center;justify-content:center;font-size:40px;cursor:pointer;touch-action:manipulation;animation:pulse 1.6s ease-in-out infinite}
-/* pozadie krajiny a dekorácie len kreslia; dotyk má ísť na záhony a na jablko */
+.fruit,.fruitgone{position:absolute;right:-10px;top:-10px;z-index:3;min-width:60px;min-height:60px;display:flex;align-items:center;justify-content:center;font-size:40px;cursor:pointer;touch-action:manipulation;animation:pulse 1.6s ease-in-out infinite}
+.fruitgone{animation:fly .6s ease-in forwards;pointer-events:none}   /* plod, ktorý Lara práve zobrala: zmizne */
+.plusfruit{position:absolute;right:-14px;top:-34px;z-index:4;font-size:26px;font-weight:800;color:#e0a100;pointer-events:none;animation:up 1.2s forwards}
+/* pozadie krajiny a dekorácie len kreslia; dotyk má ísť na záhony a na plod */
 #land, #fxl { pointer-events: none; }
-.plot .fruit { pointer-events: auto; }   /* jablko sa musí dať ťuknúť, aj keď je záhon bez dotyku */
+.plot .fruit { pointer-events: auto; }   /* plod sa musí dať ťuknúť, aj keď je záhon bez dotyku */
 </style>
 </head>
 <body>
@@ -1725,13 +1729,13 @@ function genTask(mode, st) {
     let c, k, m;
     do { c = rnd(st.carry === 'yes' ? 11 : 2, max); k = rnd(1, c - 1); m = c - k; } while (!fitsStage(st, '+', m, k));
     return Math.random() < 0.5
-      ? { op: '+', a: m, b: k, total: c, g1: m, g2: k, mi: 1, ans: m, story: null,
+      ? { op: '+', a: m, b: k, total: c, g1: m, g2: k, mi: 1, ans: m, story: null, hands: { op: '−', a: c, b: k },
           txt: `? + ${k} = ${c}`, key: `f+${c},${k},1`,
           html: `<span class="q">?</span> + ${k} = ${c}`,
           speak: T('speakFillPlusFront', { k, c }),
           step: T('stepFillPlusFront', { k, c }),
           snd: SND(['whatplus', k, 'is', c], ['kolkoplus', k, 'je', c]) }
-      : { op: '+', a: k, b: m, total: c, g1: k, g2: m, mi: 2, ans: m, story: null,
+      : { op: '+', a: k, b: m, total: c, g1: k, g2: m, mi: 2, ans: m, story: null, hands: { op: '−', a: c, b: k },
           txt: `${k} + ? = ${c}`, key: `f+${c},${k},2`,
           html: `${k} + <span class="q">?</span> = ${c}`,
           speak: T('speakFillPlusBack', { k, c }),
@@ -1741,7 +1745,7 @@ function genTask(mode, st) {
   if (mode === 'fillMinus') {
     let a, m, c;
     do { a = rnd(st.carry === 'yes' ? 11 : 2, max); m = rnd(1, a - 1); c = a - m; } while (!fitsStage(st, '-', a, m));
-    return { op: '−', a, b: m, total: a, g1: c, g2: m, mi: 2, ans: m, story: null,
+    return { op: '−', a, b: m, total: a, g1: c, g2: m, mi: 2, ans: m, story: null, hands: { op: '+', a: c, b: m },
       txt: `${a} − ? = ${c}`, key: `f-${a},${m}`,
       html: `${a} − <span class="q">?</span> = ${c}`,
       speak: T('speakFillMinus', { a, c }),
@@ -1826,8 +1830,11 @@ function wpTask(op, st) {
   }
   const e = WP_EMOJI[base];
   const rep = (n, cls) => Array.from({ length: n }, () => `<span${cls ? ` class="${cls}"` : ''}>${e}</span>`).join('');
-  const items = add ? rep(a) + '<b class="pl">+</b>' + rep(b) : rep(a) + rep(b, 'out');
-  const picture = `<div class="wp"><span class="wp-scene">${place.scene}</span><div class="wp-items">${items}</div></div>`;
+  // odčítanie: celkový počet je na obrázku len raz; predmety, ktoré odídu, sa ťuknú a vybledňú
+  const items = add ? rep(a) + '<b class="pl">+</b>' + rep(b) : rep(a - b) + rep(b, 'tap');
+  const total = add ? '' : `<span class="wp-total">${a}</span>`;
+  const picture = `<div class="wp"><span class="wp-scene">${place.scene}</span><div class="wp-items">${items}</div>${total}</div>` +
+    (add ? '' : `<div class="tip tapmsg">${speakable(T('tapHint'), [sk ? 'tukni' : 'tapwhatgoesaway'])}</div>`);
   return { op: add ? '+' : '−', a, b, total: add ? ans : a, g1: add ? a : ans, g2: b, mi: 0, ans,
     txt: `${a} ${add ? '+' : '−'} ${b} = ?`, key: `wp-${place.sk}-${base}-${a}-${b}-${add ? 'p' : 'm'}`,
     html: `${a} ${add ? '+' : '−'} ${b} = <span class="q">?</span>`,
@@ -1984,7 +1991,9 @@ function dotsAgain(t) {
   return [[sk ? 'spocitajme' : 'letscount', ...nums.map(N)], (sk ? 'Spočítajme: ' : "Let's count: ") + nums.join(', ')];
 }
 // plody: kvitnúca rastlina dostane ďalšou kvapkou plod; ťuknutím ho Lara zoberie a dostane hviezdičku
-const fruitEmoji = () => '🍎';   // plod je jablko, nie ikona rastliny (aby nevyzeral ako druhá rastlina)
+// plod zodpovedá rastline: zelenina a ovocie dávajú svoj plod, kvety dávajú semená (nie ikonu rastliny)
+const FRUIT_EMOJI = { carrot: '🥕', tomato: '🍅', pumpkin: '🎃', corn: '🌽', watermelon: '🍉', strawberry: '🍓' };
+const fruitEmoji = id => FRUIT_EMOJI[id] || '🌰';
 function refreshFruit() {
   document.querySelectorAll('#album .plot[data-id]').forEach(p => {
     const id = p.dataset.id, f = p.querySelector('.fruit');
@@ -1996,12 +2005,16 @@ function refreshFruit() {
 }
 function harvest(id) {
   if (!S.fruit[id]) return;
+  // plod zmizne a na jeho mieste sa ukáže +1✰; bez hlasu
+  const plot = document.querySelector(`#album .plot[data-id="${id}"]`);
+  if (plot) {
+    plot.insertAdjacentHTML('beforeend', `<span class="fruitgone">${fruitEmoji(id)}</span><span class="plusfruit">+1✰</span>`);
+    setTimeout(() => plot.querySelectorAll('.fruitgone, .plusfruit').forEach(x => x.remove()), 1300);
+  }
   delete S.fruit[id];
   S.grow[id] = 2;   // rastlina sa vráti o stupeň späť a rastie znova
   S.stars += 1;
-  save(); renderTop(); flyPlus(1); refreshStages();
-  const sk = LANG === 'sk';
-  playSeq(sk ? ['zobralasiplod', 'jednuhviezdicku'] : ['youpickedthefruit', 'onestar'], sk ? 'Zobrala si plod, jednu hviezdičku.' : 'You picked the fruit, one star.');
+  save(); renderTop(); refreshStages();
 }
 document.addEventListener('click', e => {
   const f = e.target.closest('#album .fruit');
@@ -2191,18 +2204,21 @@ function handsSVG(n, w = 64) {
   const right = [0, 1, 2, 3, 4].map(i => i + 5 < n);
   return `<svg viewBox="0 0 120 60" width="${w}" height="${Math.round(w / 2)}" aria-hidden="true">${handSVG(34, false, left)}${handSVG(86, true, right)}</svg>`;
 }
+// rúčky počítajú pomocný príklad: pri chýbajúcom čísle je to iný príklad (? + 3 = 7 → 7 − 3), inak sama úloha
+const handsTask = t => t.hands || t;
 function cntState(t) {
   if (!R.cnt || R.cnt.key !== t.key) {
-    R.cnt = { key: t.key, T: Math.floor(t.a / 10), O: t.a % 10, pT: 0, pO: 0 };   // pT, pO: koľko kúskov druhého čísla je už použitých
+    R.cnt = { key: t.key, T: Math.floor(handsTask(t).a / 10), O: handsTask(t).a % 10, pT: 0, pO: 0 };   // pT, pO: koľko kúskov druhého čísla je už použitých
   }
   return R.cnt;
 }
 // vnútro pomôcky: veľké číslo, desiatky, jednotky a dve tlačidlá s odznakom zostávajúcich stlačení
 function cntInner(t) {
   const st = cntState(t);
-  const add = t.op === '+';
+  const h = handsTask(t);
+  const add = h.op === '+';
   const sign = add ? '+' : '−';
-  const bT = Math.floor(t.b / 10), bO = t.b % 10;
+  const bT = Math.floor(h.b / 10), bO = h.b % 10;
   const remT = bT - st.pT, remO = bO - st.pO;
   const canT = remT > 0 && (add ? st.T < 10 : st.T > 0);
   const canO = remO > 0 && (add || st.O > 0 || st.T > 0);
@@ -2223,13 +2239,14 @@ function cntHTML(t) {
 // stlačenie tlačidla: pribudne alebo ubudne pár rúk (10) alebo jeden prst (1)
 function ctPress(t, op, k) {
   const st = cntState(t);
+  const h = handsTask(t);
   const add = op === 'add';
   if (k === 't') {
-    if (st.pT >= Math.floor(t.b / 10)) return;
+    if (st.pT >= Math.floor(h.b / 10)) return;
     if (add) { if (st.T >= 10) return; st.T++; } else { if (st.T <= 0) return; st.T--; }
     st.pT++;
   } else {
-    if (st.pO >= t.b % 10) return;
+    if (st.pO >= h.b % 10) return;
     if (add) { st.O++; if (st.O === 10) { st.O = 0; st.T++; } }   // 10 prstov sa presunie do desiatok
     else if (st.O > 0) st.O--;
     else if (st.T > 0) { st.T--; st.O = 9; }                        // pár sa rozpadne na 10 prstov, jeden sklopíme
@@ -2240,19 +2257,15 @@ function ctPress(t, op, k) {
 // pomôcka: desiatkový rámik pre čísla do 20, inak len text kroku
 function hintHTML(t, reveal) {
   if (t.op === 'num') return `<div class="tip">${speakable(t.step, t.snd)}</div>`;
-  if ((t.op === '+' || t.op === '−') && t.mi === 0 && t.total > 10 && !reveal) {
+  if (t.op === 'cmp' || t.total > 20) return `<div class="tip">${speakable(t.step, stepKeysOf(t))}</div>`;
+  // sčítanie a odčítanie: vždy rúčky s prstami, nie guličky; nad 10 až po „Pomôž si“
+  if (t.total > 10) {
     const open = !!R.cntOpen;
     return `<div class="hintbox" data-left="${t.g1}"><button class="chip help-btn" type="button" id="helpBtn">${T(open ? 'helpHide' : 'helpBtn')}</button>` +
       (open ? cntHTML(t) : '') + `<div class="tip">${speakable(t.step, stepKeysOf(t))}</div></div>`;
   }
-  if (t.op === 'cmp' || t.total > 20) return `<div class="tip">${speakable(t.step, stepKeysOf(t))}</div>`;
-  const tappable = t.op === '−' && t.mi === 0 && !reveal;   // odčítanie: dieťa ťukne na to, čo odíde
-  const tip = `<div class="tip">${speakable(t.step, stepKeysOf(t))}</div>` + (tappable ? `<div class="tip tapmsg">${speakable(T('tapHint'), [LANG === 'sk' ? 'tukni' : 'tapwhatgoesaway'])}</div>` : '');
-  const M = reveal ? 'gold' : 'ghost';
-  const c1 = t.mi === 1 ? M : 'blue';
-  const c2 = t.mi === 2 ? M : (t.op === '−' ? (tappable ? 'yellow tap' : 'out') : 'yellow');
-  const seq = Array(t.g1).fill(c1).concat(Array(t.g2).fill(c2));
-  return `<div class="hintbox" data-left="${t.g1}">${frames(seq, t.total)}${tip}</div>`;
+  R.cntOpen = true;   // do 10 sú rúčky hneď, bez tlačidla
+  return `<div class="hintbox" data-left="${t.g1}">${cntHTML(t)}<div class="tip">${speakable(t.step, stepKeysOf(t))}</div></div>`;
 }
 /* ====== TEXTY PRE LARU S TLAČIDLOM S REPRODUKTOROM ======
    Text sa prehrá z nahrávok (kľúče); ak niektorá nahrávka chýba, prečíta celý text hlas zariadenia. */
@@ -2937,7 +2950,7 @@ $('#nextBtn').onclick = next;
 $('#sayBtn').onclick = () => playSeq(R.t.snd, R.t.story || R.t.speak);
 // odčítanie: každá guľôčka, na ktorú dieťa ťukne, odletí a ozve sa počet
 $('#hint').addEventListener('click', e => {
-  // pomôcka pre dvojciferné čísla: tlačidlo a guličky počítadla
+  // pomôcka s rúčkami: tlačidlo „Pomôž si“ nad 10 a tlačidlá počítadla
   if (e.target.closest('#helpBtn')) {
     R.cntOpen = !R.cntOpen;
     if (R.cntOpen && S.mascot === 'bunny' && S.sound) playSeq(R.t.snd, R.t.speak);   // zajko vysvetlí úlohu hlasom
@@ -2951,18 +2964,19 @@ $('#hint').addEventListener('click', e => {
     $('#cnt').innerHTML = cntInner(R.t);   // prekreslí sa len pomôcka, nie celý riadok
     return;
   }
-  const c = e.target.closest('.tap');
-  if (!c || c.classList.contains('gone')) return;
-  c.classList.add('gone');
-  const gone = document.querySelectorAll('#hint .gone').length;
-  const done = !document.querySelector('#hint .tap:not(.gone)');
-  const left = Number(document.querySelector('#hint .hintbox').dataset.left);
-  // jedno hlásenie na ťuknutie: vždy počet odobratých (pri poslednej guličke "päť", nie zvyšok "jeden")
-  if (done) speakList([[[gone], String(gone)], [tapLeftKeys(left), T('tapLeft', { n: left })]]);   // na konci aj „zostalo …“
+});
+// slovná úloha: ťuknutie na predmet, ktorý odíde, ho vybledne; celkový počet ostane na obrázku
+$('#story').addEventListener('click', e => {
+  const c = e.target.closest('.wp-items .tap');
+  if (!c || c.classList.contains('faded')) return;
+  c.classList.add('faded');
+  const gone = document.querySelectorAll('#story .faded').length;
+  const left = R.t.ans;
+  const done = !document.querySelector('#story .tap:not(.faded)');
+  if (done) speakList([[[gone], String(gone)], [tapLeftKeys(left), T('tapLeft', { n: left })]]);
   else playSeq([gone], String(gone));
-  const msg = document.querySelector('#hint .tapmsg');
+  const msg = document.querySelector('#story .tapmsg');
   if (msg) msg.innerHTML = speakable(done ? T('tapLeft', { n: left }) : T('tapCount', { n: gone }), done ? tapLeftKeys(left) : tapCountKeys(gone));
-  if (done) fbHTML(speakable(T('tapLeft', { n: left }), tapLeftKeys(left)), true);
 });
 $('#langBtn').onclick = () => { location.href = LANG === 'en' ? 'sk/' : '../'; };
 $('#pad').addEventListener('click', e => {
