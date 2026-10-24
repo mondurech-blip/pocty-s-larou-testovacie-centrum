@@ -2050,7 +2050,7 @@ function densify(pts, step = 8) {
   return out;
 }
 const DIGIT_DENSE = DIGIT_STROKES.map(strokes => strokes.map(s => densify(s)));
-const WTOL = 46, WAHEAD = 6;   // tolerancia (plátno má 300 jednotiek) a koľko vzoriek dopredu sa hľadá
+const WTOL = 46, WAHEAD = 12;   // tolerancia (plátno má 300 jednotiek) a koľko vzoriek dopredu sa hľadá; rýchly prst preskočí až asi 90 jednotiek naraz
 // posúva sa len dopredu po ťahu: ide až k najďalšej vzorke, na ktorú bod dieťaťa ešte v tolerancii dosiahne
 function wAdvance(s, idx, x, y) {
   for (let j = Math.min(s.length, idx + WAHEAD) - 1; j >= idx; j--) if (Math.hypot(s[j][0] - x, s[j][1] - y) <= WTOL) return j;
